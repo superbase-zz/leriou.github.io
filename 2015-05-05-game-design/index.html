@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"b2t":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"perspectiveLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"perspectiveRightIn","sidebar":"perspectiveRightIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="游戏程序的设计和运行流程这篇文章是写给编程初学者和完全不懂编程的小白的, 目的是希望能通过这篇文章, 让大家知道游戏中的画面是怎么显示出来的和一般的游戏的运行方式游戏地址先上游戏地址: https:&#x2F;&#x2F;github.com&#x2F;oldj&#x2F;html5-tower-defense我们拿这个游戏来举例子进行分析">
+<meta name="keywords" content="游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习游戏程序设计">
+<meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2015-05-05-game-design&#x2F;index.html">
+<meta property="og:site_name" content="Leriou&#39;s Tavern">
+<meta property="og:description" content="游戏程序的设计和运行流程这篇文章是写给编程初学者和完全不懂编程的小白的, 目的是希望能通过这篇文章, 让大家知道游戏中的画面是怎么显示出来的和一般的游戏的运行方式游戏地址先上游戏地址: https:&#x2F;&#x2F;github.com&#x2F;oldj&#x2F;html5-tower-defense我们拿这个游戏来举例子进行分析">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-10-19T12:36:48.933Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://leriou.github.io/2015-05-05-game-design/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>学习游戏程序设计 | Leriou's Tavern</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leriou's Tavern</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">试试我新买的钢笔 ^_^</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">52</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2015-05-05-game-design/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          学习游戏程序设计
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2015-05-05T00:00:00+08:00">2015-05-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">编程学习</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2015-05-05-game-design/" class="post-meta-item leancloud_visitors" data-flag-title="学习游戏程序设计" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2015-05-05-game-design/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2015-05-05-game-design/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="游戏程序的设计和运行流程"><a href="#游戏程序的设计和运行流程" class="headerlink" title="游戏程序的设计和运行流程"></a>游戏程序的设计和运行流程</h2><p>这篇文章是写给编程初学者和完全不懂编程的小白的, 目的是希望能通过这篇文章, 让大家知道游戏中的画面是怎么显示出来的和一般的游戏的运行方式</p><h2 id="游戏地址"><a href="#游戏地址" class="headerlink" title="游戏地址"></a>游戏地址</h2><p>先上游戏地址: <a href="https://github.com/oldj/html5-tower-defense" target="_blank" rel="noopener">https://github.com/oldj/html5-tower-defense</a></p><p>我们拿这个游戏来举例子进行分析</p><a id="more"></a>
+
+
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前我自己做五子棋的游戏的时候,在网上找别人做过的小游戏做参考, 无意中发现了这个小游戏</p>
+<p>期间发现这个游戏虽然很小, 但是设计还是很有意思的, 于是就顺便结合这个小游戏做一点游戏设计层面的分析</p>
+<p>介绍一下一款游戏大概的工作流程</p>
+<h2 id="游戏分析"><a href="#游戏分析" class="headerlink" title="游戏分析"></a>游戏分析</h2><h3 id="游戏的形式"><a href="#游戏的形式" class="headerlink" title="游戏的形式"></a>游戏的形式</h3><p>几乎市面上所有常见游戏都是通过</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">给玩家展示一些画面 -&gt; 然后获取到玩家的反馈动作 -&gt; 对游戏画面进行更新, 显示游戏画面 -&gt; 获取玩家反馈动作 ...</span><br></pre></td></tr></table></figure>
+
+<p>这么一个循环来的, 所谓的玩游戏的过程也就是游戏通过设备(键盘, 鼠标, 屏幕触控, 话筒)等形式获取到玩家反馈数据对游戏进行更新, 不断重复该过程, 直到达到游戏结束条件为止</p>
+<h3 id="游戏画面的显示"><a href="#游戏画面的显示" class="headerlink" title="游戏画面的显示"></a>游戏画面的显示</h3><p>我们看到的游戏的画面, 不管多酷炫, 归根到底可以看做一系列的连续播放的图片, 而每张图片我们又可以看做是一个固定分辨率的色彩数组</p>
+<p>拿 1080*1920 分辨率, 60fps 的某一款游戏来说, 就是1s中给你播放60张1080p的图片给你看</p>
+<p>那到底播放什么图片呢 ?</p>
+<p>图片的内容可以看成是一个 <code>1080(宽) * 1920(长) * 4(RGBA)</code>的数组, 只要把这个数组发送给显卡, 显卡就知道应该怎么显示</p>
+<p>游戏渲染的过程, 可以看做是根据用户反馈计算这一些列数组的过程</p>
+<h3 id="游戏的通用结构"><a href="#游戏的通用结构" class="headerlink" title="游戏的通用结构"></a>游戏的通用结构</h3><p>从结构上说, 任何游戏, 实质上都是一个不断循环的程序, 当画面的处理和输出速度达到人眼视觉暂留的极限时(一般在30fps以上)</p>
+<p>人就分不出来是不是真的实时了, 以此来模拟实时的效果, 早期的胶片电影使用的也是类似的原理</p>
+<p>任何游戏理论上都可以套用以下过程, 使用伪代码描述:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">load( config );              <span class="comment">// 加载游戏配置</span></span><br><span class="line"><span class="keyword">while</span>( game_is_running() ) &#123; <span class="comment">// 游戏是否继续进行</span></span><br><span class="line">    get_user_input(); 	     <span class="comment">// 接受用户的输入</span></span><br><span class="line">    do_something();  	       <span class="comment">// 根据用户输入处理数据处理</span></span><br><span class="line">    check_stop();		         <span class="comment">// 查看是否满足结束条件</span></span><br><span class="line">    render();			           <span class="comment">// 渲染页面,渲染一次就是fps</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>游戏的实质就是根据与用户交互, 不断的修改参数对页面进行渲染, 再接受用户输入, 这整个循环称为游戏的主循环</p>
+<p>下面我将对一个简单的小塔防游戏进行分析, 来说明一下一个简单游戏的内部组成和功能实现</p>
+<h1 id="TF游戏"><a href="#TF游戏" class="headerlink" title="TF游戏"></a>TF游戏</h1><blockquote>
+<p>ps: TF只是一个游戏名字 </p>
+</blockquote>
+<h2 id="游戏地址-1"><a href="#游戏地址-1" class="headerlink" title="游戏地址"></a>游戏地址</h2><p>游戏地址: <a href="https://github.com/oldj/html5-tower-defense" target="_blank" rel="noopener">https://github.com/oldj/html5-tower-defense</a></p>
+<h2 id="TF中的主循环做的事情"><a href="#TF中的主循环做的事情" class="headerlink" title="TF中的主循环做的事情"></a>TF中的主循环做的事情</h2><p>tf既然也是一个游戏自然就遵循上面所说的基本规则,</p>
+<p>tf游戏中的主要过程如下</p>
+<ol>
+<li>响应用户的点击事件</li>
+<li>根据用户的输入和触发的事件,更新游戏对象数据</li>
+<li>然后根据对象进行渲染</li>
+<li>判断游戏输赢(是否达到结束条件)</li>
+</ol>
+<h2 id="TF游戏中的各种子系统"><a href="#TF游戏中的各种子系统" class="headerlink" title="TF游戏中的各种子系统"></a>TF游戏中的各种子系统</h2><p>tf游戏虽小,但是却也是一个比较完善的游戏, 内部也是有许多的子系统构成</p>
+<h3 id="基本对象系统"><a href="#基本对象系统" class="headerlink" title="基本对象系统"></a>基本对象系统</h3><p>对象系统是tf的基础, 游戏中的所有会运动的怪物, 炮塔, 甚至包括文字, 按钮 都是对象系统的成员</p>
+<p>但是,这些对象又具有一定的层级关系</p>
+<p>游戏中的所有对象可以根据继承关系形成一个树状结构</p>
+<p>之所以要建立对象系统是为了更好地以面向对象的形式来构建游戏</p>
+<p>这种开发方式有助于降低开发难度</p>
+<p>基本的对象系统是承载游戏数据的主要对象</p>
+<p>各种游戏参数基本都表现为各种对象的各种属性</p>
+<p>对象系统对上层的渲染系统提供渲染参数, 可以通过渲染系统把当前游戏运行状态可视化的显示出来</p>
+<h3 id="事件系统"><a href="#事件系统" class="headerlink" title="事件系统"></a>事件系统</h3><p>事件系统是用户和游戏系统进行交互的窗口, 用户的所有操作都作为事件的形式被游戏所捕获</p>
+<p>事件系统的功能主要是:收集用户的输入,提供事件来触发对数据的处理,实时的更新对象的数据</p>
+<p>事件系统是控制游戏进程和与用户交互的重要通道</p>
+<p>事件系统在游戏中起到触发器的作用, 告诉游戏中的对象,什么时候用户做了什么事情,你们需要做些什么</p>
+<p>一般来说事件系统会用一个具有优先级的队列来实现</p>
+<h3 id="渲染引擎"><a href="#渲染引擎" class="headerlink" title="渲染引擎"></a>渲染引擎</h3><p>tf中的渲染系统主要负责根据对象参数渲染对象的UI效果</p>
+<p>画面中看到的小怪物,子弹, 文字, 建筑都是渲染系统来负责</p>
+<p>因为tf中没有用到图片,所有怪物和防御设施都是使用canvas绘制出来的, tf中的渲染系统承担的工作要更重一些</p>
+<p>渲染系统是游戏的核心功能之一</p>
+<p>渲染程序的运行依赖于当前游戏中的各种对象和参数状态</p>
+<p>用户的某种动作触发了事件之后,对应的对象的参数和状态会进行重新计算</p>
+<p>新的对象需要有渲染引擎来进行绘图和显示</p>
+<p>渲染系统是游戏内部状态的展示窗口, 核心功能是讲当前游戏内部状态以友好的方式呈现给用户</p>
+<h3 id="物理引擎"><a href="#物理引擎" class="headerlink" title="物理引擎"></a>物理引擎</h3><p>物理引擎在游戏中主要充当工具箱的作用, 属于渲染系统中的基础组件</p>
+<p>主要的功能像<code>寻路算法</code>, <code>碰撞检测</code>等都属于物理引擎的范畴</p>
+<p>物理引擎可以赋予对象真实世界物体的各种效果</p>
+<p>负责计算渲染系统需要的各种描述状态的参数数据</p>
+<p>物理引擎是我们衡量一个游戏等级的重要依据</p>
+<p>目前还没有游戏能实现完整的模拟现实世界的物理引擎</p>
+<p>更加复杂的化学引擎也目前没人能实现</p>
+<p>理想的游戏引擎是能按照现实世界的各种粒子特性</p>
+<p>原子级的模拟整个现实世界,但是这在未来数百年显然是不可能的</p>
+<h3 id="音频-视频系统"><a href="#音频-视频系统" class="headerlink" title="音频/视频系统"></a>音频/视频系统</h3><p>其他大型游戏一般还有会有音频和视频系统来增强用户的游戏体验</p>
+<p>不过这个游戏并没有包含这一部分</p>
+<h3 id="资源系统"><a href="#资源系统" class="headerlink" title="资源系统"></a>资源系统</h3><p>大型游戏中的<code>音频</code>,<code>视频</code>,<code>文件</code>,<code>内存</code>,<code>I/0设备</code>等资源都需要进行管理</p>
+<p>一般会自己实现一套资源管理机制</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%B8%E6%88%8F/" rel="tag"># 游戏</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2015-01-23-pili-words/" rel="next" title="霹雳布袋戏语录">
+                  <i class="fa fa-chevron-left"></i> 霹雳布袋戏语录
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2015-06-01-simple-git-operation/" rel="prev" title="git简单使用指南">
+                  git简单使用指南 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏程序的设计和运行流程"><span class="nav-number">1.</span> <span class="nav-text">游戏程序的设计和运行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏地址"><span class="nav-number">2.</span> <span class="nav-text">游戏地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">3.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏分析"><span class="nav-number">4.</span> <span class="nav-text">游戏分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#游戏的形式"><span class="nav-number">4.1.</span> <span class="nav-text">游戏的形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#游戏画面的显示"><span class="nav-number">4.2.</span> <span class="nav-text">游戏画面的显示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#游戏的通用结构"><span class="nav-number">4.3.</span> <span class="nav-text">游戏的通用结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TF游戏"><span class="nav-number"></span> <span class="nav-text">TF游戏</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏地址-1"><span class="nav-number">1.</span> <span class="nav-text">游戏地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TF中的主循环做的事情"><span class="nav-number">2.</span> <span class="nav-text">TF中的主循环做的事情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TF游戏中的各种子系统"><span class="nav-number">3.</span> <span class="nav-text">TF游戏中的各种子系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本对象系统"><span class="nav-number">3.1.</span> <span class="nav-text">基本对象系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件系统"><span class="nav-number">3.2.</span> <span class="nav-text">事件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染引擎"><span class="nav-number">3.3.</span> <span class="nav-text">渲染引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#物理引擎"><span class="nav-number">3.4.</span> <span class="nav-text">物理引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#音频-视频系统"><span class="nav-number">3.5.</span> <span class="nav-text">音频/视频系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源系统"><span class="nav-number">3.6.</span> <span class="nav-text">资源系统</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="哎呀是太阳嘛"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">哎呀是太阳嘛</p>
+  <div class="site-description" itemprop="description">君子生非异也, 善假于物也</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-no-wifi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">connect to Leriou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.1"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+    appKey: 'uRGeMnmfAq6h88QavSUfpS3q',
+    placeholder: "你不想说点什么吗 ???",
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+    </div>
+</body>
+</html>

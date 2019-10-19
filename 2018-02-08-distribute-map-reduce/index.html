@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"b2t":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"perspectiveLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"perspectiveRightIn","sidebar":"perspectiveRightIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多这个事情让我很好奇Google的搜索引擎为什么速度这么快搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理">
+<meta name="keywords" content="MapReduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习分布式计算框架-MapReduce">
+<meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-08-distribute-map-reduce&#x2F;index.html">
+<meta property="og:site_name" content="Leriou&#39;s Tavern">
+<meta property="og:description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多这个事情让我很好奇Google的搜索引擎为什么速度这么快搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-08-distribute-map-reduce&#x2F;map-reduce.bakedsvg.svg">
+<meta property="og:updated_time" content="2019-10-19T12:36:48.927Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-08-distribute-map-reduce&#x2F;map-reduce.bakedsvg.svg">
+  <link rel="canonical" href="https://leriou.github.io/2018-02-08-distribute-map-reduce/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>学习分布式计算框架-MapReduce | Leriou's Tavern</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leriou's Tavern</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">试试我新买的钢笔 ^_^</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">52</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-02-08-distribute-map-reduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          学习分布式计算框架-MapReduce
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-02-08 11:07:00" itemprop="dateCreated datePublished" datetime="2018-02-08T11:07:00+08:00">2018-02-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">编程学习</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018-02-08-distribute-map-reduce/" class="post-meta-item leancloud_visitors" data-flag-title="学习分布式计算框架-MapReduce" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018-02-08-distribute-map-reduce/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018-02-08-distribute-map-reduce/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)</p><p>我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多</p><p>这个事情让我很好奇Google的搜索引擎为什么速度这么快</p><p>搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理</p><a id="more"></a>
+
+
+
+<p>后来从网上搜索了一下,发现google现有的搜索引擎是基于Caffeine的增量索引系统构建的</p>
+<p>Google背后的索引计算工作是搜索引擎的核心之一, 经过搜索发现, Google后续的一些列大数据计算引擎都是基于MapReduce的思想构建出来的</p>
+<h1 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h1><p>在2004年google发布了一篇论文, 描述了google内部针对大数据处理的一种通用模式:MapReduce</p>
+<p>MapReduce是一种编程模型,主要用来对大量的数据进行分布式处理和计算,很多常见的数据处理任务都可以被拆分为符合mapreduce模型的编程过程,MapReduce主要过程分为Map和Reduce两个过程</p>
+<p>论文地址:<a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/mapreduce-osdi04.pdf" target="_blank" rel="noopener">MapReduce论文</a></p>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>Map是一个将问题分解成多个小问题为后续的分发提供基础的技术</p>
+<p>Map的过程用函数来表示就是:</p>
+<pre><code>map(k,v) = (k1,v1&lt;list&gt;)
+
+map函数接收一对k,v键值对,返回一个(k1,v1&lt;list&gt;)</code></pre><p>map函数的目的是为了将任务分割方便后续的任务合成</p>
+<h2 id="Reduce"><a href="#Reduce" class="headerlink" title="Reduce"></a>Reduce</h2><p>Reduce是将多个k-v pair按照相同的k进行合并的过程</p>
+<pre><code>reduce(k,v2&lt;list&gt;) = (v3&lt;list&gt;)
+
+reduce函数接收一个k,v1&lt;list&gt;, 返回一个v2&lt;list&gt;</code></pre><blockquote>
+<p>ps:大多数情况下map的返回结果不能直接用于reduce函数,需要特殊处理一下</p>
+</blockquote>
+<h2 id="过程图"><a href="#过程图" class="headerlink" title="过程图"></a>过程图</h2><p>以下是一个很详细的对MongoDB中的MapReduce过程的解读图</p>
+<p><img src="map-reduce.bakedsvg.svg" alt="mr"></p>
+<p>我们可以看到map函数的输入是多个被查询过滤过的文档集合,返回值是一个map对应的值列表,我们可以认为map函数式对所有符合条件的数据进行一次简单的处理</p>
+<p>reduce则是将这个值列表按照key进行处理,即对map的结果进行最终结果操作</p>
+<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p>我们用一个实际的问题来描述MapReduce的思想</p>
+<p>假设我们有一个文件集合(C),里面包含M个文档,我们要对文件集合中的文档进行单词次数统计,统计在所有文档中的每个单词出现的次数</p>
+<p>可以用以下过程描述:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">map</span>(String key, String value): <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents for each word w in value:</span></span><br><span class="line">    EmitIntermediate(w, <span class="string">"1"</span>);<span class="comment">// 该函数返回一个[("to",1),("yours",12)]这样的列表数据</span></span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values): <span class="comment">// key: a word eg: "t1"</span></span><br><span class="line">    <span class="comment">// values: a list of counts 示例: [1,2,3]</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">      result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result)); <span class="comment">// 该函数同样返回一个[("to",1),("yours",12)]的数据</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="代码-单机版"><a href="#代码-单机版" class="headerlink" title="代码(单机版)"></a>代码(单机版)</h2><p>以下是使用mapreduce进行文档词频统计的示例代码</p>
+<p>其中的主要代码简单解释一下</p>
+<h3 id="MapReduce类"><a href="#MapReduce类" class="headerlink" title="MapReduce类"></a>MapReduce类</h3><p><code>MapReduce</code>类是一个通用的MapReduce框架,理论上任意MapReduce任务都可以套用这个框架</p>
+<p>要处理不同的问题我们只需要修改对应的map和reduce函数即可</p>
+<p>MapReduce类接收3个参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i:       要处理的数据源,格式是一个普通的字典; </span><br><span class="line">mapper:  映射函数,该函接收一个kv键值对,根据需要对每个v值进行处理,返回一个(k,v&lt;list&gt;),此处的k值并不一定是传入的k值; </span><br><span class="line">reducer: 压缩函数,接收一个(k,v&lt;list&gt;),根据需求对数据进行压缩合并;</span><br></pre></td></tr></table></figure>
+
+<h3 id="map函数"><a href="#map函数" class="headerlink" title="map函数"></a>map函数</h3><p>其中<code>get_most_common_from_text</code>使用了结巴分词插件</p>
+<p>参数:</p>
+<pre><code>k:&quot;a&quot;
+v:&quot;The quick brown fox jumped over the lazy grey dogs.&quot;</code></pre><p>返回:</p>
+<pre><code>eg: [(&quot;the&quot;,1),(&quot;quick&quot;,1),(&quot;fox&quot;,1)...] </code></pre><h3 id="reduce函数"><a href="#reduce函数" class="headerlink" title="reduce函数"></a>reduce函数</h3><p>参数:</p>
+<pre><code>k:&quot;the&quot;
+v&lt;list&gt;:[1,1,1]</code></pre><p>返回: </p>
+<pre><code>[(&quot;the&quot;,3),(&quot;quick&quot;:1)...]</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MapReduce</span>:</span></span><br><span class="line">    __doc__ = <span class="string">'''提供map_reduce功能'''</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map_reduce</span><span class="params">(i, mapper, reducer)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        map_reduce方法</span></span><br><span class="line"><span class="string">        :param i: 需要MapReduce的集合</span></span><br><span class="line"><span class="string">        :param mapper: 自定义mapper方法</span></span><br><span class="line"><span class="string">        :param reducer: 自定义reducer方法</span></span><br><span class="line"><span class="string">        :return: 以自定义reducer方法的返回值为元素的一个列表</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        intermediate = []  <span class="comment"># 存放所有的(intermediate_key, intermediate_value)</span></span><br><span class="line">        <span class="keyword">for</span> (key, value) <span class="keyword">in</span> i.items():</span><br><span class="line">            intermediate.extend(mapper(key,value))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># sorted返回一个排序好的list，因为list中的元素是一个个的tuple，key设定按照tuple中第几个元素排序</span></span><br><span class="line">        <span class="comment"># groupby把迭代器中相邻的重复元素挑出来放在一起,key设定按照tuple中第几个元素为关键字来挑选重复元素</span></span><br><span class="line">        <span class="comment"># 下面的循环中groupby返回的key是intermediate_key，而group是个list，是1个或多个</span></span><br><span class="line">        <span class="comment"># 有着相同intermediate_key的(intermediate_key, intermediate_value)</span></span><br><span class="line">        groups = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> key, group <span class="keyword">in</span> itertools.groupby(sorted(intermediate, key=<span class="keyword">lambda</span> im: im[<span class="number">0</span>]), key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>]):</span><br><span class="line">            groups[key] = [y <span class="keyword">for</span> x, y <span class="keyword">in</span> group]</span><br><span class="line">        <span class="comment"># groups是一个字典，其key为上面说到的intermediate_key，value为所有对应intermediate_key的intermediate_value</span></span><br><span class="line">        <span class="comment"># 组成的一个列表</span></span><br><span class="line">        <span class="comment"># print(groups)</span></span><br><span class="line">        <span class="keyword">return</span> [reducer(intermediate_key, groups[intermediate_key]) <span class="keyword">for</span> intermediate_key <span class="keyword">in</span> groups]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_most_common_from_text</span><span class="params">(self,text,n = <span class="number">100</span>)</span>:</span></span><br><span class="line">        word_list = [x <span class="keyword">for</span> x <span class="keyword">in</span> jieba.cut(text) <span class="keyword">if</span> len(x) &gt;= <span class="number">2</span>]</span><br><span class="line">        <span class="keyword">return</span> Counter(word_list).most_common(n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:文档名, v:文档内容</span></span><br><span class="line">        <span class="keyword">return</span> self.get_most_common_from_text(v,<span class="number">10000</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reducer</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:词  v:词出现的次数</span></span><br><span class="line">         <span class="keyword">return</span> k, sum(v)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        </span><br><span class="line">        i = &#123;</span><br><span class="line">            <span class="string">"a"</span>:<span class="string">"The quick brown fox jumped over the lazy grey dogs."</span>,</span><br><span class="line">            <span class="string">"b"</span>:<span class="string">"That's one small step for a man, one giant leap for mankind."</span>,</span><br><span class="line">            <span class="string">"c"</span>:<span class="string">"　　Mary had a little lamb,Its fleece was white as snow;And everywhere that Mary went,The lamb was sure to go"</span>,</span><br><span class="line">            <span class="string">"d"</span>:<span class="string">"I pledge to honor and defend you and yours above all others"</span>,</span><br><span class="line">            <span class="string">"e"</span>:<span class="string">"To share in blessings and burdens, to be your advocate, your champion"</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        t = MapReduce.map_reduce(i,self.map,self.reducer)</span><br><span class="line">        print(t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">m = test()</span><br><span class="line">m.run()</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>MapReduce其实就是我们常说的分而治之的思想</p>
+<p>不过这个过程中借助了中间存储</p>
+<p>统一了数据模型规范, 使之能适用于更广泛的数据计算</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2018-02-02-distribute-storage-gfs/" rel="next" title="分布式文件系统-GFS学习总结">
+                  <i class="fa fa-chevron-left"></i> 分布式文件系统-GFS学习总结
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2018-03-09-woolgather-social-problem/" rel="prev" title="胡思乱想-有关当前社会的一些隐忧">
+                  胡思乱想-有关当前社会的一些隐忧 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MapReduce"><span class="nav-number">1.</span> <span class="nav-text">MapReduce</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">1.1.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reduce"><span class="nav-number">1.2.</span> <span class="nav-text">Reduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程图"><span class="nav-number">1.3.</span> <span class="nav-text">过程图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例"><span class="nav-number">2.</span> <span class="nav-text">实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码-单机版"><span class="nav-number">2.1.</span> <span class="nav-text">代码(单机版)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MapReduce类"><span class="nav-number">2.1.1.</span> <span class="nav-text">MapReduce类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">map函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reduce函数"><span class="nav-number">2.1.3.</span> <span class="nav-text">reduce函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="哎呀是太阳嘛"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">哎呀是太阳嘛</p>
+  <div class="site-description" itemprop="description">君子生非异也, 善假于物也</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-no-wifi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">connect to Leriou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.1"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+    appKey: 'uRGeMnmfAq6h88QavSUfpS3q',
+    placeholder: "你不想说点什么吗 ???",
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+    </div>
+</body>
+</html>

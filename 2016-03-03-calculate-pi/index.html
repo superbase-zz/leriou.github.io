@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"b2t":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"perspectiveLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"perspectiveRightIn","sidebar":"perspectiveRightIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="数学是个迷人的东西,但是我们不应该仅仅止步于使用,还应该有心探究其中的意义">
+<meta name="keywords" content="Python,math">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何计算圆周率pi和自然对数e">
+<meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2016-03-03-calculate-pi&#x2F;index.html">
+<meta property="og:site_name" content="Leriou&#39;s Tavern">
+<meta property="og:description" content="数学是个迷人的东西,但是我们不应该仅仅止步于使用,还应该有心探究其中的意义">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-10-19T12:36:48.903Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://leriou.github.io/2016-03-03-calculate-pi/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>如何计算圆周率pi和自然对数e | Leriou's Tavern</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leriou's Tavern</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">试试我新买的钢笔 ^_^</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">52</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2016-03-03-calculate-pi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          如何计算圆周率pi和自然对数e
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-03-03 00:00:00" itemprop="dateCreated datePublished" datetime="2016-03-03T00:00:00+08:00">2016-03-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">数学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2016-03-03-calculate-pi/" class="post-meta-item leancloud_visitors" data-flag-title="如何计算圆周率pi和自然对数e" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <script crossorigin="anonymous" integrity="sha384-P75AfVrDnfsoUfx7dDfQM9ivlDhxgE+g4kqO/U7lyXtJwJdpZozbt8L5ywD2PDA0" src="https://lib.baomitu.com/vue/2.5.21/vue.min.js"></script>
+
+<h1 id="如何计算Pi和E的值"><a href="#如何计算Pi和E的值" class="headerlink" title="如何计算Pi和E的值"></a>如何计算Pi和E的值</h1><p>从小学就知道 <code>pi = 3.14159265358979...</code></p>
+<p>但是一直不知道如何计算这个值</p>
+<p>之前听说过祖冲之使用的是割圆法，但是我不会(&gt;_&lt;)</p>
+<p>后来偶尔看到数学上有一种方法</p>
+<p><code>pi = 4 * (1 - 1/3 + 1/5 -1/7 + 1/9...+1/n)</code></p>
+<p>使用这种方法只要n足够大, 精度就能提高, 所以我就想用程序来计算, 毕竟计算机比人做这种事情合适的多</p>
+<h1 id="如何计算自然对数"><a href="#如何计算自然对数" class="headerlink" title="如何计算自然对数"></a>如何计算自然对数</h1><p>自然对数也一直是我不理解的一个数字</p>
+<p>之前听说过一个类比,讲的挺好的,但当时并没有去仔细考虑过计算的方法<a href="http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html" target="_blank" rel="noopener">数学常数e的含义</a></p>
+<h2 id="自然对数的意义"><a href="#自然对数的意义" class="headerlink" title="自然对数的意义"></a>自然对数的意义</h2><blockquote>
+<p>自然对数代表单位时间内,数量翻倍增长的极限</p>
+</blockquote>
+<p>比如: 你有1万块钱, 假如存到银行, 1年到期的复利是100%, 那你到明年最多可以拿到多少钱 , 答案是: 2.71828万</p>
+<p>这里我们看如何计息:</p>
+<p>如果按照每半年计息, 1年后等于 (1 + (100%/2)) * (1 + (100%/2)) = 2.25 万</p>
+<p>如果按照每3个月计息一次: 1 + (100%/4) ^ 4 = 2.4414万</p>
+<p>如果按照每1个月计算一次 1 + (100%/12) ^12 = 2.6034 万</p>
+<p>如果再往下, 每天, 每分钟, 每秒, 最终得到的就是 lim (1+100%/n)^n 的极限就是 2.71828…</p>
+<h2 id="如何计算e"><a href="#如何计算e" class="headerlink" title="如何计算e"></a>如何计算e</h2><p>后来也找到一种数学方法可以计算</p>
+<p><code>e = 1/(0!)+1/(1!)+1/(2!)+1/(3!)+1/(4!)....1/(n!)</code></p>
+<p>于是一时好奇就使用程序实现了一下,如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Calculator</span>:</span></span><br><span class="line"></span><br><span class="line">    num = <span class="number">10000000</span></span><br><span class="line">    a = <span class="number">1</span></span><br><span class="line">    res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getPi</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">1</span>, self.num):</span><br><span class="line">            m = <span class="number">1</span> / (<span class="number">1</span> + <span class="number">2</span> * n)</span><br><span class="line">            <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">                self.a = self.a + m</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.a = self.a - m</span><br><span class="line">        print(self.a * <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getE</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">0</span>, self.num):</span><br><span class="line">            self.res = self.res + <span class="number">1</span> / math.factorial(n)</span><br><span class="line">        print(self.res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">c = Calculator()</span><br><span class="line">c.getPi()</span><br><span class="line">c.getE()</span><br></pre></td></tr></table></figure>
+
+<h2 id="在线演示"><a href="#在线演示" class="headerlink" title="在线演示"></a>在线演示</h2><p>在线测试demo(js版)</p>
+<ol>
+<li>计算pi</li>
+</ol>
+<div id="cal-pi">
+    <p>精度:<input v-model="input" type ="number" value=""></p><button class="btn btn-info"  v-on:click="calculate">Calculate</button>
+    <p>结果: <input v-model="result" readonly="true"> </p>
+</div>
+
+<ol start="2">
+<li>计算E</li>
+</ol>
+<div id="cal-e">
+    <p>精度:<input type="number" v-model="input" value=""></p><button class="btn btn-info"  v-on:click="calculate">Calculate</button>
+    <p>结果: <input v-model="result" readonly="true"> </p>   
+</div>
+
+<ol start="3">
+<li>计算你当前的年龄, 精确值, 让你清晰感受时间的流逝</li>
+</ol>
+<div id="cal-age">
+    <p>生日:<input type="text" v-model="input" value="" placeholder="2017-01-01"></p><button class="btn btn-info" v-on:click="calculate">Calculate</button>
+    <p>结果: <input v-model="result" readonly="true"> </p>
+</div>
+
+<script>
+var arr = [{
+    el:"#cal-e",
+    data:{
+        result:0,
+        input:100,
+        msg:"请输入一个精度值"
+    },
+    methods:{
+        calculate:function(){
+            if (!this.input) {
+                alert(this.msg);
+            }
+            var n = this.input;
+            var s = 0;
+            for (var i = 0; i <= n; i++) {
+                s = s + (1 / this.factorial(i));
+            }
+            this.result = s;
+        },
+        factorial: function(n) {
+            if (n <= 1) return 1;
+            return n * this.factorial(n - 1);
+        }
+    }
+},{
+    el:"#cal-age",
+    data:{
+        result:0,
+        input:'2000-01-01',
+        msg:"请输入一个出生日期",
+        n:0
+    },
+    methods:{
+        calculate:function(){
+            if (!this.input) {
+                alert(this.msg);
+            }
+            this.n = 0;
+            this.interval = setInterval(this.setAge,100);
+        },
+        setAge:function (){
+            this.n += 1;
+            var b = this.input;
+            var now = new Date().valueOf();
+            var born = new Date(b).valueOf();
+            var age = (now - born) / (365 * 24 * 3600 * 1000);
+            this.result = age;
+            this.stop()
+        },
+        stop:function() {
+            if (this.n > 50) clearInterval(this.interval)
+        }
+    }
+},{
+    el:"#cal-pi",
+    data:{
+        result:0,
+        input:100,
+        msg:"请输入一个精度值"
+    },
+    methods:{
+        calculate:function(){
+            if (!this.input) {
+                alert(this.msg);
+            }
+            var n = this.input * 100;
+            var s = 1;
+            for (var i = 1; i <= n; i++) {
+                var m = 1 / (1 + 2 * i);
+                if (i % 2 == 0) {
+                    s += m;
+                } else {
+                    s -= m;
+                }
+            }
+            this.result = s * 4;
+        }
+    }
+}];
+
+for (e in arr) {
+    new Vue(arr[e]);
+}
+
+</script>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/math/" rel="tag"># math</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2016-01-27-python-problem-record/" rel="next" title="Python问题记录">
+                  <i class="fa fa-chevron-left"></i> Python问题记录
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2016-05-12-The-Chrysanthemum-and-the-Sword/" rel="prev" title="菊与刀">
+                  菊与刀 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何计算Pi和E的值"><span class="nav-number">1.</span> <span class="nav-text">如何计算Pi和E的值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何计算自然对数"><span class="nav-number">2.</span> <span class="nav-text">如何计算自然对数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自然对数的意义"><span class="nav-number">2.1.</span> <span class="nav-text">自然对数的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何计算e"><span class="nav-number">2.2.</span> <span class="nav-text">如何计算e</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线演示"><span class="nav-number">2.3.</span> <span class="nav-text">在线演示</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="哎呀是太阳嘛"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">哎呀是太阳嘛</p>
+  <div class="site-description" itemprop="description">君子生非异也, 善假于物也</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-no-wifi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">connect to Leriou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.1"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+    appKey: 'uRGeMnmfAq6h88QavSUfpS3q',
+    placeholder: "你不想说点什么吗 ???",
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+    </div>
+</body>
+</html>

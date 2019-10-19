@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"b2t":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"perspectiveLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"perspectiveRightIn","sidebar":"perspectiveRightIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近的一年多的时间我们的项目和服务都是使用的阿里云 主要包括机器资源，容器服务和中间件服务，随着这段时间的使用，我有了点自己对云服务的想法想跟大家分享一下">
+<meta name="keywords" content="思考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对云服务和中间件的思考">
+<meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2019-09-17-consider-for-tech&#x2F;index.html">
+<meta property="og:site_name" content="Leriou&#39;s Tavern">
+<meta property="og:description" content="最近的一年多的时间我们的项目和服务都是使用的阿里云 主要包括机器资源，容器服务和中间件服务，随着这段时间的使用，我有了点自己对云服务的想法想跟大家分享一下">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-10-19T12:36:48.938Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://leriou.github.io/2019-09-17-consider-for-tech/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>对云服务和中间件的思考 | Leriou's Tavern</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leriou's Tavern</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">试试我新买的钢笔 ^_^</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">52</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2019-09-17-consider-for-tech/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          对云服务和中间件的思考
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-09-17 00:00:00" itemprop="dateCreated datePublished" datetime="2019-09-17T00:00:00+08:00">2019-09-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">中间件</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019-09-17-consider-for-tech/" class="post-meta-item leancloud_visitors" data-flag-title="对云服务和中间件的思考" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019-09-17-consider-for-tech/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019-09-17-consider-for-tech/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近的一年多的时间我们的项目和服务都是使用的阿里云</p>
+<p>主要包括机器资源，容器服务和中间件服务，随着这段时间的使用，我有了点自己对云服务的想法想跟大家分享一下</p>
+<a id="more"></a>
+
+<h1 id="云服务"><a href="#云服务" class="headerlink" title="云服务"></a>云服务</h1><h2 id="啥是云服务"><a href="#啥是云服务" class="headerlink" title="啥是云服务"></a>啥是云服务</h2><p>想聊云服务就需要先知道啥是云服务，简单的来讲<strong>云服务就是你租借别人的机器，通过网络来自由使用这些机器</strong> </p>
+<ol>
+<li>机器是别人的，你只是租用</li>
+<li>机器不在你这，你通过网络来进行操作</li>
+</ol>
+<p>早期的云服务提供商都是直接提供机器给你使用，你只要说你租几台什么配置的机器，用多久</p>
+<p>你可以自己在机器上搭建服务，配置，存储数据等</p>
+<p>后来云服务厂商帮你做的事情越来越多，开始帮你直接搭建服务，帮你存储数据，甚至帮你提供模式化业务的解决方案 </p>
+<p>这样一来就能更多的挣你的钱</p>
+<h2 id="云服务的优势"><a href="#云服务的优势" class="headerlink" title="云服务的优势"></a>云服务的优势</h2><ul>
+<li>成本优势：按需分配</li>
+<li>快速搭建：云服务不需要企业自己搭建</li>
+<li>运维方便：弹性伸缩</li>
+<li>安全管理：统一的安全保障权限管理等</li>
+</ul>
+<p>这些都是云服务的优势，针对中小型企业真的很有吸引力</p>
+<p>当企业在初创的时候更多的应该关心如何快速的构建一套完整的业务系统出来， 这个时候怎么快就怎么来是最好的</p>
+<p>等到企业到了一定的规模以后，在考虑后续的数据隐私，业务定制化等特殊需求， 这个时候也可以选择自己构建服务， 但是以我个人经验</p>
+<p>现在的云服务也越来越高度定制化了，或许以后能完美的满足企业个性化需求也说不定</p>
+<p>当前的各种服务框架无一不是在朝着云服务的方向努力</p>
+<h1 id="中间件的发展"><a href="#中间件的发展" class="headerlink" title="中间件的发展"></a>中间件的发展</h1><p>中间件一直是软件开发的中流砥柱</p>
+<p>近几年各种中间件和数据平台都发展的异常的快</p>
+<p>存储方面有TiDB和OceanBase， 消息中间件上又有pulsar这种新型消息中间件</p>
+<p>但是这些服务跟云原生环境的对接还没有做到无缝</p>
+<p>我觉得未来一段时间中间件服务的云化是一个很有前途的方向</p>
+<p>研究如何将中间件上云，如何支持多租户等</p>
+<h1 id="大数据和人工智能的衰落"><a href="#大数据和人工智能的衰落" class="headerlink" title="大数据和人工智能的衰落"></a>大数据和人工智能的衰落</h1><p>最近一段时间有点感觉大数据和人工智能不太行了</p>
+<p>一个是大数据公司的衰落</p>
+<p>一个是深度学习方面算法方面遇到了瓶颈</p>
+<p>我觉得过去16-18年这段时间的深度学习的发展很大程度上是由于数据量和计算力的爆发和算法方面的进步三方面带来的</p>
+<p>但是当前的数据量和计算力也到达了一个瓶颈，算法方面又未有太大的突破</p>
+<p>我觉得现在这个情况搞深度学习研究倒不如搞算法的落地和产业化，先把过去的算法和模型好好的充分利用起来</p>
+<p>（未完待续）</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%80%9D%E8%80%83/" rel="tag"># 思考</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019-06-01-recommended-system-ranking-system-md/" rel="next" title="排行榜系统设计">
+                  <i class="fa fa-chevron-left"></i> 排行榜系统设计
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#云服务"><span class="nav-number">1.</span> <span class="nav-text">云服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#啥是云服务"><span class="nav-number">1.1.</span> <span class="nav-text">啥是云服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#云服务的优势"><span class="nav-number">1.2.</span> <span class="nav-text">云服务的优势</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#中间件的发展"><span class="nav-number">2.</span> <span class="nav-text">中间件的发展</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#大数据和人工智能的衰落"><span class="nav-number">3.</span> <span class="nav-text">大数据和人工智能的衰落</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="哎呀是太阳嘛"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">哎呀是太阳嘛</p>
+  <div class="site-description" itemprop="description">君子生非异也, 善假于物也</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-no-wifi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">connect to Leriou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.1"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+    appKey: 'uRGeMnmfAq6h88QavSUfpS3q',
+    placeholder: "你不想说点什么吗 ???",
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+    </div>
+</body>
+</html>

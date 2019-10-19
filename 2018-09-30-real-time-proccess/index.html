@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"b2t":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"perspectiveLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"perspectiveRightIn","sidebar":"perspectiveRightIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务需求 统一产品数据池 由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用">
+<meta name="keywords" content="数据处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初步探索实时数据处理系统">
+<meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;index.html">
+<meta property="og:site_name" content="Leriou&#39;s Tavern">
+<meta property="og:description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务需求 统一产品数据池 由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;productpool.jpg">
+<meta property="og:updated_time" content="2019-10-19T12:36:48.884Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;productpool.jpg">
+  <link rel="canonical" href="https://leriou.github.io/2018-09-30-real-time-proccess/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>初步探索实时数据处理系统 | Leriou's Tavern</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leriou's Tavern</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">试试我新买的钢笔 ^_^</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">52</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-09-30-real-time-proccess/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          初步探索实时数据处理系统
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-10-19 15:31:44" itemprop="dateCreated datePublished" datetime="2018-10-19T15:31:44+08:00">2018-10-19</time>
+            </span>
+
+          
+            <span id="/2018-09-30-real-time-proccess/" class="post-meta-item leancloud_visitors" data-flag-title="初步探索实时数据处理系统" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018-09-30-real-time-proccess/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018-09-30-real-time-proccess/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p><p>借这个机会, 对我们用到的相关技术部分进行了整理</p><h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用</p><p>以及其中遇到的一些坑</p><h2 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h2><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
+<li>统一产品数据池</li>
+</ul><p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL  </p><a id="more"></a>
+
+
+
+
+
+<p>我们组的业务由于含有统一的列表页和内容服务, 所有分类产品的相关信息都需要进行聚合展示, 同时考虑到产品数据的热点特性  </p>
+<p>我们需要一个统一的产品池功能来提供最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
+<p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可  </p>
+<p>同时作为基础的数据服务还需要保证服务的性能和高可用性   </p>
+<p>于是有了产品池这个项目   </p>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p>主要涉及的中间件和服务<code>redis</code>,<code>kafka</code>,<code>storm</code>,<code>elasticsearch</code>,<code>mysql</code></p>
+<h3 id="项目详情"><a href="#项目详情" class="headerlink" title="项目详情"></a>项目详情</h3><ol>
+<li>对接各BU, 整合各BU的产品信息到统一的产品容器内(选择redis/es作为主要的对外存储容器)</li>
+<li>提供统一的产品信息获取接口</li>
+</ol>
+<h3 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h3><p><img src="productpool.jpg" alt="产品池"></p>
+<p>其中各组件的主要功能:</p>
+<p><code>Redis</code>: 存储k-v结构的产品信息, 提供前台api接口的产品基础信息查询数据</p>
+<p><code>Elasticsearch</code>: 提供后台和部分前台对产品的搜索功能</p>
+<p><code>kafka</code>: 数据总线, 后台数据流转的核心</p>
+<p><code>mysql/oracle</code>: 提供最初始的数据源</p>
+<p><code>storm</code>: 产品信息计算</p>
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><h4 id="前台api获取产品的流程"><a href="#前台api获取产品的流程" class="headerlink" title="前台api获取产品的流程"></a>前台api获取产品的流程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start: Start</span><br><span class="line"></span><br><span class="line">cronProductId=&gt;operation: 定时的产品id添加</span><br><span class="line"></span><br><span class="line">missProductId=&gt;operation: 失效的产品id</span><br><span class="line"></span><br><span class="line">frontRequest=&gt;operation: 接口请求</span><br><span class="line"></span><br><span class="line">isProductMiss=&gt;condition: 产品是否失效</span><br><span class="line"></span><br><span class="line">addProductId=&gt;operation: 将待处理的产品id添加到kafka队列</span><br><span class="line"></span><br><span class="line">buildProductInfo=&gt;operation: 构建产品信息</span><br><span class="line"></span><br><span class="line">returnProductInfo=&gt;operation: 从redis返回产品信息</span><br><span class="line"></span><br><span class="line">e=&gt;end: End</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">st-&gt;frontRequest-&gt;isProductMiss()</span><br><span class="line"></span><br><span class="line">isProductMiss(no)-&gt;returnProductInfo-&gt;e</span><br><span class="line"></span><br><span class="line">isProductMiss(yes)-&gt;addProductId-&gt;buildProductInfo-&gt;returnProductInfo-&gt;</span><br><span class="line"></span><br><span class="line">returnProductInfo-&gt;e</span><br></pre></td></tr></table></figure>
+
+<h4 id="后台构建产品的流程"><a href="#后台构建产品的流程" class="headerlink" title="后台构建产品的流程"></a>后台构建产品的流程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">st=&gt;start: Start</span><br><span class="line"></span><br><span class="line">getpid=&gt;operation: 从kafka队列获取产品id(各种事件来源)</span><br><span class="line"></span><br><span class="line">sepPid=&gt;operation: 将产品id按照分类分配给不同的topic</span><br><span class="line"></span><br><span class="line">forStorm=&gt;operation: storm从topic获取各个产品进行数据计算</span><br><span class="line"></span><br><span class="line">returnKafka=&gt;operation: storm将计算以后的信息返回kafka</span><br><span class="line"></span><br><span class="line">mergeInfo=&gt;operation: 整合各个品类的产品计算结果</span><br><span class="line"></span><br><span class="line">writeRedis=&gt;operation: 从kafka读取数据写入redis</span><br><span class="line"></span><br><span class="line">e=&gt;end: End</span><br><span class="line"></span><br><span class="line">st-&gt;getpid-&gt;sepPid-&gt;forStorm-&gt;returnKafka-&gt;mergeInfo-&gt;writeRedis-&gt;e</span><br></pre></td></tr></table></figure>
+
+<h3 id="详细步骤描述"><a href="#详细步骤描述" class="headerlink" title="详细步骤描述"></a>详细步骤描述</h3><ul>
+<li><p>定时的产品id添加: 定期进行全量的产品数据重建, 为了方便控制重建过程, 将要处理的产品id分批存入kafka中的<code>全量重建topic</code>, 也就是把批处理转化为流处理  </p>
+</li>
+<li><p>失效的产品id: 当某个产品不存在于redis中时, 也会重新放入kafka的另外的<code>miss产品topic</code>中进行重建  </p>
+</li>
+<li><p>当产品信息变更时候也会有对应的变更产品id入kafka的<code>变更产品topic</code>中进行重建  </p>
+</li>
+<li><p>处理产品时会从以上三个产品源topic中读取需要重建的产品, 根据分类发放到<code>不同的分类topic</code>, 然后交给storm进行产品信息计算, 这部分信息只有简单的产品ID和更新类型标识  </p>
+</li>
+<li><p>storm中构建失败的产品(数据库中不存在等原因), 会在redis中进行标记暂时不可用(有效期1天), 不可用的产品不会继续进行重建  </p>
+</li>
+<li><p>kafka多个topic中的消息含有需要构建的 产品id和产品需要构建的内容, 也就是说可以通过消息内容格式控制构建产品的某个部分的信息(例如: 只更新产品的基本信息, 只更新价格信息, 只更新评论数,好评数等信息)</p>
+</li>
+<li><p>storm从kafka中获取消息, 进行产品的信息计算, 计算完成的信息会重新返回kafka, 同样根据产品分类发放到不同的<code>分类topic</code>, 这部分信息含有全量的产品信息数据</p>
+</li>
+<li><p>整合各个分类topic的产品计算结果, 写入redis 和 es, 并回写部分mysql表</p>
+</li>
+</ul>
+<h3 id="产品数据更新"><a href="#产品数据更新" class="headerlink" title="产品数据更新"></a>产品数据更新</h3><p>通过<code>canal</code>监听mysql数据库的产品表数据变更, 将变更数据发给kafka中的<code>产品表日志topic</code>, 后续从kafka的<code>产品日志topic</code> ,根据数据内容解析出来产品更新事件, 封装对应的事件消息, 存入<code>产品事件topic</code>  </p>
+<p>通过读取<code>产品事件topic</code>中的数据, 根据品类和变更内容, 向产品池<code>变更产品topic中发送</code>发送产品池信息重构需求</p>
+<h3 id="为什么要分多个产品数据源topic"><a href="#为什么要分多个产品数据源topic" class="headerlink" title="为什么要分多个产品数据源topic"></a>为什么要分多个产品数据源topic</h3><ol>
+<li><p>为了优先级考虑, 不同来源的产品对时效性要求是不同的, 但是kafka本身又做不了带有优先级的消息处理</p>
+</li>
+<li><p>不同的分类的产品的处理逻辑不同, 更新频率和数据量也不同, 提前进行分流</p>
+</li>
+</ol>
+<h3 id="为什么不同分类的产品要用不同的写入topic"><a href="#为什么不同分类的产品要用不同的写入topic" class="headerlink" title="为什么不同分类的产品要用不同的写入topic"></a>为什么不同分类的产品要用不同的写入topic</h3><ol>
+<li>如果有其他业务需要使用其中某个分类的产品数据只需订阅对应的产品topic流就可以了, 免去了从全量产品流中过滤的步骤 </li>
+</ol>
+<h3 id="为什么最后还要把产品信息吐会回kafka"><a href="#为什么最后还要把产品信息吐会回kafka" class="headerlink" title="为什么最后还要把产品信息吐会回kafka"></a>为什么最后还要把产品信息吐会回kafka</h3><ol>
+<li><p>为了统一控制写入源并做优化, 使用统一的topic存储数据可以让整个程序只有一个数据写入的源, 所有写入操作统统使用写总线来处理, 解耦了功能, 提高了可靠性, 扩展性和可维护性</p>
+</li>
+<li><p>可以对数据写入做优化, 比如:幂等处理, 批压缩写入处理, ABA问题的重写</p>
+</li>
+<li><p>为了数据重用, 因为其他部分业务组也可能需要使用产品信息, 到时候直接订阅最终的产品信息表就可以了</p>
+</li>
+<li><p>为了方便扩展, 如果将来数据量大, 出现了写入瓶颈, 只要对这一部分承担写总线功能的写入程序进行扩展就可以了</p>
+</li>
+</ol>
+<h2 id="业务2-用户画像之用户信息完善系统"><a href="#业务2-用户画像之用户信息完善系统" class="headerlink" title="业务2. 用户画像之用户信息完善系统"></a>业务2. 用户画像之用户信息完善系统</h2><h3 id="需求-1"><a href="#需求-1" class="headerlink" title="需求"></a>需求</h3><p>这个项目是用户画像的子项目, 目的是将用户分布在不同BU的信息进行整合, 提供一份统一最完整的用户信息出来</p>
+<p>同时进行一些数据清洗和数据统计</p>
+<ul>
+<li>对分散在各个表中的会员信息进行梳理, 整合一份相对比较完善的用户信息</li>
+</ul>
+<p>例如: 用户1在基本信息中填写了一份信息 {“username”:”zhang”,”birthday”:”1990-01-01”,”gender”:”M”}   </p>
+<p>同时用户上传了一张个人身份证, 通过解析, 身份证含有的信息是{“birthday”:”1990-12-07”,”gender”:”F”}  </p>
+<p>也就是说用户自己填写的信息和身份证中的信息不一致, 相同的情况可能出现在多个业务部门, 因为业务拆分各部门相互独立, 同一个用户在多个业务部门可能拥有多份不太一致的用户信息  </p>
+<ul>
+<li>对进行过清洗的用户数据进行完善度的计算</li>
+</ul>
+<p>根据不同用户信息字段占有的不同分值权重, 使用完善后的用户信息, 对用户的完善度进行实时统计</p>
+<ul>
+<li>定期统计用户的完善度报表</li>
+</ul>
+<p>根据用户会员等级/地区/性别 等基本属性和 对应的销售vip客服人员进行用户信息的报表统计</p>
+<h3 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h3><p>主要相关的组件有 <code>mysql</code>,<code>kafka</code>,<code>storm</code>,<code>hbase</code>, <code>es</code></p>
+<h3 id="项目详情-1"><a href="#项目详情-1" class="headerlink" title="项目详情"></a>项目详情</h3><ol>
+<li>对接各数据源, 根据用户身份表示整合统一的用户信息</li>
+<li>统一存储用户信息</li>
+</ol>
+<blockquote>
+<p>ps:由于部分原因, 项目的实际开发时间很短, 只有200左右的工时, 也就是一个人工作一个月, 而且大部分时间都花在内部数据问题的处理上面, 所以项目未能做到最终非常完善的程度</p>
+</blockquote>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><ol>
+<li>定期的全量用户信息补全</li>
+<li>用户信息变更以后触发的补全</li>
+<li>用户资料补全以后进行完善度的计算</li>
+<li>定期根据用户属性对用户完善度进行报表统计</li>
+</ol>
+<p>具体的细节跟上面产品池相似, 都是利用<code>kafka</code>的数据流转, 将需要计算的消息流到<code>storm</code>, 经过计算以后再通过<code>kafka</code> 回馈给数据库和存储 </p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实回顾这两个项目</p>
+<p>在其中主要起作用的中间件主要是<code>kafka</code>和<code>storm</code></p>
+<p><code>kafka</code> 承担了系统几乎所有的数据流转需求, 做了一个数据总线的角色, 提供了<code>事件驱动</code>,<code>ETL</code>,<code>解耦</code>等功能   </p>
+<p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能  </p>
+<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的网关作用   </p>
+<p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力  </p>
+<p>希望以后可以多尝试, 并进行改进</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag"># 数据处理</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2018-06-06-balance/" rel="next" title="平衡和度">
+                  <i class="fa fa-chevron-left"></i> 平衡和度
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019-01-01-summary-md/" rel="prev" title="2019年记录">
+                  2019年记录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务场景分析"><span class="nav-number">2.</span> <span class="nav-text">业务场景分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#业务1-统一的产品池服务"><span class="nav-number">2.1.</span> <span class="nav-text">业务1. 统一的产品池服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求"><span class="nav-number">2.1.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件"><span class="nav-number">2.1.2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目详情"><span class="nav-number">2.1.3.</span> <span class="nav-text">项目详情</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整体结构"><span class="nav-number">2.1.4.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程图"><span class="nav-number">2.1.5.</span> <span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前台api获取产品的流程"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">前台api获取产品的流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后台构建产品的流程"><span class="nav-number">2.1.5.2.</span> <span class="nav-text">后台构建产品的流程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#详细步骤描述"><span class="nav-number">2.1.6.</span> <span class="nav-text">详细步骤描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#产品数据更新"><span class="nav-number">2.1.7.</span> <span class="nav-text">产品数据更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要分多个产品数据源topic"><span class="nav-number">2.1.8.</span> <span class="nav-text">为什么要分多个产品数据源topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么不同分类的产品要用不同的写入topic"><span class="nav-number">2.1.9.</span> <span class="nav-text">为什么不同分类的产品要用不同的写入topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么最后还要把产品信息吐会回kafka"><span class="nav-number">2.1.10.</span> <span class="nav-text">为什么最后还要把产品信息吐会回kafka</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#业务2-用户画像之用户信息完善系统"><span class="nav-number">2.2.</span> <span class="nav-text">业务2. 用户画像之用户信息完善系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目详情-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">项目详情</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程"><span class="nav-number">2.2.4.</span> <span class="nav-text">流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="哎呀是太阳嘛"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">哎呀是太阳嘛</p>
+  <div class="site-description" itemprop="description">君子生非异也, 善假于物也</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-no-wifi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">connect to Leriou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.1"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+    appKey: 'uRGeMnmfAq6h88QavSUfpS3q',
+    placeholder: "你不想说点什么吗 ???",
+    avatar: 'retro',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+    </div>
+</body>
+</html>

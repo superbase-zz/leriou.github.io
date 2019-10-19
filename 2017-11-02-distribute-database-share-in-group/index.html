@@ -50,19 +50,20 @@
   };
 </script>
 
-  <meta name="description" content="这个是写给组内成员的分布式知识简单分享什么是分布式什么是集群? 什么是分布式?集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   几个典型的分布式系统:|名称|类型|数据分布方式|故障转移|底层存储|节点类型｜|:-:|:-:|:-:|:-:|:-:|:-:">
+  <meta name="description" content="这个是写给组内成员的分布式知识简单分享什么是分布式什么是集群? 什么是分布式?集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题">
 <meta name="keywords" content="分布式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式服务组内分享">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-02-distribute-database-share-in-group&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="这个是写给组内成员的分布式知识简单分享什么是分布式什么是集群? 什么是分布式?集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   几个典型的分布式系统:|名称|类型|数据分布方式|故障转移|底层存储|节点类型｜|:-:|:-:|:-:|:-:|:-:|:-:">
+<meta property="og:description" content="这个是写给组内成员的分布式知识简单分享什么是分布式什么是集群? 什么是分布式?集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-02-distribute-database-share-in-group&#x2F;cap.jpg">
 <meta property="og:updated_time" content="2019-10-19T12:36:48.870Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-02-distribute-database-share-in-group&#x2F;cap.jpg">
-  <link rel="canonical" href="https://leriou.github.io/2017-11-02-distribute-database-share-in-group/">
+
+<link rel="canonical" href="https://leriou.github.io/2017-11-02-distribute-database-share-in-group/">
 
 
 <script id="page-configurations">
@@ -288,10 +289,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这个是写给组内成员的分布式知识简单分享</p><h1 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h1><p>什么是集群? 什么是分布式?<br>集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   </p><p>几个典型的分布式系统:</p><p>|名称|类型|数据分布方式|故障转移|底层存储|节点类型｜<br>|:-:|:-:|:-:|:-:|:-:|:-:｜<br>|kafka|消息系统|broker-&gt;partition|partition选举|file|对等节点|<br>|redis|缓存|instance-&gt;shard|sentinal选举|memeory|对等节点|<br>|es|搜索服务|node-&gt;shard|master选举和partition选举|file|对等节点|<br>|Tidb|数据库|TiDB+TiKV+PD|node选举|file|非对等节点|<br>|hdfs|文件系统|namenode+datanode|主从|file|非对等节点|</p><a id="more"></a>
+        <p>这个是写给组内成员的分布式知识简单分享</p><h1 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h1><p>什么是集群? 什么是分布式?<br>集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   </p><a id="more"></a>
 
-
-
+<p>几个典型的分布式系统:</p>
+<p>|名称|类型|数据分布方式|故障转移|底层存储|节点类型｜<br>|:-:|:-:|:-:|:-:|:-:|:-:｜<br>|kafka|消息系统|broker-&gt;partition|partition选举|file|对等节点|<br>|redis|缓存|instance-&gt;shard|sentinal选举|memeory|对等节点|<br>|es|搜索服务|node-&gt;shard|master选举和partition选举|file|对等节点|<br>|Tidb|数据库|TiDB+TiKV+PD|node选举|file|非对等节点|<br>|hdfs|文件系统|namenode+datanode|主从|file|非对等节点|</p>
 <h2 id="分布式要解决的常见问题"><a href="#分布式要解决的常见问题" class="headerlink" title="分布式要解决的常见问题"></a>分布式要解决的常见问题</h2><p>分布式要满足三个特性之二 CAP(C:一致性, P:分区容忍性, A:可用性)</p>
 <ul>
 <li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否同样的值。（等同于所有节点访问同一份最新的数据副本），换句话就是说，任何时刻，所用的应用程序都能访问得到相同的数据。</li>
@@ -300,7 +301,7 @@
 </ul>
 <p>CAP三个特性不可能同时满足, 只能同时满足两个特性<br>对大多数的分布式应用来说 CAP中的 P 是必不可少的<br>所以我们一般都会从CA中选取一个, 一般会选择CP 或者 AP   </p>
 <p>具体处理cap协议的方法如下图</p>
-<p><img src="cap.jpg" alt="cap"></p>
+<p><img alt="cap" data-src="cap.jpg"></p>
 <h1 id="如何解决分区容忍性"><a href="#如何解决分区容忍性" class="headerlink" title="如何解决分区容忍性"></a>如何解决分区容忍性</h1><p>解决分区容忍性问题首先就是对数据进行分区或者叫分片</p>
 <p>分区手段有很多, 但大多分两种, hash分区和线性分区<br>系统将数据分为逻辑上的几个区块, 每个区块可以在多个机器上进行自由的部署和移动<br>这样就做到了将数据和机器进行隔离, 可以以分片为单位在不同机器上进行数据的移动和备份<br>但是这样在使用数据的时候就需要从多个分片同时获取数据进行合并<br>如果因为某些原因， 导致某些分片所在的节点出现故障， 此时我们就认为出现了网络分区，<br>分区容忍性要求在此种状况下，系统依然能对外提供有效服务 </p>
 <h2 id="Gossip"><a href="#Gossip" class="headerlink" title="Gossip"></a>Gossip</h2><p>使用者: Redis<br>Gossip协议是节点将自己的数据通知给集群内所有节点的协议, 但是不能做到数据一致性<br>Gossip只能保证可用性和分区容忍性</p>
@@ -449,16 +450,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -480,7 +478,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

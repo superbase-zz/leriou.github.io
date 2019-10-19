@@ -50,17 +50,18 @@
   };
 </script>
 
-  <meta name="description" content="redis的AOF和RDB持久化Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式RDB持久化特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态例如:1234&amp;#123;	&quot;age&quot;:1,	&quot;name&quot;:&quot;zhangsan&quot;&amp;#125;这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据">
+  <meta name="description" content="redis的AOF和RDB持久化Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式RDB持久化特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态例如:1234&amp;#123;	&quot;age&quot;:1,	&quot;name&quot;:&quot;zhangsan&quot;&amp;#125;">
 <meta name="keywords" content="RDB,AOF">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis的持久化">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-01-29-redis-persistence&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="redis的AOF和RDB持久化Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式RDB持久化特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态例如:1234&amp;#123;	&quot;age&quot;:1,	&quot;name&quot;:&quot;zhangsan&quot;&amp;#125;这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据">
+<meta property="og:description" content="redis的AOF和RDB持久化Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式RDB持久化特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态例如:1234&amp;#123;	&quot;age&quot;:1,	&quot;name&quot;:&quot;zhangsan&quot;&amp;#125;">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2019-10-19T12:36:48.869Z">
 <meta name="twitter:card" content="summary">
-  <link rel="canonical" href="https://leriou.github.io/2017-01-29-redis-persistence/">
+
+<link rel="canonical" href="https://leriou.github.io/2017-01-29-redis-persistence/">
 
 
 <script id="page-configurations">
@@ -286,11 +287,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="redis的AOF和RDB持久化"><a href="#redis的AOF和RDB持久化" class="headerlink" title="redis的AOF和RDB持久化"></a>redis的AOF和RDB持久化</h1><p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式</p><h2 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h2><p>特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态</p><p>例如:</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"age"</span>:<span class="number">1</span>,</span><br><span class="line">	<span class="attr">"name"</span>:<span class="string">"zhangsan"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据</p><a id="more"></a>
+        <h1 id="redis的AOF和RDB持久化"><a href="#redis的AOF和RDB持久化" class="headerlink" title="redis的AOF和RDB持久化"></a>redis的AOF和RDB持久化</h1><p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式</p><h2 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h2><p>特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态</p><p>例如:</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"age"</span>:<span class="number">1</span>,</span><br><span class="line">	<span class="attr">"name"</span>:<span class="string">"zhangsan"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><a id="more"></a>
 
 
 
-
+<p>这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据</p>
 <p>拥有持久化的能力使得redis在服务重启时能保留大部分的内存数据</p>
 <p>RDB文件在redis主从同步时候会被发送给从节点,从节点使用RDB进行全量的数据恢复</p>
 <h3 id="主动触发保存"><a href="#主动触发保存" class="headerlink" title="主动触发保存"></a>主动触发保存</h3><ol>
@@ -415,16 +416,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -446,7 +444,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

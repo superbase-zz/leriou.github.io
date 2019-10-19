@@ -50,19 +50,20 @@
   };
 </script>
 
-  <meta name="description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务需求 统一产品数据池 由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用">
+  <meta name="description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务">
 <meta name="keywords" content="数据处理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="初步探索实时数据处理系统">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务需求 统一产品数据池 由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用">
+<meta property="og:description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;productpool.jpg">
 <meta property="og:updated_time" content="2019-10-19T12:36:48.884Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;productpool.jpg">
-  <link rel="canonical" href="https://leriou.github.io/2018-09-30-real-time-proccess/">
+
+<link rel="canonical" href="https://leriou.github.io/2018-09-30-real-time-proccess/">
 
 
 <script id="page-configurations">
@@ -277,14 +278,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p><p>借这个机会, 对我们用到的相关技术部分进行了整理</p><h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用</p><p>以及其中遇到的一些坑</p><h2 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h2><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p><p>借这个机会, 对我们用到的相关技术部分进行了整理</p><h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用</p><p>以及其中遇到的一些坑</p><h2 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h2><a id="more"></a>
+
+
+
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
 <li>统一产品数据池</li>
-</ul><p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL  </p><a id="more"></a>
-
-
-
-
-
+</ul>
+<p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL  </p>
 <p>我们组的业务由于含有统一的列表页和内容服务, 所有分类产品的相关信息都需要进行聚合展示, 同时考虑到产品数据的热点特性  </p>
 <p>我们需要一个统一的产品池功能来提供最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
 <p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可  </p>
@@ -295,7 +296,7 @@
 <li>对接各BU, 整合各BU的产品信息到统一的产品容器内(选择redis/es作为主要的对外存储容器)</li>
 <li>提供统一的产品信息获取接口</li>
 </ol>
-<h3 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h3><p><img src="productpool.jpg" alt="产品池"></p>
+<h3 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h3><p><img alt="产品池" data-src="productpool.jpg"></p>
 <p>其中各组件的主要功能:</p>
 <p><code>Redis</code>: 存储k-v结构的产品信息, 提供前台api接口的产品基础信息查询数据</p>
 <p><code>Elasticsearch</code>: 提供后台和部分前台对产品的搜索功能</p>
@@ -485,16 +486,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -516,7 +514,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

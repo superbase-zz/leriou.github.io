@@ -59,7 +59,8 @@
 <meta property="og:description" content="君子生非异也, 善假于物也">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
-  <link rel="canonical" href="https://leriou.github.io/page/2/">
+
+<link rel="canonical" href="https://leriou.github.io/page/2/">
 
 
 <script id="page-configurations">
@@ -300,9 +301,7 @@
 <li><input checked disabled type="checkbox"> 少年锦衣卫第二季</li>
 <li><input checked disabled type="checkbox"> 画江湖之换世门生</li>
 <li><input disabled type="checkbox"> 狐妖小狐娘</li>
-</ul><p>Plan:</p><ul>
-<li><input disabled type="checkbox"> 机器学习相关基础知识的学习</li>
-</ul><h3 id="February"><a href="#February" class="headerlink" title="February"></a>February</h3>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018-01-01-comic-book-2018/#more" rel="contents">
@@ -595,7 +594,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>这个是写给组内成员的分布式知识简单分享</p><h1 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h1><p>什么是集群? 什么是分布式?<br>集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   </p><p>几个典型的分布式系统:</p><p>|名称|类型|数据分布方式|故障转移|底层存储|节点类型｜<br>|:-:|:-:|:-:|:-:|:-:|:-:｜<br>|kafka|消息系统|broker-&gt;partition|partition选举|file|对等节点|<br>|redis|缓存|instance-&gt;shard|sentinal选举|memeory|对等节点|<br>|es|搜索服务|node-&gt;shard|master选举和partition选举|file|对等节点|<br>|Tidb|数据库|TiDB+TiKV+PD|node选举|file|非对等节点|<br>|hdfs|文件系统|namenode+datanode|主从|file|非对等节点|</p>
+          <p>这个是写给组内成员的分布式知识简单分享</p><h1 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h1><p>什么是集群? 什么是分布式?<br>集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   </p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-11-02-distribute-database-share-in-group/#more" rel="contents">
@@ -692,7 +691,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p><p>在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p><p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p><p>后来随着深入使用才发现kafka其实不是纯粹的消息队列, 而是一种分布式消息系统(基于scala开发)</p>
+          <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p><p>在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p><p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-11-01-kafka-share-in-group/#more" rel="contents">
@@ -886,7 +885,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h1><p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段</p><p>但是有一个缺点, 我们一旦使用了Redis的Cluster集群, 就没有办法对整个集群使用Pipeline功能</p><p><strong>原因</strong></p><p>因为Redis的Pipeline的原理是在一个连接中持续的进行命令发送, 需要持有一个稳定的连接</p><p>但是一旦使用了集群, 我们每个连接只能连接一个Node节点, 可是Pipeline中发送的数据键的数据落点未必会落到我们当前连接的集群节点上去</p>
+          <h1 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h1><p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段</p><p>但是有一个缺点, 我们一旦使用了Redis的Cluster集群, 就没有办法对整个集群使用Pipeline功能</p><p><strong>原因</strong></p><p>因为Redis的Pipeline的原理是在一个连接中持续的进行命令发送, 需要持有一个稳定的连接</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-10-15-use-pipeline-in-redis/#more" rel="contents">
@@ -983,7 +982,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>我们在使用Redis集群的使用过程中发现了很多问题</p><p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p><h1 id="键的问题"><a href="#键的问题" class="headerlink" title="键的问题"></a>键的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p><p><code>CROSSSLOT Keys in request don&#39;t hash to the same slot</code></p>
+          <p>我们在使用Redis集群的使用过程中发现了很多问题</p><p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p><h1 id="键的问题"><a href="#键的问题" class="headerlink" title="键的问题"></a>键的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-10-03-redis-slot-prolem/#more" rel="contents">
@@ -1080,7 +1079,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>说起来惭愧,最近才有幸拜读中国古代小说的巅峰之作&lt;红楼梦&gt;</p><p>从很早之前打算好好看一下了, 遗憾的是一直以来都没有时间</p><p>最近才抽出一部分时间将曹雪芹所写的前八十回看完</p><p>之所以只看前八十回</p><p>是因为我个人并不认同后四十回的高鹗/程伟元续写的版本</p><p>所以只说前八十回的内容</p><h1 id="关于全书"><a href="#关于全书" class="headerlink" title="关于全书"></a>关于全书</h1><p>&lt;红楼梦&gt;原著全本因为各种原因,现在已经寻不见了 </p>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>说起来惭愧,最近才有幸拜读中国古代小说的巅峰之作&lt;红楼梦&gt;</p><p>从很早之前打算好好看一下了, 遗憾的是一直以来都没有时间</p><p>最近才抽出一部分时间将曹雪芹所写的前八十回看完</p><p>之所以只看前八十回</p><p>是因为我个人并不认同后四十回的高鹗/程伟元续写的版本</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-09-10-reading-hongloumeng/#more" rel="contents">
@@ -1177,13 +1176,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h2 id="苹果的市场分析"><a href="#苹果的市场分析" class="headerlink" title="苹果的市场分析"></a>苹果的市场分析</h2><p>苹果公司对市场的态度跟很多其他公司不太一样, 向来不重视市场份额, 只重视利润</p><p>这看起来更像一个正常公司应有的做法, 但是对小公司来说这种做法却不太合适</p><h2 id="苹果的用户定位和市场分析"><a href="#苹果的用户定位和市场分析" class="headerlink" title="苹果的用户定位和市场分析"></a>苹果的用户定位和市场分析</h2><p>苹果的用户群体选择很明显,面向高端用户和专业用户, 这样的选择有利有弊</p><p>好处: </p><ol>
-<li>这部分用户普遍对价格不是非常敏感, 产品定价可以保证产品拥有足够高的利润率, 给产品更大的调整空间</li>
-<li>市场规模小但是潜力大, 后劲足, </li>
-<li>用户数量有限但平均质量较高, 能有效防止产品被用户压力倒逼违背产品初衷</li>
-<li>苹果通过定价策略自动筛选了一部分用户群体, 这部分群体共性较多,人群特征明显, 便于进行后续的市场营销</li>
-<li>对品牌形象和后续业务拓展都是极为有利, 高端品牌出中低端产品和低端品牌出高端产品的难度不是一个量级</li>
-</ol>
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h2 id="苹果的市场分析"><a href="#苹果的市场分析" class="headerlink" title="苹果的市场分析"></a>苹果的市场分析</h2><p>苹果公司对市场的态度跟很多其他公司不太一样, 向来不重视市场份额, 只重视利润</p><p>这看起来更像一个正常公司应有的做法, 但是对小公司来说这种做法却不太合适</p><h2 id="苹果的用户定位和市场分析"><a href="#苹果的用户定位和市场分析" class="headerlink" title="苹果的用户定位和市场分析"></a>苹果的用户定位和市场分析</h2><p>苹果的用户群体选择很明显,面向高端用户和专业用户, 这样的选择有利有弊</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-09-08-my-opinion-for-apple/#more" rel="contents">
@@ -1269,7 +1262,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>以后啊, 要向极简的生活方式靠拢</p><p>之前看过一个日本的书籍就是有关极简生活的</p><p>当时还有点不以为然, 感觉都是在讲废话, 现在慢慢的感觉. 如果不把生活简单化, 精力是不够用的</p><h1 id="有关审美观"><a href="#有关审美观" class="headerlink" title="有关审美观"></a>有关审美观</h1><p>我不知道怎么去形容我自己的审美观</p><p>可能有一个英文单词比较贴切<code>clear</code></p><p>其中包含的意思就有: 清晰, 干净.</p><p>我就非常喜欢那种清晰, 干净的事物</p>
+          <p>以后啊, 要向极简的生活方式靠拢</p><p>之前看过一个日本的书籍就是有关极简生活的</p><p>当时还有点不以为然, 感觉都是在讲废话, 现在慢慢的感觉. 如果不把生活简单化, 精力是不够用的</p><h1 id="有关审美观"><a href="#有关审美观" class="headerlink" title="有关审美观"></a>有关审美观</h1><p>我不知道怎么去形容我自己的审美观</p><p>可能有一个英文单词比较贴切<code>clear</code></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-08-12-daily-life-style/#more" rel="contents">
@@ -1463,7 +1456,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>我们有时候可能会遇到这样的情况</p><p>公司部署了一个gitlab服务器</p><p>我们自己也有在github上面使用仓库</p><p>但是这两个服务器上面的账号是不一样的</p><p>我们需要在公司的项目中使用公司的git账号,私人项目使用私人的git账号</p><p>这时候就需要在同一台电脑上面使用多个git账号</p><h2 id="生成两个ssh-key"><a href="#生成两个ssh-key" class="headerlink" title="生成两个ssh-key"></a>生成两个ssh-key</h2><p>现在大家普遍使用ssh-key来作为授权验证的工具.</p>
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>我们有时候可能会遇到这样的情况</p><p>公司部署了一个gitlab服务器</p><p>我们自己也有在github上面使用仓库</p><p>但是这两个服务器上面的账号是不一样的</p><p>我们需要在公司的项目中使用公司的git账号,私人项目使用私人的git账号</p><p>这时候就需要在同一台电脑上面使用多个git账号</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-06-01-multi-git-user-config/#more" rel="contents">
@@ -1556,16 +1549,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -1587,7 +1577,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

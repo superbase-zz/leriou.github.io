@@ -62,7 +62,8 @@
 <meta property="og:updated_time" content="2019-10-19T12:36:48.919Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2016-09-27-simple-raytracing&#x2F;2010032819542028.png">
-  <link rel="canonical" href="https://leriou.github.io/2016-09-27-simple-raytracing/">
+
+<link rel="canonical" href="https://leriou.github.io/2016-09-27-simple-raytracing/">
 
 
 <script id="page-configurations">
@@ -294,7 +295,7 @@
 <!--more-->
 <h1 id="一个简单的光线追踪的例子"><a href="#一个简单的光线追踪的例子" class="headerlink" title="一个简单的光线追踪的例子"></a>一个简单的光线追踪的例子</h1><p>点击下方的按钮就可以渲染出一张图片哦,纯渲染出的哦(渲染很消耗性能可能会有少许的等待时间)</p>
 <h2 id="在线测试"><a href="#在线测试" class="headerlink" title="在线测试"></a>在线测试</h2><p>视角坐标:</p>
-<p>X:<input type="number" min="-100" max="100" step="5" value="0" id="pos_x" >&nbsp;&nbsp;Y:<input type="number" min="-100" max="100" step="5" value="5" id="pos_y" >&nbsp;&nbsp;Z:<input type="number" min="-100" max="100" step="5" value="15" id="pos_z" >&nbsp;&nbsp;反射次数:&nbsp;&nbsp;<input type="number" min="0" max="30" step="1" value="5" id="reflect_times">&nbsp;&nbsp;<button onclick="javascript:render_pic();" class="btn btn-info">RENDER</button></p>
+<p>X:<input type="number" min="-100" max="100" step="5" value="0" id="pos_x">&nbsp;&nbsp;Y:<input type="number" min="-100" max="100" step="5" value="5" id="pos_y">&nbsp;&nbsp;Z:<input type="number" min="-100" max="100" step="5" value="15" id="pos_z">&nbsp;&nbsp;反射次数:&nbsp;&nbsp;<input type="number" min="0" max="30" step="1" value="5" id="reflect_times">&nbsp;&nbsp;<button onclick="javascript:render_pic();" class="btn btn-info">RENDER</button></p>
 <div style="text-align: center;">
     <canvas id="renderCanvas" width="512" height="512" style="display:none"></canvas>
 </div>
@@ -318,7 +319,7 @@
 <li>容易出现图形走样现象,因为透过两个相邻像素的光线到物体表面的距离会被放大,两像素之间的细节无法表现</li>
 </ol>
 <h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>光线追踪的基本原理比较简单,如下图</p>
-<p><img src="2010032819542028.png" alt="原理图"></p>
+<p><img alt="原理图" data-src="2010032819542028.png"></p>
 <blockquote>
 <p>从人眼的位置往屏幕上的每个像素发射光线,如果遇到具有反射性质的表面,继续追踪反射光线,最终根据光线返回的颜色去给像素进行着色</p>
 </blockquote>
@@ -740,16 +741,13 @@ function render_pic(){
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -771,7 +769,7 @@ function render_pic(){
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

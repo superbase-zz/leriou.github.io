@@ -50,19 +50,20 @@
   };
 </script>
 
-  <meta name="description" content="redis基础数据结构redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象基础数据结构redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此sds简单动态字符串对应的上层对象是 字符串">
+  <meta name="description" content="redis基础数据结构redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象基础数据结构redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此">
 <meta name="keywords" content="redis,数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis的基础数据结构">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-01-09-redis-data-structure&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="redis基础数据结构redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象基础数据结构redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此sds简单动态字符串对应的上层对象是 字符串">
+<meta property="og:description" content="redis基础数据结构redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象基础数据结构redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-01-09-redis-data-structure&#x2F;IMG_0256.jpeg">
 <meta property="og:updated_time" content="2019-10-19T12:36:48.894Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-01-09-redis-data-structure&#x2F;IMG_0256.jpeg">
-  <link rel="canonical" href="https://leriou.github.io/2017-01-09-redis-data-structure/">
+
+<link rel="canonical" href="https://leriou.github.io/2017-01-09-redis-data-structure/">
 
 
 <script id="page-configurations">
@@ -288,9 +289,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="redis基础数据结构"><a href="#redis基础数据结构" class="headerlink" title="redis基础数据结构"></a>redis基础数据结构</h1><p>redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象</p><h2 id="基础数据结构"><a href="#基础数据结构" class="headerlink" title="基础数据结构"></a>基础数据结构</h2><p>redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此</p><h3 id="sds简单动态字符串"><a href="#sds简单动态字符串" class="headerlink" title="sds简单动态字符串"></a>sds简单动态字符串</h3><p><em>对应的上层对象是</em> <code>字符串</code></p><a id="more"></a>
+        <h1 id="redis基础数据结构"><a href="#redis基础数据结构" class="headerlink" title="redis基础数据结构"></a>redis基础数据结构</h1><p>redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象</p><h2 id="基础数据结构"><a href="#基础数据结构" class="headerlink" title="基础数据结构"></a>基础数据结构</h2><p>redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此</p><a id="more"></a>
 
-
+<h3 id="sds简单动态字符串"><a href="#sds简单动态字符串" class="headerlink" title="sds简单动态字符串"></a>sds简单动态字符串</h3><p><em>对应的上层对象是</em> <code>字符串</code></p>
 <h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><p>具体的数据结构如下:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">sdstr</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span>   len     <span class="comment">// 字符串分配的字节</span></span><br><span class="line">	<span class="keyword">int</span>   <span class="built_in">free</span>    <span class="comment">// 未使用的字节数</span></span><br><span class="line">	<span class="keyword">char</span>  buff[]  <span class="comment">// 存储字符串的数组</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>sds是字符串对象的底层实现之一</p>
@@ -366,7 +367,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    zskiplist: &#123;</span><br><span class="line">        header: &#123;</span><br><span class="line">            obj: <span class="string">"aa"</span>,</span><br><span class="line">            score: <span class="number">45</span>,</span><br><span class="line">            backforward: null,</span><br><span class="line">            zskiplevel: [&#123;</span><br><span class="line">                forward: null,</span><br><span class="line">                span: <span class="number">9</span></span><br><span class="line">            &#125;,&#123;</span><br><span class="line">                forward: *p,</span><br><span class="line">                span: <span class="number">8</span></span><br><span class="line">            &#125;]</span><br><span class="line">        &#125;,</span><br><span class="line">        tail: &#123;</span><br><span class="line">            obj: <span class="string">"aa"</span>,</span><br><span class="line">            score: <span class="number">45</span>,</span><br><span class="line">            backforward: null,</span><br><span class="line">            zskiplevel: [&#123;</span><br><span class="line">                forward: null,</span><br><span class="line">                span: <span class="number">9</span></span><br><span class="line">            &#125;]</span><br><span class="line">        &#125;,</span><br><span class="line">        length: <span class="number">100</span>,</span><br><span class="line">        level: <span class="number">32</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>跳跃表图示:</p>
-<p><img src="IMG_0256.jpeg" alt="跳跃表"></p>
+<p><img alt="跳跃表" data-src="IMG_0256.jpeg"></p>
 <p>跳跃表是有序集合的底层实现之一</p>
 <p>跳跃表中的头结点不计算在length长度之内,跳跃表的节点排序按照分值从小到大排序</p>
 <p>每次创建新节点的时候,redis会根据幂次定律随机生成一个1-32的层数作为level数组的大小</p>
@@ -535,16 +536,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -566,7 +564,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

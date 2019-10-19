@@ -50,13 +50,13 @@
   };
 </script>
 
-  <meta name="description" content="kafka分享听闻kafka已经是很早之前的事情了在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务后来随着深入使用才发现kafka其实不是纯粹的消息队列, 而是一种分布式消息系统(基于scala开发)">
+  <meta name="description" content="kafka分享听闻kafka已经是很早之前的事情了在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务">
 <meta name="keywords" content="Kafka">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kafka使用经验总结">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="kafka分享听闻kafka已经是很早之前的事情了在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务后来随着深入使用才发现kafka其实不是纯粹的消息队列, 而是一种分布式消息系统(基于scala开发)">
+<meta property="og:description" content="kafka分享听闻kafka已经是很早之前的事情了在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka1.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka_zk.jpeg">
@@ -66,7 +66,8 @@
 <meta property="og:updated_time" content="2019-10-19T12:36:48.924Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka1.png">
-  <link rel="canonical" href="https://leriou.github.io/2017-11-01-kafka-share-in-group/">
+
+<link rel="canonical" href="https://leriou.github.io/2017-11-01-kafka-share-in-group/">
 
 
 <script id="page-configurations">
@@ -292,10 +293,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p><p>在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p><p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p><p>后来随着深入使用才发现kafka其实不是纯粹的消息队列, 而是一种分布式消息系统(基于scala开发)</p><a id="more"></a>
+        <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p><p>在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p><p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p><a id="more"></a>
 
 
-
+<p>后来随着深入使用才发现kafka其实不是纯粹的消息队列, 而是一种分布式消息系统(基于scala开发)</p>
 <h2 id="消息传递在现代业务中的地位"><a href="#消息传递在现代业务中的地位" class="headerlink" title="消息传递在现代业务中的地位"></a>消息传递在现代业务中的地位</h2><p><strong>面向对象的程序 = 对象 + 消息传递</strong></p>
 <p>消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
 <p>我们通常会把许多实时性要求不那么高的任务处理通过消息系统进行解耦,以平衡数据处理的性能和功能</p>
@@ -347,7 +348,7 @@
 <p>由于partition的限制, 应对高并发场景, 如果需要加快一个topic的处理速度只能通过增加消费者的方式, 这个增加过程又不像其他内存式的消息队列来的方便</p>
 <p>相比于很多传统消息队列服务, kafka也没有消息优先级的机制</p>
 <p>kafka的竞争对手Apache Pulsar在后两点比kafka要更加优秀, 且在很多基础功能上提供了更多的选择性</p>
-<h2 id="kafka大概工作流程示意图"><a href="#kafka大概工作流程示意图" class="headerlink" title="kafka大概工作流程示意图"></a>kafka大概工作流程示意图</h2><p><img src="kafka1.png" alt="大概示意图"></p>
+<h2 id="kafka大概工作流程示意图"><a href="#kafka大概工作流程示意图" class="headerlink" title="kafka大概工作流程示意图"></a>kafka大概工作流程示意图</h2><p><img alt="大概示意图" data-src="kafka1.png"></p>
 <p>kafka中的一个完整的消息流程如上图所示</p>
 <p>Producer将消息发给broker中的topic,存储到topic下的某一个partition</p>
 <p>Consumer从partition中消费数据,将该消费者在该topic中的数据偏移标记为最新</p>
@@ -378,15 +379,15 @@
 <p>ps: kafka新版本中已经允许客户端提交offset到kafka的topic中</p>
 </blockquote>
 <p>具体保存消息的节点路径如下图: </p>
-<p><img src="kafka_zk.jpeg" alt="kafka信息在zk中的保存方式1"></p>
-<p><img src="kafka_zk2.jpeg" alt="kafka信息在zk中的保存方式2"></p>
+<p><img alt="kafka信息在zk中的保存方式1" data-src="kafka_zk.jpeg"></p>
+<p><img alt="kafka信息在zk中的保存方式2" data-src="kafka_zk2.jpeg"></p>
 <h2 id="kafka数据存储"><a href="#kafka数据存储" class="headerlink" title="kafka数据存储"></a>kafka数据存储</h2><p>kafka的数据存储大致分为三层, broker, partition, segment</p>
 <p>kafka配置文件中的 server.properties中的以下属性指明了kafka的数据存储位置</p>
 <p><code>log.dirs=/usr/local/var/lib/kafka-logs</code></p>
 <p>具体如下图:</p>
-<p><img src="kafka_store.jpeg" alt="kafka存储"></p>
+<p><img alt="kafka存储" data-src="kafka_store.jpeg"></p>
 <p>一个broker中虽然可以随处多个topic数据, 但是真正的存储还是要落实到 segment上<br>topic和partition只能决定存放segment的上层文件夹的名字</p>
-<h3 id="segment内的存储细节"><a href="#segment内的存储细节" class="headerlink" title="segment内的存储细节"></a>segment内的存储细节</h3><p><img src="kafka_segment.jpeg" alt="kafka文件"></p>
+<h3 id="segment内的存储细节"><a href="#segment内的存储细节" class="headerlink" title="segment内的存储细节"></a>segment内的存储细节</h3><p><img alt="kafka文件" data-src="kafka_segment.jpeg"></p>
 <p>一个topic的一个partition拥有多个segment file, 每个segment file拥有多个部分 </p>
 <p>一般由以下四个类型文件组成</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xxx.index  						//segment的索引文件</span><br><span class="line">xxx.log    						//segment的数据文件</span><br><span class="line">xxx.timeindex            		//segment的时间索引</span><br><span class="line">leader-epoch-checkpoint   		//检查点文件</span><br></pre></td></tr></table></figure>
@@ -569,16 +570,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -600,7 +598,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

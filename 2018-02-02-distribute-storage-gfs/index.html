@@ -50,20 +50,21 @@
   };
 </script>
 
-  <meta name="description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable,Megastore等上层数据库应用Google于2003年放出了GFS的设计论文论文地址 The Google File System">
+  <meta name="description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable,Megastore等上层数据库应用">
 <meta name="keywords" content="GFS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式文件系统-GFS学习总结">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable,Megastore等上层数据库应用Google于2003年放出了GFS的设计论文论文地址 The Google File System">
+<meta property="og:description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable,Megastore等上层数据库应用">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334712344_6225.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334931385_9113.jpg">
 <meta property="og:updated_time" content="2019-10-19T12:36:48.931Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334712344_6225.jpg">
-  <link rel="canonical" href="https://leriou.github.io/2018-02-02-distribute-storage-gfs/">
+
+<link rel="canonical" href="https://leriou.github.io/2018-02-02-distribute-storage-gfs/">
 
 
 <script id="page-configurations">
@@ -289,18 +290,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>GFS是谷歌的底层文件系统</p><h2 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h2><p>GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务</p><p>GFS服务的是上层的Bigtable,Megastore等上层数据库应用</p><p>Google于2003年放出了GFS的设计论文</p><p>论文地址 <a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p><a id="more"></a>
+        <p>GFS是谷歌的底层文件系统</p><h2 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h2><p>GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务</p><p>GFS服务的是上层的Bigtable,Megastore等上层数据库应用</p><a id="more"></a>
 
 
-
-
+<p>Google于2003年放出了GFS的设计论文</p>
+<p>论文地址 <a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
 <h2 id="GFS的特点"><a href="#GFS的特点" class="headerlink" title="GFS的特点"></a>GFS的特点</h2><ol>
 <li>仅支持文件追加操作 (适用于谷歌的爬虫数据存储需求)</li>
 <li>文件块大小为64M (优点很多, 减少元数据量, 减低master服务器压力, 缺点也有)</li>
 <li>采用中心化的master节点管理元数据 (可能造成单点故障和性能存储瓶颈)</li>
 </ol>
 <h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><p>GFS的核心服务分为三个部分</p>
-<p><img src="1334712344_6225.jpg" alt="GFS核心"></p>
+<p><img alt="GFS核心" data-src="1334712344_6225.jpg"></p>
 <p>GFS采用中心化的管理方式,Client作为应用使用方,Master作为ChunkServer的管理者,ChunkServer来负责数据的存储,client与master进行交互获取控制信息,然后与对应的ChunkServer交互获取具体的数据</p>
 <ol>
 <li><p>Client</p>
@@ -373,7 +374,7 @@
 <li>ChunkServer在发送数据之前会检查block的32的校验和,如果不一致就会上报Master,Master会从其他副本进行复制,并删除出错的副本数据</li>
 </ol>
 <h2 id="数据的写"><a href="#数据的写" class="headerlink" title="数据的写"></a>数据的写</h2><p>GFS中写入数据的流程如下:</p>
-<p><img src="1334931385_9113.jpg" alt="GFS写"></p>
+<p><img alt="GFS写" data-src="1334931385_9113.jpg"></p>
 <p>master使用租约授权一个chunk副本为primary副本,执行client的写操作</p>
 <ol>
 <li>client需要更新一个数据块，询问master谁拥有该数据块的租约（谁是primary）；</li>
@@ -493,16 +494,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -524,7 +522,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

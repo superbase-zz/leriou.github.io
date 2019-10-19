@@ -63,7 +63,8 @@
 <meta property="og:updated_time" content="2019-10-19T12:36:48.882Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-10-29-redis-share-in-group&#x2F;redis.png">
-  <link rel="canonical" href="https://leriou.github.io/2017-10-29-redis-share-in-group/">
+
+<link rel="canonical" href="https://leriou.github.io/2017-10-29-redis-share-in-group/">
 
 
 <script id="page-configurations">
@@ -360,7 +361,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <pre><code>redis的内部排序主要对set,sort set,list这三个数据结构起作用,旨在让用户可以用过自定义的方式对内部数据进行排序</code></pre></li>
 </ol>
 <h2 id="redis-Representation"><a href="#redis-Representation" class="headerlink" title="redis Representation"></a>redis Representation</h2><p>这里做了一个简单的redis的脑图, 着重描述了一下内部的基本数据结构的关系</p>
-<p><img src="redis.png" alt="redis"></p>
+<p><img alt="redis" data-src="redis.png"></p>
 <p>百度脑图地址:<br><a href="http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037" target="_blank" rel="noopener">http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037</a></p>
 <h2 id="应用实例"><a href="#应用实例" class="headerlink" title="应用实例"></a>应用实例</h2><p>redis的常见高可用部署方案</p>
 <ul>
@@ -396,7 +397,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 
 <p>其他一些不建议的数据对象使用方法:</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1.</span> 使用str存储json对象</span><br><span class="line"></span><br><span class="line">	如: a:&#123;<span class="string">"name"</span>:<span class="string">"xiaohua"</span>,<span class="string">"age"</span>:<span class="number">8</span>&#125;,像这种可以使用hash来存储</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 过度使用有序集合</span><br><span class="line"></span><br><span class="line">	集合和有序集合和list在部分特性上面比较类似,很多人时候问题都可以使用list替代而不必要使用集合,因为有序集合底层使用的跳跃表,性能方面比简单的列表稍微差点,但是集合和有序集合都可以方便的使用集合操作,交/并/差集等</span><br></pre></td></tr></table></figure>
-<h3 id="redis中的数据库键空间"><a href="#redis中的数据库键空间" class="headerlink" title="redis中的数据库键空间"></a>redis中的数据库键空间</h3><p><img src="IMG_0255.jpeg" alt="数据库"></p>
+<h3 id="redis中的数据库键空间"><a href="#redis中的数据库键空间" class="headerlink" title="redis中的数据库键空间"></a>redis中的数据库键空间</h3><p><img alt="数据库" data-src="IMG_0255.jpeg"></p>
 <h2 id="数据对象和底层实现的数据结构对应关系"><a href="#数据对象和底层实现的数据结构对应关系" class="headerlink" title="数据对象和底层实现的数据结构对应关系"></a>数据对象和底层实现的数据结构对应关系</h2><p>数据对象的实现之所以有这种情况,其实是适应2个不同场景, 省内存和常规使用</p>
 <table>
 <thead>
@@ -570,16 +571,13 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/leriou" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;leriou" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://plus.google.com/yange1876" title="Google &amp;rarr; https:&#x2F;&#x2F;plus.google.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/yange1876" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;yange1876" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+        <a href="https://weibo.com/1985364641" title="Weibo &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;1985364641" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
       </span>
   </div>
 
@@ -601,7 +599,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2015 – 
   <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-no-wifi"></i>

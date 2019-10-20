@@ -1338,7 +1338,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="游戏程序的设计和运行流程"><a href="#游戏程序的设计和运行流程" class="headerlink" title="游戏程序的设计和运行流程"></a>游戏程序的设计和运行流程</h2><p>这篇文章是写给编程初学者和完全不懂编程的小白的, 目的是希望能通过这篇文章, 让大家知道游戏中的画面是怎么显示出来的和一般的游戏的运行方式</p><h2 id="游戏地址"><a href="#游戏地址" class="headerlink" title="游戏地址"></a>游戏地址</h2><p>先上游戏地址: <a href="https://github.com/oldj/html5-tower-defense" target="_blank" rel="noopener">https://github.com/oldj/html5-tower-defense</a></p>
+          <h1 id="E"><a href="#E" class="headerlink" title="E"></a>E</h1><p>这篇文章是写给编程初学者和完全不懂编程的小白的, 目的是希望能通过这篇文章, 让大家知道一下子大概是怎么工作的，游戏中的画面是怎么显示出来的和游戏程序的大概结构</p><p>这个游戏是我在准备毕业设计时候遇到的，当时好奇就花了点时间研究了一下</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2015-05-05-game-design/#more" rel="contents">
@@ -1677,6 +1677,19 @@ window.addEventListener('pjax:success', () => {
 
 
 
+<script pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
     <div id="pjax">

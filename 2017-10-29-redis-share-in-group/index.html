@@ -61,7 +61,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-10-29-redis-share-in-group&#x2F;redis.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-10-29-redis-share-in-group&#x2F;IMG_0255.jpeg">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.882Z">
+<meta property="og:updated_time" content="2019-10-20T12:41:11.981Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-10-29-redis-share-in-group&#x2F;redis.png">
 
@@ -463,13 +463,31 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>这个处理方案有个缺点, 要求数据的处理操作是<code>幂等</code>的,也就是无论操作多少次,操作结果都是一样的,或者不具有累加效应</p>
 <p>查询操作就是最常见的<code>幂等操作</code></p>
 <h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h4><p>具体流程图:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">st=&gt;start: Start</span><br><span class="line">op1=&gt;operation: 向注册器索要起始值</span><br><span class="line">c1=&gt;condition: 是否有过期的key范围</span><br><span class="line">o2=&gt;operation: 获取一个过期的信息的起始值</span><br><span class="line">o3=&gt;operation: 标记二次处理</span><br><span class="line">o4=&gt;operation: 获取当前最大的处理进度</span><br><span class="line">o5=&gt;operation: 根据起始值获取待处理的数据段</span><br><span class="line">c2=&gt;condition: 判断是否二次处理数据</span><br><span class="line">o6=&gt;operation: 更新当前处理的数据进度</span><br><span class="line">o7=&gt;operation: 处理数据</span><br><span class="line">o8=&gt;operation: 从注册器删除自己的处理进度标记</span><br><span class="line">e=&gt;end: End</span><br><span class="line">st-&gt;op1-&gt;c1</span><br><span class="line">c1(yes)-&gt;o2-&gt;o3-&gt;o5</span><br><span class="line">c1(no)-&gt;o4-&gt;o5</span><br><span class="line">o5-&gt;c2</span><br><span class="line">c2(yes)-&gt;o7</span><br><span class="line">c2(no)-&gt;o6-&gt;o7</span><br><span class="line">o7-&gt;o8-&gt;e</span><br></pre></td></tr></table></figure>
+<div id="flowchart-0" class="flow-chart"></div>
 
 <h3 id="redis其他应用"><a href="#redis其他应用" class="headerlink" title="redis其他应用"></a>redis其他应用</h3><p>我们也可以使用redis的集合来构建倒排索引以实现搜索功能</p>
 <p>也能使用redis的发布订阅来实现简单的消息通知系统(不过redis的发布订阅缺点很明显)</p>
 <p>或者使用redis的有序集合统计同时在线用户数</p>
 <p>或者用时间戳为key构建一个bitmap,将对应用户的位置置为1, 每天更新</p>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start
+op1=>operation: 向注册器索要起始值
+c1=>condition: 是否有过期的key范围
+o2=>operation: 获取一个过期的信息的起始值
+o3=>operation: 标记二次处理
+o4=>operation: 获取当前最大的处理进度
+o5=>operation: 根据起始值获取待处理的数据段
+c2=>condition: 判断是否二次处理数据
+o6=>operation: 更新当前处理的数据进度
+o7=>operation: 处理数据
+o8=>operation: 从注册器删除自己的处理进度标记
+e=>end: End
+st->op1->c1
+c1(yes)->o2->o3->o5
+c1(no)->o4->o5
+o5->c2
+c2(yes)->o7
+c2(no)->o6->o7
+o7->o8->e</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script>
     </div>
 
     
@@ -721,6 +739,19 @@ window.addEventListener('pjax:success', () => {
 
 
 
+<script pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
     <div id="pjax">

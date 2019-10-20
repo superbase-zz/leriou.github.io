@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="A*寻路背景介绍我们日常生活中的很多决策问题都可以转化为对应的路径规划问题,如何从复杂的路径中寻找两个或者多个点之间的最短距离就是一个很值得研究的东西A*算法是一种寻路算法,解决的是路径规划问题的一种目的是: 找出某地图中两点之间的最短路径">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.875Z">
+<meta property="og:updated_time" content="2019-10-20T12:27:50.784Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2015-09-29-Astar-algorithm/">
@@ -360,14 +360,12 @@
 <li>最后如果发现终点在开放列表中,终止程序</li>
 </ol>
 <p><strong><code>A*</code>寻路的精髓</strong></p>
-<blockquote>
-<p>F = G + H</p>
-</blockquote>
+<p>核心公式：<strong>F = G + H</strong></p>
 <p>F:用来评价点距起点距离的值</p>
 <p>G:实际已耗费的路径</p>
 <p>H:未来还需要耗费的路径</p>
 <p><code>A*</code>算法的实质是通过维护一个<code>待检测点的列表(open list)</code>和一个<code>已检测点的列表(closed list)</code>来记录寻路过程,从图形上来看，OPEN集是已访问区域的边界，CLOSED集是已访问区域的内部。每个节点还包含一个指向父节点的指针，以确定追踪关系。</p>
-<p>算法有一个主循环,重复地从OPEN集中取最优节点n(即f值最小的节点)来检测.如果n是目标节点,那么算法结束;否则,将节点n从OPEN集删除,并添加到CLOSED集中,然后查看n的所有邻节点n’,如果邻节点在CLOSED集,它已被检测过,则无需再检测(<em>);如果邻节点在OPEN集,它将会被检测,则无需此时检测(</em>);否则,将该邻节点加入OPEN集,设置其父节点为n,到n’的路径开销F(n’) = G(n) + H(n,n’)</p>
+<p>算法有一个主循环,重复地从OPEN集中取最优节点n(即f值最小的节点)来检测.如果n是目标节点,那么算法结束;<br>否则,将节点n从OPEN集删除,并添加到CLOSED集中,然后查看n的所有邻节点n’,如果邻节点在CLOSED集,它已被检测过,则无需再检测;<br>如果邻节点在OPEN集,它将会被检测,则无需此时检测;<br>否则,将该邻节点加入OPEN集,设置其父节点为n,到n’的路径开销<code>F(n&#39;) = G(n) + H(n,n&#39;)</code></p>
 <h2 id="A-的变种"><a href="#A-的变种" class="headerlink" title="A*的变种"></a><code>A*</code>的变种</h2><p><code>A*</code>算法可以通过<code>动态加权</code>,<code>跳跃点搜索</code>,<code>双向搜索</code>,<code>迭代深化</code>等进行性能和功能的优化</p>
 <p>此外还有<code>动态A*</code>与<code>终身规划A*</code>等变化,这些变化其实都是基于基本的<code>A*</code>理论来进行优化</p>
 <h2 id="寻路算法的应用"><a href="#寻路算法的应用" class="headerlink" title="寻路算法的应用"></a>寻路算法的应用</h2><p>比较常见的是寻路算法在游戏中的应用,因为很多游戏中会有地图的概念,涉及到地图就很容易有寻路规划的需要</p>
@@ -632,6 +630,19 @@ window.addEventListener('pjax:success', () => {
 
 
 
+<script pjax>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
     <div id="pjax">

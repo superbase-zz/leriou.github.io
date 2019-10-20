@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="我们在使用Redis集群的使用过程中发现了很多问题这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的键的问题当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.937Z">
+<meta property="og:updated_time" content="2019-10-20T04:33:31.553Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-10-03-redis-slot-prolem/">
@@ -300,9 +300,9 @@
 <li>使用{}对关键key进行包裹,这样可以使所有数据落到同一个槽上     </li>
 <li>对每个key进行计算, 相同节点的key收集起来进行统一的Pipeline</li>
 </ol>
-<h1 id="使用-指定数据的slot落点"><a href="#使用-指定数据的slot落点" class="headerlink" title="使用{}指定数据的slot落点"></a>使用{}指定数据的slot落点</h1><p>对key使用{}可以保证同一个{}内的数据会落到同一个槽节点</p>
-<p>原理嘛, 我不负责任的猜测一下, 一旦使用{}对key进行修饰,redis会仅对被{}包裹的部分计算hash</p>
-<p>如果多个key的{}内部分都相同的话, 数据计算出来的槽也是相同的</p>
+<h1 id="使用哈希限定符-指定数据的slot落点"><a href="#使用哈希限定符-指定数据的slot落点" class="headerlink" title="使用哈希限定符{}指定数据的slot落点"></a>使用哈希限定符{}指定数据的slot落点</h1><p>对key使用<code>{}</code>可以保证同一个<code>{}</code>内的数据会落到同一个槽节点</p>
+<p>原理嘛, 我不负责任的猜测一下, 一旦使用<code>{}</code>对key进行修饰,redis会仅对被<code>{}</code>包裹的部分计算hash</p>
+<p>如果多个key的<code>{}</code>内部分都相同的话, 数据计算出来的槽也是相同的</p>
 <p>比如:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;user&#125;:age:19</span><br><span class="line">&#123;user&#125;:name:小明</span><br><span class="line">&#123;user&#125;:id:3</span><br></pre></td></tr></table></figure>
 
@@ -391,7 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#键的问题"><span class="nav-number">1.</span> <span class="nav-text">键的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cluster模式下不能使用Pipeline"><span class="nav-number">2.</span> <span class="nav-text">Cluster模式下不能使用Pipeline</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用-指定数据的slot落点"><span class="nav-number">3.</span> <span class="nav-text">使用{}指定数据的slot落点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#错误类型"><span class="nav-number">4.</span> <span class="nav-text">错误类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群模式下不支持select-db"><span class="nav-number">5.</span> <span class="nav-text">集群模式下不支持select db</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#键的问题"><span class="nav-number">1.</span> <span class="nav-text">键的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cluster模式下不能使用Pipeline"><span class="nav-number">2.</span> <span class="nav-text">Cluster模式下不能使用Pipeline</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用哈希限定符-指定数据的slot落点"><span class="nav-number">3.</span> <span class="nav-text">使用哈希限定符{}指定数据的slot落点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#错误类型"><span class="nav-number">4.</span> <span class="nav-text">错误类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群模式下不支持select-db"><span class="nav-number">5.</span> <span class="nav-text">集群模式下不支持select db</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

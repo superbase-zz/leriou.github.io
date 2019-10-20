@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="游戏程序的设计和运行流程这篇文章是写给编程初学者和完全不懂编程的小白的, 目的是希望能通过这篇文章, 让大家知道游戏中的画面是怎么显示出来的和一般的游戏的运行方式游戏地址先上游戏地址: https:&#x2F;&#x2F;github.com&#x2F;oldj&#x2F;html5-tower-defense">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.933Z">
+<meta property="og:updated_time" content="2019-10-20T04:35:54.434Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2015-05-05-game-design/">
@@ -300,7 +300,7 @@
 <h3 id="游戏画面的显示"><a href="#游戏画面的显示" class="headerlink" title="游戏画面的显示"></a>游戏画面的显示</h3><p>我们看到的游戏的画面, 不管多酷炫, 归根到底可以看做一系列的连续播放的图片, 而每张图片我们又可以看做是一个固定分辨率的色彩数组</p>
 <p>拿 1080*1920 分辨率, 60fps 的某一款游戏来说, 就是1s中给你播放60张1080p的图片给你看</p>
 <p>那到底播放什么图片呢 ?</p>
-<p>图片的内容可以看成是一个 <code>1080(宽) * 1920(长) * 4(RGBA)</code>的数组, 只要把这个数组发送给显卡, 显卡就知道应该怎么显示</p>
+<p>图片的内容可以看成是一个 <code>1080(宽) * 1920(长) * 4(RGBA)</code>的数组, 只要把这个数组发送给显卡, 显卡就知道应该怎么显示, (为什么要用一维数组是因为基于性能考虑，一位数组的处理效率比高维数组要高)</p>
 <p>游戏渲染的过程, 可以看做是根据用户反馈计算这一些列数组的过程</p>
 <h3 id="游戏的通用结构"><a href="#游戏的通用结构" class="headerlink" title="游戏的通用结构"></a>游戏的通用结构</h3><p>从结构上说, 任何游戏, 实质上都是一个不断循环的程序, 当画面的处理和输出速度达到人眼视觉暂留的极限时(一般在30fps以上)</p>
 <p>人就分不出来是不是真的实时了, 以此来模拟实时的效果, 早期的胶片电影使用的也是类似的原理</p>

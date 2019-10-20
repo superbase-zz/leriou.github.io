@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="MongoDB  vs Elasticsearch    MongoDB ElasticSearch 备注    定位 (文档型)数据库 (文档型)搜索引擎 一个管理数据,一个检索数据   资源占用 一般 高 mongo使用c++, es使用Java开发   写入延迟 低 高 es的写入延迟默认1s, 可配置, 但是要牺牲一些东西   全文索引支持度 一般 非常好 es本来就是搜索引擎, 这个没啥">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.920Z">
+<meta property="og:updated_time" content="2019-10-20T04:42:15.639Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2019-01-09-mongodb-compareto-elasticsearch/">
@@ -431,7 +431,7 @@
 <h3 id="鸡肋的Collection和Type"><a href="#鸡肋的Collection和Type" class="headerlink" title="鸡肋的Collection和Type"></a>鸡肋的Collection和Type</h3><p>早期为了跟传统rdbms数据库保持概念一致 ，mongodb和elasticsearch都设计了跟数据库里面的<code>库-&gt;表-&gt;记录行</code>对应的概念，跟<code>表</code>对应的概念分别为<code>collection</code>和<code>type</code><br>其实对于nosql数据库来讲, collection/type的意义其实不大, Nosql数据库中极少有数据库跟传统的关系型数据库一样保持类似( 库-&gt;表-&gt;行 ) 的对应关系, 因为这个真的没有什么必要 ^_^</p>
 <p>Elasticsearch从<code>6.x</code>版本开始强制只允许一个索引使用一个type, 其实就是意识到这个这个设计的失误, 不想让你用这个type类型, 因为type和传统数据库里面的表其实是不一样的，这种概念类比给人造成了误解，到了es的7.x版本会默认取消type类型, 就说明这个type字段真的是鸡肋的不行</p>
 <h3 id="弱事务"><a href="#弱事务" class="headerlink" title="弱事务"></a>弱事务</h3><p>MongoDB以前只是支持统一文档内的原子更新, 以此来实现伪事务功能, 不过Mongo4.0支持Replica Set事务, 大大加强了事务方面的能力 </p>
-<h3 id="无join支持"><a href="#无join支持" class="headerlink" title="无join支持"></a>无join支持</h3><p>文档型数据库大多数都不支持join(也有少量支持的), 但是我一般也用不上join的功能, 即便真的需要使用join也可以通过应用层或者通过耦合数据来实现, 不过据说未来Mongo4.2版本会带来对join的支持</p>
+<h3 id="无join支持"><a href="#无join支持" class="headerlink" title="无join支持"></a>无join支持</h3><p>文档型数据库大多数都不支持join(也有少量支持的), 但是我一般也用不上join的功能, 即便真的需要使用join也可以通过应用层或者通过耦合数据来实现（不过据说未来Mongo4.2版本会带来对join的支持）</p>
 <p>不支持join带来的问题就是我们需要自己对数据进行连接, 但是这在擅长使用分布式计算的大数据领域不算什么问题, 相应的缺少join功能对善于使用SQL的数据分析师就不大友好</p>
 <h3 id="Bully的选主算法的缺陷"><a href="#Bully的选主算法的缺陷" class="headerlink" title="Bully的选主算法的缺陷"></a>Bully的选主算法的缺陷</h3><p>elasticsearch和MongoDB选择的选主算法实现很简单, 但是有几率出现脑裂的情况, 当然, 具体情况跟配置也有关系(比如:你有三个es节点但是设置的最小主节点数为1, 将最小主节点数设置为2可以避免脑裂情况)</p>
 <p>即使出现了脑裂的情况, 使用<code>重启大法</code>一般就能解决 ^_^</p>

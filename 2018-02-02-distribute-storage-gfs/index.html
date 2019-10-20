@@ -50,17 +50,17 @@
   };
 </script>
 
-  <meta name="description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable,Megastore等上层数据库应用">
+  <meta name="description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable, Megastore等上层数据库应用">
 <meta name="keywords" content="GFS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式文件系统-GFS学习总结">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable,Megastore等上层数据库应用">
+<meta property="og:description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable, Megastore等上层数据库应用">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334712344_6225.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334931385_9113.jpg">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.931Z">
+<meta property="og:updated_time" content="2019-10-20T04:47:34.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334712344_6225.jpg">
 
@@ -290,7 +290,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>GFS是谷歌的底层文件系统</p><h2 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h2><p>GFS(Google File System)是谷歌开发的一个分布式文件系统,目的是提供一个基于众多廉价服务器工作的基础层文件存储服务</p><p>GFS服务的是上层的Bigtable,Megastore等上层数据库应用</p><a id="more"></a>
+        <p>GFS是谷歌的底层文件系统</p><h2 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h2><p>GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层文件存储服务</p><p>GFS服务的是上层的Bigtable, Megastore等上层数据库应用</p><a id="more"></a>
 
 
 <p>Google于2003年放出了GFS的设计论文</p>
@@ -349,7 +349,7 @@
 <p>例如:</p>
 <p>对文件 f 执行快照生成 f_back , f在GFS中有三个Chunk: C1,C2,C3 </p>
 <p>Master首先会回收C1,C2,C3的写租约,从而保证此时的f状态一致,然后Master复制 f的元数据生成一个新的文件 f_back</p>
-<p>此时f_back的 Chunk仍然指向C1,C2,C3. 快照之前,C1,C2,C3只被一个文件引用,引用计数为1, 快照之后引用技术更新为2</p>
+<p>此时f_back的 Chunk仍然指向 C1,C2,C3. 快照之前, C1,C2,C3只被一个文件引用,引用计数为1, 快照之后引用技术更新为2</p>
 <p>当客户端向C3增加数据时,Master发现c3引用计数超过1,会通知ChunkServer生成新的C3’, 新的操作也会在C3’上面进行</p>
 <p>f的Chunk映射也会更新为 C1,C2,C3’</p>
 <blockquote>

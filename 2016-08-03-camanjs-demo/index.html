@@ -60,7 +60,7 @@
 <meta property="og:description" content="CamanJS图形处理库之前我曾想过自己做一个简单的图片处理库自己用,后来做了几个基本效果以后发现了成本太高然后就放弃了,去找了个现成的图形库:CamanJS发现用起来也不错,也就没有再做下去简介CamanJS是一个图片处理类库,能十分方便的处理图片">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2016-08-03-camanjs-demo&#x2F;20160803_21.png?v=10086">
-<meta property="og:updated_time" content="2019-10-19T12:36:48.874Z">
+<meta property="og:updated_time" content="2019-10-21T12:29:26.941Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2016-08-03-camanjs-demo&#x2F;20160803_21.png?v=10086">
 
@@ -308,9 +308,12 @@
 
 <h2 id="测试工具"><a href="#测试工具" class="headerlink" title="测试工具"></a>测试工具</h2><p><button class="btn btn-info" id="reset">RESET</button>(尽量使用chrome浏览器,请等待网页加载完毕)</p>
 <div>
-<div id="stage">
-<img id="image" width="600" height="341" style="float: left" data-src="20160803_21.png?v=10086"></div>
+    <div id="stage">
+        <img id="image" style="float: auto" data-src="20160803_21.png?v=10086">
+    </div>
 </div>
+
+
 
 <h1 id="预置效果"><a href="#预置效果" class="headerlink" title="预置效果"></a>预置效果</h1><p><code>Caman</code>内置了一批现成的图片效果，使用起来非常简单<br><code>this.revert()</code>用来重置图片效果,保证各个效果不互相影响<br><code>this.lomo()</code>将lomo效果用到图片上<br><code>this.render()</code>渲染图片</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caman(<span class="string">"#image"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.revert();</span><br><span class="line">    <span class="keyword">this</span>.lomo();</span><br><span class="line">    <span class="keyword">this</span>.render();</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
@@ -320,7 +323,6 @@
 <p>将以上方法替换文本框中的<code>lomo</code>,例如 <code>this.hazyDays();</code>,然后点 RUN 就行了</p>
 <h2 id="Camanjs缺点"><a href="#Camanjs缺点" class="headerlink" title="Camanjs缺点"></a>Camanjs缺点</h2><p>不适合用来做粒度极细的像素级操作,虽然提供了方法</p>
 <script type="text/javascript">
-
     function love_render(){
         Caman("#image",function(){
         this.revert();

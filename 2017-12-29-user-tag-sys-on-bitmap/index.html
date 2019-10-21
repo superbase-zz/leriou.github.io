@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="用户标签的存储方案背景我们在日常的工作中经常遇到这种场景对一个用户添加许多的标签信息方便对用户身份进行搜索和精细化运营 ps:本文我们不考虑用户身上的标签是怎么来的,只讨论用户已经拥有标签的情况下怎么进行存储 需求分析我们给用户做标签的目的是为了支持更加精细化的运营,算是用户画像的一部分,用户的标签来源可能跟消费,登录,浏览等记录都有关系,我们不具体去解释怎么得到用户标签">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-20T04:50:08.180Z">
+<meta property="og:updated_time" content="2019-10-21T12:09:53.000Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-12-29-user-tag-sys-on-bitmap/">
@@ -471,10 +471,10 @@
 <p>在上面的两个表中第二个表相当于对第一个表进行了拆分,增强了标签的扩展性.如果我们采用第二种方式存储,对于上面的需求 1,2,3 都能很好的满足</p>
 <p>但是方式2依然有两个可能遇到的问题</p>
 <ol>
-<li><p>我们要查找在某一些标签的用户需要使用如下sql</p>
-<p> select uid from tag_table where result = 1 and tag in (‘vip’,’mobile’,’email’,’male’,’supervip’,’lost’)</p>
-</li>
+<li>我们要查找在某一些标签的用户需要使用如下sql</li>
 </ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">    uid </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">    tag_table </span><br><span class="line"><span class="keyword">where</span> </span><br><span class="line">    <span class="keyword">result</span> = <span class="number">1</span> </span><br><span class="line"><span class="keyword">and</span> tag <span class="keyword">in</span> (<span class="string">'vip'</span>,<span class="string">'mobile'</span>,<span class="string">'email'</span>,<span class="string">'male'</span>,<span class="string">'supervip'</span>,<span class="string">'lost'</span>)</span><br></pre></td></tr></table></figure>
+
 <p>这样的语句在标签数万甚至数十万的时候对性能影响会非常大</p>
 <ol start="2">
 <li>存储: 因为每个行记录同时标明了用户,标签,和结果, 所以其中的重复数据非常的多,对数据库存储是个极大地浪费</li>

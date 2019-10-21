@@ -60,7 +60,7 @@
 <meta property="og:description" content="这个是写给组内成员的分布式知识简单分享什么是分布式什么是集群? 什么是分布式?集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-02-distribute-database-share-in-group&#x2F;cap.jpg">
-<meta property="og:updated_time" content="2019-10-20T04:54:24.384Z">
+<meta property="og:updated_time" content="2019-10-21T12:13:48.337Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-02-distribute-database-share-in-group&#x2F;cap.jpg">
 
@@ -293,7 +293,59 @@
         <p>这个是写给组内成员的分布式知识简单分享</p><h1 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h1><p>什么是集群? 什么是分布式?<br>集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   </p><a id="more"></a>
 
 <p>几个典型的分布式系统:</p>
-<p>|名称|类型|数据分布方式|故障转移|底层存储|节点类型｜<br>|:-:|:-:|:-:|:-:|:-:|:-:｜<br>|kafka|消息系统|broker-&gt;partition|partition选举|file|对等节点|<br>|redis|缓存|instance-&gt;shard|sentinal选举|memeory|对等节点|<br>|es|搜索服务|node-&gt;shard|master选举和partition选举|file|对等节点|<br>|Tidb|数据库|TiDB+TiKV+PD|node选举|file|非对等节点|<br>|hdfs|文件系统|namenode+datanode|主从|file|非对等节点|</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>数据分布方式</th>
+<th>故障转移</th>
+<th>底层存储</th>
+<th>节点类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>kafka</td>
+<td>消息系统</td>
+<td>broker-&gt;partition</td>
+<td>partition选举</td>
+<td>file</td>
+<td>对等节点</td>
+</tr>
+<tr>
+<td>redis</td>
+<td>缓存</td>
+<td>instance-&gt;shard</td>
+<td>sentinal选举</td>
+<td>memeory</td>
+<td>对等节点</td>
+</tr>
+<tr>
+<td>es</td>
+<td>搜索服务</td>
+<td>node-&gt;shard</td>
+<td>master选举和partition选举</td>
+<td>file</td>
+<td>对等节点</td>
+</tr>
+<tr>
+<td>Tidb</td>
+<td>数据库</td>
+<td>TiDB+TiKV+PD</td>
+<td>node选举</td>
+<td>file</td>
+<td>非对等节点</td>
+</tr>
+<tr>
+<td>hdfs</td>
+<td>文件系统</td>
+<td>namenode+datanode</td>
+<td>主从</td>
+<td>file</td>
+<td>非对等节点</td>
+</tr>
+</tbody></table>
+<h3 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h3><p>对等节点是说节点之间功能相似，非对等节点是说节点之间功能不同，无法互相取代</p>
 <h2 id="分布式要解决的常见问题"><a href="#分布式要解决的常见问题" class="headerlink" title="分布式要解决的常见问题"></a>分布式要解决的常见问题</h2><p>分布式要满足三个特性之二 CAP(C:一致性, P:分区容忍性, A:可用性)</p>
 <ul>
 <li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否同样的值。（等同于所有节点访问同一份最新的数据副本），换句话就是说，任何时刻，所用的应用程序都能访问得到相同的数据。</li>
@@ -415,7 +467,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是分布式"><span class="nav-number">1.</span> <span class="nav-text">什么是分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式要解决的常见问题"><span class="nav-number">1.1.</span> <span class="nav-text">分布式要解决的常见问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何解决分区容忍性"><span class="nav-number">2.</span> <span class="nav-text">如何解决分区容忍性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gossip"><span class="nav-number">2.1.</span> <span class="nav-text">Gossip</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何保证数据一致性"><span class="nav-number">3.</span> <span class="nav-text">如何保证数据一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单节点的数据一致性"><span class="nav-number">3.1.</span> <span class="nav-text">单节点的数据一致性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式的一致性"><span class="nav-number">3.2.</span> <span class="nav-text">分布式的一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Paxos"><span class="nav-number">3.2.1.</span> <span class="nav-text">Paxos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft"><span class="nav-number">3.2.2.</span> <span class="nav-text">Raft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZAB协议"><span class="nav-number">3.2.3.</span> <span class="nav-text">ZAB协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bully"><span class="nav-number">3.2.4.</span> <span class="nav-text">Bully</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NRW算法"><span class="nav-number">3.3.</span> <span class="nav-text">NRW算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何处理可用性"><span class="nav-number">4.</span> <span class="nav-text">如何处理可用性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式事务"><span class="nav-number">5.</span> <span class="nav-text">分布式事务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用经验浅谈"><span class="nav-number">5.1.</span> <span class="nav-text">使用经验浅谈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何设置合理的分区和副本数量"><span class="nav-number">5.1.1.</span> <span class="nav-text">如何设置合理的分区和副本数量</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是分布式"><span class="nav-number">1.</span> <span class="nav-text">什么是分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#节点类型"><span class="nav-number">1.0.1.</span> <span class="nav-text">节点类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式要解决的常见问题"><span class="nav-number">1.1.</span> <span class="nav-text">分布式要解决的常见问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何解决分区容忍性"><span class="nav-number">2.</span> <span class="nav-text">如何解决分区容忍性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gossip"><span class="nav-number">2.1.</span> <span class="nav-text">Gossip</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何保证数据一致性"><span class="nav-number">3.</span> <span class="nav-text">如何保证数据一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单节点的数据一致性"><span class="nav-number">3.1.</span> <span class="nav-text">单节点的数据一致性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式的一致性"><span class="nav-number">3.2.</span> <span class="nav-text">分布式的一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Paxos"><span class="nav-number">3.2.1.</span> <span class="nav-text">Paxos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft"><span class="nav-number">3.2.2.</span> <span class="nav-text">Raft</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ZAB协议"><span class="nav-number">3.2.3.</span> <span class="nav-text">ZAB协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bully"><span class="nav-number">3.2.4.</span> <span class="nav-text">Bully</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NRW算法"><span class="nav-number">3.3.</span> <span class="nav-text">NRW算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何处理可用性"><span class="nav-number">4.</span> <span class="nav-text">如何处理可用性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式事务"><span class="nav-number">5.</span> <span class="nav-text">分布式事务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用经验浅谈"><span class="nav-number">5.1.</span> <span class="nav-text">使用经验浅谈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何设置合理的分区和副本数量"><span class="nav-number">5.1.1.</span> <span class="nav-text">如何设置合理的分区和副本数量</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

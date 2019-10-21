@@ -60,7 +60,9 @@
 <meta property="og:description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务借这个机会, 对我们用到的相关技术部分进行了整理业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用以及其中遇到的一些坑业务1. 统一的产品池服务">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;productpool.jpg">
-<meta property="og:updated_time" content="2019-10-21T12:06:33.140Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;flow1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;flow2.png">
+<meta property="og:updated_time" content="2019-10-21T15:06:21.684Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-09-30-real-time-proccess&#x2F;productpool.jpg">
 
@@ -304,10 +306,8 @@
 <p><code>kafka</code>: 数据总线, 后台数据流转的核心</p>
 <p><code>mysql/oracle</code>: 提供最初始的数据源</p>
 <p><code>storm</code>: 产品信息计算</p>
-<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><h4 id="前台api获取产品的流程"><a href="#前台api获取产品的流程" class="headerlink" title="前台api获取产品的流程"></a>前台api获取产品的流程</h4><div id="flowchart-0" class="flow-chart"></div>
-
-<h4 id="后台构建产品的流程"><a href="#后台构建产品的流程" class="headerlink" title="后台构建产品的流程"></a>后台构建产品的流程</h4><div id="flowchart-1" class="flow-chart"></div>
-
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><h4 id="前台api获取产品的流程"><a href="#前台api获取产品的流程" class="headerlink" title="前台api获取产品的流程"></a>前台api获取产品的流程</h4><p><img alt data-src="flow1.png"></p>
+<h4 id="后台构建产品的流程"><a href="#后台构建产品的流程" class="headerlink" title="后台构建产品的流程"></a>后台构建产品的流程</h4><p><img alt data-src="flow2.png"></p>
 <h3 id="详细步骤描述"><a href="#详细步骤描述" class="headerlink" title="详细步骤描述"></a>详细步骤描述</h3><ul>
 <li><p>定时的产品id添加: 定期进行全量的产品数据重建, 为了方便控制重建过程, 将要处理的产品id分批存入kafka中的<code>全量重建topic</code>, 也就是把批处理转化为流处理  </p>
 </li>
@@ -388,48 +388,7 @@
 <p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能  </p>
 <p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的网关作用   </p>
 <p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力  </p>
-<p>希望以后可以多尝试, 并进行改进<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start
-
-cronProductId=>operation: 定时的产品id添加
-
-missProductId=>operation: 失效的产品id
-
-frontRequest=>operation: 接口请求
-
-isProductMiss=>condition: 产品是否失效
-
-addProductId=>operation: 将待处理的产品id添加到kafka队列
-
-buildProductInfo=>operation: 构建产品信息
-
-returnProductInfo=>operation: 从redis返回产品信息
-
-e=>end: End
-
-
-st->frontRequest->isProductMiss()
-
-isProductMiss(no)->returnProductInfo->e
-
-isProductMiss(yes,right)->addProductId(right)->buildProductInfo->returnProductInfo->
-
-returnProductInfo->e</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script><textarea id="flowchart-1-code" style="display: none">st=>start: Start
-
-getpid=>operation: 从kafka队列获取产品id(各种事件来源)
-
-sepPid=>operation: 将产品id按照分类分配给不同的topic
-
-forStorm=>operation: storm从topic获取各个产品进行数据计算
-
-returnKafka=>operation: storm将计算以后的信息返回kafka
-
-mergeInfo=>operation: 整合各个品类的产品计算结果
-
-writeRedis=>operation: 从kafka读取数据写入redis
-
-e=>end: End
-
-st(right)->getpid->sepPid->forStorm->returnKafka->mergeInfo->writeRedis->e</textarea><textarea id="flowchart-1-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-1-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-1-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-1", options);</script></p>
+<p>希望以后可以多尝试, 并进行改进</p>
 
     </div>
 

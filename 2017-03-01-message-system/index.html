@@ -59,8 +59,10 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="web系统中的消息提醒的实现">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-20T12:45:33.947Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-03-01-message-system&#x2F;flow1.png">
+<meta property="og:updated_time" content="2019-10-21T15:26:13.538Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-03-01-message-system&#x2F;flow1.png">
 
 <link rel="canonical" href="https://leriou.github.io/2017-03-01-message-system/">
 
@@ -304,8 +306,7 @@
 </ol>
 <p>同时还要在整个过程中随时持有消息的状态,这样才能最大化消息通知系统的功能</p>
 <p>一个成熟消息处理的流程大概如下图:</p>
-<div id="flowchart-0" class="flow-chart"></div>
-
+<p><img alt data-src="flow1.png"></p>
 <h2 id="消息产生"><a href="#消息产生" class="headerlink" title="消息产生"></a>消息产生</h2><p>消息系统的消息按类型大致可以分为私信类和通知类,其中私信类就是上文提到的消息部分,又可以分为管理员发送的和用户个人发送的</p>
 <p>私信类的消息大概情况如下:</p>
 <ol>
@@ -550,19 +551,7 @@ uid:xx:unread:10</code></pre><h3 id="消息回收"><a href="#消息回收" class
 <li>黑名单</li>
 </ol>
 <h3 id="用户拉回"><a href="#用户拉回" class="headerlink" title="用户拉回"></a>用户拉回</h3><ol>
-<li>长时间未处理消息的用户进行二次推送(通过短信和邮件等)<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: start
-op1=>operation: 消息产生
-op2=>operation: 消息汇总
-op3=>operation: 消息分发
-op4=>operation: 用户处理
-cn1=>condition: 处理完成
-op5=>operation: 处理未完成
-op6=>operation: 消息回收
-e=>end: end
-
-st(right)->op1(right)->op2->op3->op4(right)->cn1
-cn1(yes)->op6->e
-cn1(no)->op2</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script></li>
+<li>长时间未处理消息的用户进行二次推送(通过短信和邮件等)</li>
 </ol>
 
     </div>

@@ -525,7 +525,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2017-11-01-kafka-share-in-group/" class="post-title-link" itemprop="url">Kafka使用经验总结</a>
+            <a href="/2017-11-01-kafka-share-in-group/" class="post-title-link" itemprop="url">浅谈Kafka消息系统</a>
         </h2>
 
         <div class="post-meta">
@@ -550,7 +550,7 @@
             </span>
 
           
-            <span id="/2017-11-01-kafka-share-in-group/" class="post-meta-item leancloud_visitors" data-flag-title="Kafka使用经验总结" title="Views">
+            <span id="/2017-11-01-kafka-share-in-group/" class="post-meta-item leancloud_visitors" data-flag-title="浅谈Kafka消息系统" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -581,7 +581,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p><p>在我刚刚工作第一年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p><p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p>
+          <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p><p>在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p><p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p><p>后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-11-01-kafka-share-in-group/#more" rel="contents">
@@ -678,107 +678,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="redis分享"><a href="#redis分享" class="headerlink" title="redis分享"></a>redis分享</h1><p>Author:   leriou lee       2017.10.12</p><h2 id="redis基本概述"><a href="#redis基本概述" class="headerlink" title="redis基本概述"></a>redis基本概述</h2><p><code>redis</code>是一个使用c语言开发的k-v缓存系统,其实不仅仅作为缓存,由于<code>redis</code>内部的底层数据结构设计的非常完善</p><p>我们也可以把<code>redis</code>作为一个现成的数据结构实现集合,只要了解<code>redis</code>内部的基础数据结构和实现,我们就能利用它做很多事情</p>
+          <h1 id="redis分享"><a href="#redis分享" class="headerlink" title="redis分享"></a>redis分享</h1><p>Author:   leriou lee       2017.10.12<br>本篇内容主要是针对团队成员的redis中间件分享</p><p>目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解<br>已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-10-29-redis-share-in-group/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-10-15-use-pipeline-in-redis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017-10-15-use-pipeline-in-redis/" class="post-title-link" itemprop="url">如何在Redis集群中使用pipeline</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2017-10-15 19:32:00" itemprop="dateCreated datePublished" datetime="2017-10-15T19:32:00+08:00">2017-10-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">工具使用</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2017-10-15-use-pipeline-in-redis/" class="post-meta-item leancloud_visitors" data-flag-title="如何在Redis集群中使用pipeline" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2017-10-15-use-pipeline-in-redis/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2017-10-15-use-pipeline-in-redis/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h1><p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段</p><p>但是有一个缺点, 我们一旦使用了Redis的Cluster集群, 就没有办法对整个集群使用Pipeline功能</p><p><strong>原因</strong></p><p>因为Redis的Pipeline的原理是在一个连接中持续的进行命令发送, 需要持有一个稳定的连接</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017-10-15-use-pipeline-in-redis/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -872,7 +775,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>我们在使用Redis集群的使用过程中发现了很多问题</p><p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p><h1 id="键的问题"><a href="#键的问题" class="headerlink" title="键的问题"></a>键的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p>
+          <p>我们在使用Redis集群的使用过程中发现了很多问题</p><p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p><h1 id="键分布导致的问题"><a href="#键分布导致的问题" class="headerlink" title="键分布导致的问题"></a>键分布导致的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017-10-03-redis-slot-prolem/#more" rel="contents">
@@ -1462,6 +1365,103 @@
   
   
 
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-03-01-message-system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017-03-01-message-system/" class="post-title-link" itemprop="url">消息通知系统的设计</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-03-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-03-01T00:00:00+08:00">2017-03-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index">
+                    <span itemprop="name">系统设计</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2017-03-01-message-system/" class="post-meta-item leancloud_visitors" data-flag-title="消息通知系统的设计" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2017-03-01-message-system/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017-03-01-message-system/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          web系统中的消息提醒的实现
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017-03-01-message-system/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
   </div>
 
   
@@ -1512,7 +1512,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -51,15 +51,15 @@
   };
 </script>
 
-  <meta name="description" content="我们在使用Redis集群的使用过程中发现了很多问题这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的键的问题当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误">
+  <meta name="description" content="我们在使用Redis集群的使用过程中发现了很多问题这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的键分布导致的问题当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis集群遇到的一些问题">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-10-03-redis-slot-prolem&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="我们在使用Redis集群的使用过程中发现了很多问题这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的键的问题当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误">
+<meta property="og:description" content="我们在使用Redis集群的使用过程中发现了很多问题这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的键分布导致的问题当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-20T04:33:31.553Z">
+<meta property="og:updated_time" content="2019-10-23T15:45:11.933Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-10-03-redis-slot-prolem/">
@@ -288,27 +288,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>我们在使用Redis集群的使用过程中发现了很多问题</p><p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p><h1 id="键的问题"><a href="#键的问题" class="headerlink" title="键的问题"></a>键的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p><a id="more"></a>
+        <p>我们在使用Redis集群的使用过程中发现了很多问题</p><p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p><h1 id="键分布导致的问题"><a href="#键分布导致的问题" class="headerlink" title="键分布导致的问题"></a>键分布导致的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p><a id="more"></a>
 
 
 <p><code>CROSSSLOT Keys in request don&#39;t hash to the same slot</code></p>
 <p>例如:</p>
 <p><code>hmget key1 key2</code></p>
 <p><code>rename key1 key2</code></p>
-<h1 id="Cluster模式下不能使用Pipeline"><a href="#Cluster模式下不能使用Pipeline" class="headerlink" title="Cluster模式下不能使用Pipeline"></a>Cluster模式下不能使用Pipeline</h1><p>因为Pipeline模式本身就依赖于一个持久的链接, 将所有key通过同一个数据链接发送给服务器,如果发送的key不在该服务器上面, 自然就找不到对应的数据</p>
-<p>解决方案:</p>
-<ol>
-<li>使用{}对关键key进行包裹,这样可以使所有数据落到同一个槽上     </li>
-<li>对每个key进行计算, 相同节点的key收集起来进行统一的Pipeline</li>
-</ol>
-<h1 id="使用哈希限定符-指定数据的slot落点"><a href="#使用哈希限定符-指定数据的slot落点" class="headerlink" title="使用哈希限定符{}指定数据的slot落点"></a>使用哈希限定符{}指定数据的slot落点</h1><p>对key使用<code>{}</code>可以保证同一个<code>{}</code>内的数据会落到同一个槽节点</p>
-<p>原理嘛, 我不负责任的猜测一下, 一旦使用<code>{}</code>对key进行修饰,redis会仅对被<code>{}</code>包裹的部分计算hash</p>
-<p>如果多个key的<code>{}</code>内部分都相同的话, 数据计算出来的槽也是相同的</p>
-<p>比如:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;user&#125;:age:19</span><br><span class="line">&#123;user&#125;:name:小明</span><br><span class="line">&#123;user&#125;:id:3</span><br></pre></td></tr></table></figure>
-
-<p>同样, 这样也可以变相解决cluster不能使用Pipeline的问题</p>
-<h1 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h1><ul>
+<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><ul>
 <li>moved错误</li>
 </ul>
 <p>该错误表明当前键的落点槽不属于当前Node, 一般之后会跟着一个槽落点和节点地址</p>
@@ -326,6 +313,41 @@
 <p>该错误表明该key对应的数据正在做数据迁移, 槽迁移会引起该槽上的数据返回该错误</p>
 <h1 id="集群模式下不支持select-db"><a href="#集群模式下不支持select-db" class="headerlink" title="集群模式下不支持select db"></a>集群模式下不支持select db</h1><p>单机模式我们可以使用 <code>select 1</code> 来选择使用的数据库(redis默认提供16个数据库)</p>
 <p>但是集群模式下redis不支持该功能</p>
+<p>如果不同的业务组之间需要做业务隔离最好采用不同redis集群的形式进行</p>
+<p>可以把多个redis集群组成redis组，多个redis组组成redis池进行资源的统一管理</p>
+<h1 id="cluster模式不支持使用Pipeline"><a href="#cluster模式不支持使用Pipeline" class="headerlink" title="cluster模式不支持使用Pipeline"></a>cluster模式不支持使用Pipeline</h1><p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段</p>
+<p>但是有一个缺点, 我们一旦使用了Redis的Cluster集群, 就没有办法对整个集群使用Pipeline功能</p>
+<p><strong>原因</strong></p>
+<p>因为Redis的Pipeline的原理是在一个连接中持续的进行命令发送, 需要持有一个稳定的连接</p>
+<p>但是一旦使用了集群, 我们每个连接只能连接一个Node节点, 可是Pipeline中发送的数据键的数据落点未必会落到我们当前连接的集群节点上去</p>
+<p>那经过Pipeline发送过去的key就很明显不能正确的拿到内容</p>
+<h2 id="解决方案1"><a href="#解决方案1" class="headerlink" title="解决方案1"></a>解决方案1</h2><ul>
+<li>我们先计算出来每个key的数据落点, 然后将key进行分组, 分组取数据</li>
+</ul>
+<p>步骤:</p>
+<ol>
+<li><p>实现集群节点选择方法, 给每个节点起一个名字, 例如 节点1, 节点2, 节点3</p>
+</li>
+<li><p>查找每个节点上面的数据槽(slot)的范围</p>
+</li>
+<li><p>对Pipeline中的每个key进行<code>crc16(key)&amp;16383</code>, 计算出来每个key的槽, 并找到槽对应的节点</p>
+</li>
+<li><p>将落到相同节点的key进行分组</p>
+</li>
+<li><p>对每一组key再进行Pipeline操作</p>
+</li>
+</ol>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>充分利用集群特性, 普适性好, 不会造成数据倾斜</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>按照节点计算key, 最大请求次数等于节点数, 节点太多的情况下不太合适, 适合小规模集群</p>
+<h2 id="解决方案2"><a href="#解决方案2" class="headerlink" title="解决方案2"></a>解决方案2</h2><ul>
+<li>存储时候就把key存到一起</li>
+</ul>
+<p>使用<code>{}</code>来对key进行标记</p>
+<p>例如: <code>{user}:name:3</code>, <code>{user}:name</code>,<code>{user}:age</code> </p>
+<p>这三个key因为{}部分都相同所以会落到同一个slot上面, 数据自然就落到同一台redis机器上面了</p>
+<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><p>不受集群规模和节点数量的影响</p>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>但是这种方法限制很大, 没办法充分利用Redis的集群特性, 仅仅适合使用比较频繁的小数据量</p>
+<p>数据量太大会导致大量数据存储在同一个槽内, 造成数据倾斜</p>
 
     </div>
 
@@ -350,8 +372,8 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2017-10-15-use-pipeline-in-redis/" rel="prev" title="如何在Redis集群中使用pipeline">
-                  如何在Redis集群中使用pipeline <i class="fa fa-chevron-right"></i>
+                <a href="/2017-10-29-redis-share-in-group/" rel="prev" title="给团队成员的Redis分享总结">
+                  给团队成员的Redis分享总结 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -392,7 +414,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#键的问题"><span class="nav-number">1.</span> <span class="nav-text">键的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cluster模式下不能使用Pipeline"><span class="nav-number">2.</span> <span class="nav-text">Cluster模式下不能使用Pipeline</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用哈希限定符-指定数据的slot落点"><span class="nav-number">3.</span> <span class="nav-text">使用哈希限定符{}指定数据的slot落点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#错误类型"><span class="nav-number">4.</span> <span class="nav-text">错误类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群模式下不支持select-db"><span class="nav-number">5.</span> <span class="nav-text">集群模式下不支持select db</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#键分布导致的问题"><span class="nav-number">1.</span> <span class="nav-text">键分布导致的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#错误类型"><span class="nav-number">1.1.</span> <span class="nav-text">错误类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集群模式下不支持select-db"><span class="nav-number">2.</span> <span class="nav-text">集群模式下不支持select db</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cluster模式不支持使用Pipeline"><span class="nav-number">3.</span> <span class="nav-text">cluster模式不支持使用Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案1"><span class="nav-number">3.1.</span> <span class="nav-text">解决方案1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">3.1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">3.1.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案2"><span class="nav-number">3.2.</span> <span class="nav-text">解决方案2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -408,7 +430,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

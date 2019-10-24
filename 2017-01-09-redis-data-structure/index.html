@@ -60,7 +60,7 @@
 <meta property="og:description" content="redis基础数据结构redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-01-09-redis-data-structure&#x2F;IMG_0256.jpeg">
-<meta property="og:updated_time" content="2019-10-23T15:48:42.400Z">
+<meta property="og:updated_time" content="2019-10-24T13:43:15.820Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-01-09-redis-data-structure&#x2F;IMG_0256.jpeg">
 
@@ -434,7 +434,9 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    zlbytes:<span class="string">"0x50"</span>,</span><br><span class="line">    zltail:<span class="string">"0x3c"</span>,</span><br><span class="line">    zllen:<span class="string">"0x3"</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        previous_entry_length:<span class="string">"0x05"</span>,</span><br><span class="line">        encoding:<span class="string">"00001011"</span>,</span><br><span class="line">        content:<span class="string">"hello word"</span></span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        previous_entry_length:<span class="string">"0xF"</span>,</span><br><span class="line">        encoding:<span class="string">"11000000"</span>,</span><br><span class="line">        content:<span class="string">"10086"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    zlend:<span class="string">"0xff"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>如果前一个节点长度小于254字节,previous_entry_length会使用1字节空间保存这个长度,<br>如果大于254字节,将使用5字节长度保存这个值,这个机制会引起”连锁更新”</p>
-<h2 id="ziplist连锁更新的问题"><a href="#ziplist连锁更新的问题" class="headerlink" title="ziplist连锁更新的问题"></a>ziplist连锁更新的问题</h2><p>假设现有连续的三个压缩列表节点l1,l2,l3,长度分别为 253,253,253,现在往第一个节点前添加一个长度超过254的节点,这个时候l1要给previous_entry_length分配5个字节来存储长度,所以列表本身长度会变为257,这将导致l2也需要5字节存储l1的长度,l3也会产生同样的变化,这样由一个列表操作引起的一系列更新操作成为连锁更新</p>
+<h2 id="ziplist连锁更新的问题"><a href="#ziplist连锁更新的问题" class="headerlink" title="ziplist连锁更新的问题"></a>ziplist连锁更新的问题</h2><p>假设现有连续的三个压缩列表节点l1,l2,l3,长度分别为 253,253,253</p>
+<p>现在往第一个节点前添加一个长度超过254的节点,这个时候l1要给previous_entry_length分配5个字节来存储长度,所以列表本身长度会变为257,这将导致l2也需要5字节存储l1的长度,l3也会产生同样的变化,这样由一个列表操作引起的一系列更新操作成为连锁更新</p>
+<p>连锁更新的发生有可能会严重影响性能，所以要尽量避免</p>
 
     </div>
 

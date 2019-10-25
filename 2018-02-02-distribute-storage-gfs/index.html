@@ -51,17 +51,17 @@
   };
 </script>
 
-  <meta name="description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable, Megastore等上层数据库应用">
+  <meta name="description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GFS的读写基本都是其他应用的大文件批量数据读写">
 <meta name="keywords" content="GFS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式文件系统-GFS学习总结">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层文件存储服务GFS服务的是上层的Bigtable, Megastore等上层数据库应用">
+<meta property="og:description" content="GFS是谷歌的底层文件系统GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GFS的读写基本都是其他应用的大文件批量数据读写">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334712344_6225.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334931385_9113.jpg">
-<meta property="og:updated_time" content="2019-10-20T04:47:34.608Z">
+<meta property="og:updated_time" content="2019-10-25T14:16:58.208Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-02-distribute-storage-gfs&#x2F;1334712344_6225.jpg">
 
@@ -291,17 +291,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>GFS是谷歌的底层文件系统</p><h2 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h2><p>GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层文件存储服务</p><p>GFS服务的是上层的Bigtable, Megastore等上层数据库应用</p><a id="more"></a>
+        <p>GFS是谷歌的底层文件系统</p><h1 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h1><p>GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务</p><p>GFS服务的是上层的<code>Bigtable</code>, <code>Megastore</code>等上层数据库应用，所以GFS的读写基本都是其他应用的大文件批量数据读写</p><a id="more"></a>
 
 
 <p>Google于2003年放出了GFS的设计论文</p>
 <p>论文地址 <a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
-<h2 id="GFS的特点"><a href="#GFS的特点" class="headerlink" title="GFS的特点"></a>GFS的特点</h2><ol>
+<h1 id="GFS的特点"><a href="#GFS的特点" class="headerlink" title="GFS的特点"></a>GFS的特点</h1><ol>
 <li>仅支持文件追加操作 (适用于谷歌的爬虫数据存储需求)</li>
 <li>文件块大小为64M (优点很多, 减少元数据量, 减低master服务器压力, 缺点也有)</li>
 <li>采用中心化的master节点管理元数据 (可能造成单点故障和性能存储瓶颈)</li>
+<li>基于廉价服务器实现高容错高可用</li>
 </ol>
-<h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><p>GFS的核心服务分为三个部分</p>
+<h1 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h1><p>GFS的核心服务分为三个部分</p>
 <p><img alt="GFS核心" data-src="1334712344_6225.jpg"></p>
 <p>GFS采用中心化的管理方式,Client作为应用使用方,Master作为ChunkServer的管理者,ChunkServer来负责数据的存储,client与master进行交互获取控制信息,然后与对应的ChunkServer交互获取具体的数据</p>
 <ol>
@@ -315,7 +316,7 @@
 <p> 存储具体文件数据的服务器</p>
 </li>
 </ol>
-<h2 id="内部数据管理机制"><a href="#内部数据管理机制" class="headerlink" title="内部数据管理机制"></a>内部数据管理机制</h2><h3 id="Master数据存储"><a href="#Master数据存储" class="headerlink" title="Master数据存储"></a>Master数据存储</h3><p>MasterServer中存储3类信息:</p>
+<h1 id="内部数据管理机制"><a href="#内部数据管理机制" class="headerlink" title="内部数据管理机制"></a>内部数据管理机制</h1><h2 id="Master数据存储"><a href="#Master数据存储" class="headerlink" title="Master数据存储"></a>Master数据存储</h2><p>MasterServer中存储3类信息:</p>
 <ol>
 <li>文件系统的命名空间,整个文件系统的目录结构和Chunk基本信息</li>
 <li>文件与Chunk的映射关系</li>
@@ -329,10 +330,11 @@
 1P  : 是总数据大小
 64Mb: 是每个Chunk的容量
 3   : 是Chunk备份数量,默认为3
-64b : 是每个Chunk的元属性所占的空间</code></pre><h3 id="ChunkServer存储的数据"><a href="#ChunkServer存储的数据" class="headerlink" title="ChunkServer存储的数据"></a>ChunkServer存储的数据</h3><p>ChunkServer中存储Chunk的具体文件内容</p>
+64b : 是每个Chunk的元属性所占的空间</code></pre><h2 id="ChunkServer存储的数据"><a href="#ChunkServer存储的数据" class="headerlink" title="ChunkServer存储的数据"></a>ChunkServer存储的数据</h2><p>ChunkServer中存储Chunk的具体文件内容</p>
 <p>GFS将每个Chunk限制为64M, Chunk内部又分为众多的Block</p>
 <p>同时ChunkServer还负责进行具体每个Chunk文件的读写操作, 接受并执行每个主Chunk(租约Chunk)的指令</p>
-<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>由于GFS是由众多的廉价服务器组成的系统,所以系统的负载问题就是十分重要</p>
+<p>ChunkServer还需要定时与master进行心跳同步，上报自己持有的运行状态和维护的chunk信息</p>
+<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>由于GFS是由众多的廉价服务器组成的系统,所以系统的负载问题就是十分重要</p>
 <p>GFS会根据每个服务器的负载和最近操作数来决定新数据的分布,以保证数据分布的均匀</p>
 <p>一般有三个基本原则</p>
 <ol>
@@ -342,10 +344,10 @@
 </ol>
 <p>第二点十分重要但时常被忽略,如果没有第二条规则限制, 很容易出现新加的机器由于负载过低导致短时间内大量数据都往这个机器上操作, 导致新添加的机器被压垮</p>
 <p>ChunkServer启动时会向MasterServer上报存储的文件信息,也会周期性的向MasterServer上报自己的服务器状态, 以此来保证master上的ChunServer信息保持更新, 并及时发现ChunkServer的故障</p>
-<h3 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h3><p>GFS采用标记回收的方式处理,删除一个文件之后,GFS并不会立即要求归还可用的物理空间,而是在元数据中将文件表示为一个不可用的隐藏名字,标记一个删除的时间戳</p>
+<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>GFS采用标记回收的方式处理,删除一个文件之后,GFS并不会立即要求归还可用的物理空间,而是在元数据中将文件表示为一个不可用的隐藏名字,标记一个删除的时间戳</p>
 <p>Master定时检查,文件被删除超过一定时间,Master会删除文件的元数据信息,之后在与ChunkServer交互时通知ChunkServer删除对应的Chunk信息,ChunkServer来处理后续的存储释放</p>
 <p>过期的Chunk也是通过垃圾回收机制来进行删除</p>
-<h3 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h3><p>一但对一个文件采取快照, GFS会通过租约机制先停止所有Chunk的写操作, 更新所有Chunk副本的引用计数</p>
+<h2 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h2><p>一但对一个文件采取快照, GFS会通过租约机制先停止所有Chunk的写操作, 更新所有Chunk副本的引用计数</p>
 <p>然后之后的写请求在执行时会copy一个Chunk副本,后续的修改都会落到新的Chunk上面</p>
 <p>例如:</p>
 <p>对文件 f 执行快照生成 f_back , f在GFS中有三个Chunk: C1,C2,C3 </p>
@@ -354,26 +356,14 @@
 <p>当客户端向C3增加数据时,Master发现c3引用计数超过1,会通知ChunkServer生成新的C3’, 新的操作也会在C3’上面进行</p>
 <p>f的Chunk映射也会更新为 C1,C2,C3’</p>
 <blockquote>
-<p>ps: 这个机制有点像写时复制(Copy On Write)</p>
+<p>ps: 这个机制叫写时复制(Copy On Write)</p>
 </blockquote>
-<h2 id="读数据的流程"><a href="#读数据的流程" class="headerlink" title="读数据的流程"></a>读数据的流程</h2><p>GFS中的文件读取流程大致如下:</p>
+<h1 id="读写数据的流程"><a href="#读写数据的流程" class="headerlink" title="读写数据的流程"></a>读写数据的流程</h1><h2 id="读取流程"><a href="#读取流程" class="headerlink" title="读取流程"></a>读取流程</h2><p>GFS中的文件读取流程大致如下:</p>
 <pre><code>1. client发送给master需要获取的文件名和偏移量(告诉服务器我要读某文件的某段数据)
 2. master根据文件名查找命名空间中的文件对应的文件块id,返回对应的ChunkServer和副本的位置
 3. client根据返回的ChunkServer的位置信息去对应的Chunk上面取对应的数据</code></pre><blockquote>
-<p>ps: client会缓存一部分的ChunkServer元信息(某个ChunkServer在某个机器上面,副本分布情况等),但并不会缓存具体的文件内容, 以此降低Master服务气的负载, ChunkServer会对服务器的请求进行校验, 当ChunkServer信息有变动时, 客户端如果使用过期的Chunk信息, 能从ChunkServer得到反馈, 重新去Master获取最新的Chunk信息</p>
+<p>ps: client会缓存一部分的ChunkServer元信息(某个ChunkServer在某个机器上面,副本分布情况等),但并不会缓存具体的文件内容, 以此降低Master服务器的负载, ChunkServer会对服务器的请求进行校验, 当ChunkServer信息有变动时, 客户端如果使用过期的Chunk信息, 能从ChunkServer得到反馈, 重新去Master获取最新的Chunk信息</p>
 </blockquote>
-<h2 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h2><h3 id="Matser的容错"><a href="#Matser的容错" class="headerlink" title="Matser的容错"></a>Matser的容错</h3><p>Master会进行远程备份</p>
-<p>Master存储文件的信息有</p>
-<ol>
-<li>文件的命名空间信息(整个文件系统的目录)</li>
-<li>Chunk服务器和文件名的映射关系</li>
-<li>Chunk服务器的地址和副本信息</li>
-</ol>
-<p>对于前两种操作GFS通过操作日志提供容错,日志会被被分到远程服务器<br>最后一种保存在ChunkServer上, 当ChunkServer跟master注册时,或者Master启动时,使用轮询的方式去ChunkServer获取元数据</p>
-<h3 id="ChunkServer的容错"><a href="#ChunkServer的容错" class="headerlink" title="ChunkServer的容错"></a>ChunkServer的容错</h3><ol>
-<li>每个Chunk默认拥有3个副本,分布在不同的ChunkServer上面</li>
-<li>ChunkServer在发送数据之前会检查block的32的校验和,如果不一致就会上报Master,Master会从其他副本进行复制,并删除出错的副本数据</li>
-</ol>
 <h2 id="数据的写"><a href="#数据的写" class="headerlink" title="数据的写"></a>数据的写</h2><p>GFS中写入数据的流程如下:</p>
 <p><img alt="GFS写" data-src="1334931385_9113.jpg"></p>
 <p>master使用租约授权一个chunk副本为primary副本,执行client的写操作</p>
@@ -386,6 +376,42 @@
 <li>其它副本向primary汇报操作情况；</li>
 <li>primary回复client操作情况，任何副本错误都导致此次请求失败，并且此时副本处于不一致状态（写操作完成情况不一样）。client会尝试几次3到7的步骤，实在不行就只能重头来过了</li>
 </ol>
+<p>也就是说GFS也是使用持有租约的primary副本来进行一致性保证， 其他所有副本均按照primary确定的写入顺序执行</p>
+<h1 id="故障恢复和容错机制"><a href="#故障恢复和容错机制" class="headerlink" title="故障恢复和容错机制"></a>故障恢复和容错机制</h1><h2 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h2><p>GFS能使用checkpoint 文件和日志文件快速进行故障的恢复</p>
+<h2 id="副本复制"><a href="#副本复制" class="headerlink" title="副本复制"></a>副本复制</h2><p>GFS通过副本进行数据备份， 只要一个chunk有一个副本所在的机器存活，数据就可以恢复</p>
+<h2 id="Matser的容错"><a href="#Matser的容错" class="headerlink" title="Matser的容错"></a>Matser的容错</h2><p>Master会进行远程备份，Master存储文件的信息有</p>
+<ol>
+<li>文件的命名空间信息(整个文件系统的目录)</li>
+<li>Chunk服务器和文件名的映射关系</li>
+<li>Chunk服务器的地址和副本信息</li>
+</ol>
+<p>对于前两种操作GFS通过操作日志提供容错,日志会被被分到远程服务器<br>最后一种保存在ChunkServer上, 当ChunkServer跟master注册时,或者Master启动时,使用轮询的方式去ChunkServer获取元数据</p>
+<h2 id="ChunkServer的容错"><a href="#ChunkServer的容错" class="headerlink" title="ChunkServer的容错"></a>ChunkServer的容错</h2><ol>
+<li>每个Chunk默认拥有3个副本, 分布在不同的ChunkServer上面</li>
+<li>ChunkServer在发送数据之前会检查block的32的校验和,如果不一致就会上报Master,Master会从其他副本进行复制,并删除出错的副本数据</li>
+</ol>
+<blockquote>
+<p>ps：为什么是默认3个副本呢，是因为副本的分布要同时满足性能和安全性需求，也就是同一机架放两个副本，另一副本放到另一机架，平衡安全性和速度。<br>同时三个副本正好能覆盖chunk所有的可能存在的状态，1. 正常获得租约状态 2. 租约到期，进行转换  3. 作为其他chunk的副本 </p>
+</blockquote>
+<h1 id="其他优化的点"><a href="#其他优化的点" class="headerlink" title="其他优化的点"></a>其他优化的点</h1><ul>
+<li>文件树存储</li>
+</ul>
+<p>由于master需要存储所有的文件树和块的对应关系，采用了前缀树进行数据压缩，大大提高了可存储数据的容量</p>
+<ul>
+<li>高并发热点文件的读写</li>
+</ul>
+<p>GFS采用副本机制和错峰控制来处理热点文件的高并发读写，同时提出了一种长效解决方案：允许客户端读取客户端数据，形成客户端链</p>
+<ul>
+<li>为什么要采用中心化的服务</li>
+</ul>
+<p>为了简化系统设计，保持灵活性</p>
+<ul>
+<li>读数据时候的数据流</li>
+</ul>
+<p>GFS写入数据的时候客户端并不是采用星型或者树形结构，同时持有多个副本的链接并向副本发送数据，而是经过了一定的拓扑优化<br>客户端会将数据发送给离自己最近的节点s1，同时该节点会继续将数据发送给离自己最近的节点s2，没一个节点都发送给离自己最近同时又没有接受数据的节点，以其充分利用机器的带宽</p>
+<blockquote>
+<p>ps: 这个问题有点像旅行商问题</p>
+</blockquote>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
 <li>GFS是一个中心化的分布式文件系统, 文件的具体信息分块存储, 同一文件可能被分为多个Chunk块, 每个Chunk块有多个副本</li>
 <li>Master负责文件的元数据的管理, ChunkServer负责文件具体数据的管理</li>
@@ -459,7 +485,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS简介"><span class="nav-number">1.</span> <span class="nav-text">GFS简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS的特点"><span class="nav-number">2.</span> <span class="nav-text">GFS的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心组件"><span class="nav-number">3.</span> <span class="nav-text">核心组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部数据管理机制"><span class="nav-number">4.</span> <span class="nav-text">内部数据管理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Master数据存储"><span class="nav-number">4.1.</span> <span class="nav-text">Master数据存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChunkServer存储的数据"><span class="nav-number">4.2.</span> <span class="nav-text">ChunkServer存储的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡"><span class="nav-number">4.3.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾回收"><span class="nav-number">4.4.</span> <span class="nav-text">垃圾回收</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快照"><span class="nav-number">4.5.</span> <span class="nav-text">快照</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读数据的流程"><span class="nav-number">5.</span> <span class="nav-text">读数据的流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容错机制"><span class="nav-number">6.</span> <span class="nav-text">容错机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Matser的容错"><span class="nav-number">6.1.</span> <span class="nav-text">Matser的容错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ChunkServer的容错"><span class="nav-number">6.2.</span> <span class="nav-text">ChunkServer的容错</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据的写"><span class="nav-number">7.</span> <span class="nav-text">数据的写</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text">总结</span></a></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GFS简介"><span class="nav-number">1.</span> <span class="nav-text">GFS简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GFS的特点"><span class="nav-number">2.</span> <span class="nav-text">GFS的特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心组件"><span class="nav-number">3.</span> <span class="nav-text">核心组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内部数据管理机制"><span class="nav-number">4.</span> <span class="nav-text">内部数据管理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Master数据存储"><span class="nav-number">4.1.</span> <span class="nav-text">Master数据存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChunkServer存储的数据"><span class="nav-number">4.2.</span> <span class="nav-text">ChunkServer存储的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡"><span class="nav-number">4.3.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾回收"><span class="nav-number">4.4.</span> <span class="nav-text">垃圾回收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快照"><span class="nav-number">4.5.</span> <span class="nav-text">快照</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#读写数据的流程"><span class="nav-number">5.</span> <span class="nav-text">读写数据的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#读取流程"><span class="nav-number">5.1.</span> <span class="nav-text">读取流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据的写"><span class="nav-number">5.2.</span> <span class="nav-text">数据的写</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#故障恢复和容错机制"><span class="nav-number">6.</span> <span class="nav-text">故障恢复和容错机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#快速恢复"><span class="nav-number">6.1.</span> <span class="nav-text">快速恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#副本复制"><span class="nav-number">6.2.</span> <span class="nav-text">副本复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Matser的容错"><span class="nav-number">6.3.</span> <span class="nav-text">Matser的容错</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChunkServer的容错"><span class="nav-number">6.4.</span> <span class="nav-text">ChunkServer的容错</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他优化的点"><span class="nav-number">7.</span> <span class="nav-text">其他优化的点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

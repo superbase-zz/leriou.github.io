@@ -64,7 +64,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka_zk2.jpeg">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka_store.jpeg">
 <meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka_segment.jpeg">
-<meta property="og:updated_time" content="2019-10-23T15:40:14.388Z">
+<meta property="og:updated_time" content="2019-10-25T15:59:42.276Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2017-11-01-kafka-share-in-group&#x2F;kafka1.png">
 
@@ -305,43 +305,41 @@
 <h1 id="Kafka基础介绍"><a href="#Kafka基础介绍" class="headerlink" title="Kafka基础介绍"></a>Kafka基础介绍</h1><p>kafka作为一个消息平台, 其中有一些基础概念跟传统的消息队列服务对应</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">broker(instance)    承载服务的实例</span><br><span class="line">topic (queue)  		逻辑上的消息通道</span><br><span class="line">paitition(sharding) 一个消息通道进行存储的区域(物理上的,本质是对应着一个文件序列)</span><br><span class="line">consumer       		消费者 (通常指客户端的使用者)</span><br><span class="line">producer       		生产者 (也是客户端的使用者)</span><br><span class="line">consumer group   	消费者组 (虚拟概念, 消费者的逻辑分组)</span><br></pre></td></tr></table></figure>
 
-<h2 id="broker"><a href="#broker" class="headerlink" title="broker"></a>broker</h2><p>broker就相当于我们的kafka实例, 每个集群由多个broker组成, 每个broker具有完整的存储消息的功能, 多个broker可以组成broker集群, 但是这些实例不一定要分布在不同的机器上(虽然我们建议不要在同一个机器上部署多个broker)</p>
-<p>broker是链接<code>producer</code>和<code>consumer</code>的中间桥梁, 是消息真正的存储者, producer将消息发送给broker, broker对消息进行存储, 等待consumer消费和使用消息</p>
-<p>kafka的性能, 很大程度上取决于broker参数配置</p>
-<h2 id="topic"><a href="#topic" class="headerlink" title="topic"></a>topic</h2><p>topic就相当于其他消息队列中的queue, 我们发送消息需要指定topic, 读取消息也需要指定topic, 同一个topic可以有多个生产者和多个消费者</p>
-<p>topic是一个逻辑上的概念, 每个topic由至少一个或多个partition组成, 每个partition保存topic内的<code>一部分</code>消息</p>
-<p>topic内的消息无法保证有序, 除非只有一个partition</p>
-<h2 id="partition"><a href="#partition" class="headerlink" title="partition"></a>partition</h2><p>partition相当于是topic内部的一个分片 </p>
+<p><strong>broker</strong></p>
+<p>broker就相当于我们的kafka实例, 每个集群由多个broker组成, 每个broker具有完整的存储消息的功能, 多个broker可以组成broker集群, 但是这些实例不一定要分布在不同的机器上(虽然我们建议不要在同一个机器上部署多个broker)</p>
+<p>broker是链接<code>producer</code>和<code>consumer</code>的中间桥梁, 是消息真正的存储者, producer将消息发送给broker, broker对消息进行存储, 等待consumer消费和使用消息，kafka的性能, 很大程度上取决于broker参数配置</p>
+<p><strong>topic</strong></p>
+<p>topic就相当于其他消息队列中的queue, 我们发送消息需要指定topic, 读取消息也需要指定topic, 同一个topic可以有多个生产者和多个消费者</p>
+<p>topic是一个逻辑上的概念, 每个topic由至少一个或多个partition组成, 每个partition保存topic内的<code>一部分</code>消息。topic内的消息无法保证有序, 除非只有一个partition</p>
+<p><strong>partition</strong></p>
+<p>partition相当于是topic内部的一个分片 </p>
 <p>假如说我们有个topic其中有5个patition, 一个消息在每个topic中只会存储在一个patition中, 整个topic的消息等于该topic下所有partition的总和 </p>
 <p>每个partition至多只能有一个消费者, topic下的总消费者数量也受限于partition, 比如你topic有10个分片, 如果使用12个消费者就会有两个消费者永远获取不到数据  </p>
-<p>每个partition是一个文件集合, 单个partition里面的数据因为这个关系可以保持有序  </p>
-<p>partition还可以有自己的replication   </p>
-<p>replication只有一个功能, 就是提供数据冗余, 防止partition出问题时造成数据丢失  </p>
-<p>不过同一个partition的多个replication中同一时间只能有一个primary replication(通过选举得出)     </p>
-<p>由这个primary  replication来执行整个partition的数据操作</p>
-<h2 id="consumer"><a href="#consumer" class="headerlink" title="consumer"></a>consumer</h2><p>每个消费者可以消费一个topic的一个partition, 可以同时消费多个topic</p>
+<p>每个partition是一个文件集合, 集合内同一时刻只有一个文件可写入数据，单个partition里面的数据因为这个关系可以保持有序  </p>
+<p>partition还可以有自己的replication，replication只有一个功能, 就是提供数据冗余, 防止partition出问题时造成数据丢失 。不过同一个partition的多个replication中同一时间只能有一个primary replication(通过选举得出)，由这个primary  replication来执行整个partition的数据操作</p>
+<p><strong>consumer</strong></p>
+<p>每个消费者可以消费一个topic的一个partition, 可以同时消费多个topic</p>
 <p>consumer数量如果超过一个topic的分片数量, 会造成某些consumer永远消费不到数据</p>
 <p>消费者消费数据需要提交offset告诉broker自己已经消费过某条数据</p>
 <p>当topic新增一个consumer的时候会触发其他消费此topic的consumer group内consumer的<code>Rebalance</code>, 重新在consumer之间重新进行分区分配</p>
-<h2 id="consumer-group"><a href="#consumer-group" class="headerlink" title="consumer group"></a>consumer group</h2><p>消费者组也是一个逻辑上的概念, 每个消费者组内的消费者只能消费同一个topic内的某一条消息一次, 除非进行手动offset调整重新消费</p>
+<p><strong>consumer group</strong></p>
+<p>消费者组也是一个逻辑上的概念, 每个消费者组内的消费者只能消费同一个topic内的某一条消息一次, 除非进行手动offset调整重新消费</p>
 <p>如果某个topic中的数据希望同时给多个业务方使用, 每个业务方应该使用一个单独的consumer group</p>
-<h2 id="producer"><a href="#producer" class="headerlink" title="producer"></a>producer</h2><p>每个生产者可以为一个或多个topic生产数据, producer只负责将数据发送给broker, 后续操作通通由broker来负责</p>
-<h1 id="kafka的主要应用"><a href="#kafka的主要应用" class="headerlink" title="kafka的主要应用"></a>kafka的主要应用</h1><ol>
-<li><p>消息队列</p>
-<p> kafka通常被用作消息队列, 这也是kafka的主要用途之一, 因为他可以一定程度上保证消息的可靠和有序</p>
-</li>
-<li><p>日志/消息存储</p>
-<p> kafka由于基于文件存储, 所以很适合用来存储日志信息, 通知消息等有序且数据巨大的信息</p>
-</li>
-<li><p>数据总线</p>
-<p> kafka还适合在不同的存储系统和业务之间做数据总线, 这样可以方便的把一份数据传递给多方公用</p>
-</li>
+<p><strong>producer</strong></p>
+<p>每个生产者可以为一个或多个topic生产数据, producer只负责将数据发送给broker, 后续操作通通由broker来负责</p>
+<h1 id="kafka的主要应用何特点"><a href="#kafka的主要应用何特点" class="headerlink" title="kafka的主要应用何特点"></a>kafka的主要应用何特点</h1><p><strong>常见应用场景</strong></p>
+<ol>
+<li>消息队列：kafka通常被用作消息队列, 这也是kafka的主要用途之一, 因为他可以一定程度上保证消息的可靠和有序</li>
+<li>日志/消息存储：kafka由于基于文件存储, 所以很适合用来存储日志信息, 通知消息等有序且数据巨大的信息</li>
+<li>数据总线：kafka还适合在不同的存储系统和业务之间做数据总线, 这样可以方便的把一份数据传递给多方公用</li>
 </ol>
-<h2 id="kafka的特性"><a href="#kafka的特性" class="headerlink" title="kafka的特性"></a>kafka的特性</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><pre><code>1. 增加了partition层, 高度解耦, 支持分布式, 支持副本, 扩展方便
+<p><strong>优点</strong></p>
+<pre><code>1. 增加了partition层, 高度解耦, 支持分布式, 支持副本, 扩展方便
 2. 基于文件存储消息, 采用文件指针的读方式, 速度快, 且可重复读
 3. 保证多消费者情况下消息的有序性
-4. 在producer, broker, consumer三者做了大量性能优化,例如:`cache buff`和`sendfile()`等</code></pre><p>kafka的大部分特性都得益于partition的设计,由于采用了文件集合来存储每一个partition,使得kafka在性能和有序性方面获得了巨大的优势</p>
-<h3 id="kafka作为消息队列的缺点"><a href="#kafka作为消息队列的缺点" class="headerlink" title="kafka作为消息队列的缺点"></a>kafka作为消息队列的缺点</h3><pre><code>1. 只有topic一个逻辑隔离级别
+4. 在producer, broker, consumer三者做了大量性能优化,例如:`cache buff`和`sendfile()`等</code></pre><p>kafka的大部分分布式特性都得益于partition的设计,由于采用了文件集合来存储每一个partition,使得kafka在性能和有序性方面获得了巨大的优势</p>
+<p><strong>kafka作为消息队列的缺点</strong></p>
+<pre><code>1. 只有topic一个逻辑隔离级别
 2. 高并发依赖于partition数量限制, 扩展不是特别的方便
 3. 没有消息优先级机制
 4. 数据中心级别的数据同步不成熟
@@ -393,8 +391,7 @@
 <p>一般由以下四个类型文件组成</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xxx.index  						//segment的索引文件</span><br><span class="line">xxx.log    						//segment的数据文件</span><br><span class="line">xxx.timeindex            		//segment的时间索引</span><br><span class="line">leader-epoch-checkpoint   		//检查点文件</span><br></pre></td></tr></table></figure>
 
-<h1 id="使用kafka遇到的问题"><a href="#使用kafka遇到的问题" class="headerlink" title="使用kafka遇到的问题"></a>使用kafka遇到的问题</h1><h2 id="kafka的topic不消费"><a href="#kafka的topic不消费" class="headerlink" title="kafka的topic不消费"></a>kafka的topic不消费</h2><p><strong>产生原因</strong> </p>
-<p>topic中的消息容量是有限制的,假如短时间内某topic中进入了大量的消息<br>消费者来不及消费可能导致消费者的消费offset小于当前topic的最小消息偏移</p>
+<h1 id="使用kafka遇到的问题"><a href="#使用kafka遇到的问题" class="headerlink" title="使用kafka遇到的问题"></a>使用kafka遇到的问题</h1><p><strong>1.kafka的topic不消费</strong><br>原因：<br>topic中的消息容量是有限制的,假如短时间内某topic中进入了大量的消息<br>消费者来不及消费可能导致消费者的消费offset小于当前topic的最小消息偏移</p>
 <p>举例:<br>假如我们topic最大可以存储200万消息,消费者每分钟消费30万的消息<br>现在有个入消息的接口每分钟入100万的消息,那topic, consumer就会产生如下问题</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">"topic"</span>:&#123;</span><br><span class="line">		<span class="string">"start"</span>: <span class="number">211450</span>, <span class="comment">// 当前topic消息最小值</span></span><br><span class="line">		<span class="string">"end"</span>: <span class="number">2211450</span>, <span class="comment">// 当前topic的消息最大值</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"consumer"</span>:&#123;</span><br><span class="line">		<span class="string">"topic1"</span>: <span class="number">311450</span>, <span class="comment">// 消费者在topic中的消费位置</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 然后等了一分钟</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="string">"topic"</span>:&#123;</span><br><span class="line">		<span class="string">"start"</span>:<span class="number">2211450</span>,<span class="comment">// 当前最小的消息值</span></span><br><span class="line">		<span class="string">"end"</span>:<span class="number">4211450</span>,<span class="comment">// 当前最大的消息值</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"consumer"</span>:&#123;</span><br><span class="line">		<span class="string">"topic1"</span>: <span class="number">461450</span>, <span class="comment">// 消费者当前的消费消息位置</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -404,19 +401,26 @@
 <li>可以手动设置消费者的消费位置,将其置为 当前topic中可以找到的消息偏移位置</li>
 <li>可以重新设置消费方式,这种方式也是变相将该消费者在该topic的消费位置重置</li>
 </ol>
-<h2 id="kafka的topic不能直接删除"><a href="#kafka的topic不能直接删除" class="headerlink" title="kafka的topic不能直接删除"></a>kafka的topic不能直接删除</h2><p>原因: 因为要删除一个topic必须符合两个条件</p>
+<p><strong>2.kafka的topic不能直接删除</strong></p>
+<p>原因: 因为要删除一个topic必须符合两个条件</p>
 <ol>
 <li>无消费者消费  </li>
 <li>文件中无消息记录,普通的删除只能删除文件中的消息记录,无法删除消费者得消费信息</li>
 </ol>
 <p>方案: 将该topic的所有消费者消费偏移置为0 ,然后执行删除，或者使用kafka tool工具可以直接删除</p>
-<h2 id="kafka的分片数据分布不均匀"><a href="#kafka的分片数据分布不均匀" class="headerlink" title="kafka的分片数据分布不均匀"></a>kafka的分片数据分布不均匀</h2><p>原因: kafka早期的算法会根据key的hash值来对消息进行分配<br>如果没有key可能会被分配至随机的一个固定的partition中<br>这样会导致topic中的消息分布不均匀,</p>
+<p><strong>3.kafka的分片数据分布不均匀</strong></p>
+<p>原因: kafka早期的算法会根据key的hash值来对消息进行分配<br>如果没有key可能会被分配至随机的一个固定的partition中<br>这样会导致topic中的消息分布不均匀,</p>
 <p>方案: 1. 可以更改分配算法 2. 使用时间戳作为key的结尾 </p>
-<h2 id="kafka的消费者分组的使用"><a href="#kafka的消费者分组的使用" class="headerlink" title="kafka的消费者分组的使用"></a>kafka的消费者分组的使用</h2><p>描述: 由于每个消费者分组中的topic只能被消费一次<br>kafka可以通过消费者分组来对某一topic中的数据进行重复消费<br>我们可以通过给不同部门设置消费者分组来实现类似订阅的机制</p>
+<p><strong>4.kafka的消费者分组的使用</strong></p>
+<p>描述: 由于每个消费者分组中的topic只能被消费一次<br>kafka可以通过消费者分组来对某一topic中的数据进行重复消费<br>我们可以通过给不同部门设置消费者分组来实现类似订阅的机制</p>
 <p>举例: 我们有一个订单消息队列, topic为 <code>order-topic</code><br>我们可以通过给 订单部门和 物流部门 分配不同的消费者分组<br>来对同一个topic中的消息进行重复消费</p>
-<h1 id="Kafka的其他特性"><a href="#Kafka的其他特性" class="headerlink" title="Kafka的其他特性"></a>Kafka的其他特性</h1><h2 id="kafka事务"><a href="#kafka事务" class="headerlink" title="kafka事务"></a>kafka事务</h2><p>kafka现在已经支持事务, 这个是kafka一致性保证的重大进步</p>
+<h1 id="Kafka的高级特性和流处理"><a href="#Kafka的高级特性和流处理" class="headerlink" title="Kafka的高级特性和流处理"></a>Kafka的高级特性和流处理</h1><ul>
+<li>kafka事务</li>
+</ul>
+<p>kafka现在已经支持事务, 这个是kafka一致性保证的重大进步</p>
 <p>kafka的事务目前还有一定的限制, 实现方式是使用 事务ID和客户端id做幂等处理</p>
-<h2 id="kafka事务流程"><a href="#kafka事务流程" class="headerlink" title="kafka事务流程"></a>kafka事务流程</h2><ol>
+<p>kafka事务流程：</p>
+<ol>
 <li><p>生产者发起事务请求</p>
 </li>
 <li><p>发送消息</p>
@@ -428,20 +432,35 @@
 </ol>
 <p>如果客户端没有结束事务, kafka虽然将数据写入到了broker,但是不会让其他消费者客户端读到这部分数据</p>
 <p>这部分数据在kafka上会被标记为abort掉的数据</p>
-<h2 id="kafka多版本混布"><a href="#kafka多版本混布" class="headerlink" title="kafka多版本混布"></a>kafka多版本混布</h2><p>kafka现在支持多个kafka版本混合部署, 可以同时使用1.0 和2.0 版本组建一个kafka集群</p>
-<h1 id="高级应用-kafka-streams-kafka的流处理"><a href="#高级应用-kafka-streams-kafka的流处理" class="headerlink" title="高级应用(kafka streams):kafka的流处理"></a>高级应用(kafka streams):kafka的流处理</h1><h2 id="流处理"><a href="#流处理" class="headerlink" title="流处理"></a>流处理</h2><p>什么是流? 流一个无限持续的数据集，比如 用户的行为数据</p>
+<ul>
+<li>kafka多版本混布</li>
+</ul>
+<p>kafka现在支持多个kafka版本混合部署, 可以同时使用1.0 和2.0 版本组建一个kafka集群</p>
+<ul>
+<li>流处理</li>
+</ul>
+<p>什么是流? 流一个无限持续的数据集，比如 用户的行为数据</p>
 <p>流处理的目的是尽可能的保证业务处理的实时性，就是事件一旦发生我们就希望立刻处理</p>
 <p>目前常见的流处理框架有 spark, storm, flink等，kafka streaming与他们相比显得更为轻量和易用</p>
 <p>流处理更像业务逻辑的一部分, 而不是业务的分拆, 是一个独立的微服务, 而不是MapReduce任务</p>
-<h2 id="流处理的常用方法"><a href="#流处理的常用方法" class="headerlink" title="流处理的常用方法"></a>流处理的常用方法</h2><p>流处理常用的方法有 <code>filter /map /join /aggregate</code></p>
+<ul>
+<li>流处理的常用方法</li>
+</ul>
+<p>流处理常用的方法有 <code>filter /map /join /aggregate</code></p>
 <p>其中 <code>map/filter</code> 属于对单个数据进行的无状态操作</p>
 <p><code>join/aggregate</code> 属于数据统计需求, 有一定的状态要求</p>
 <p>此外还有<code>window函数</code>等</p>
 <p>kafka stream作为一个库的形式像我们提供了以上各种方法, 使得我们使用起来非常容易</p>
-<h2 id="使用kafka-streaming的一个场景"><a href="#使用kafka-streaming的一个场景" class="headerlink" title="使用kafka streaming的一个场景"></a>使用kafka streaming的一个场景</h2><p>例如在产品池项目中, 我们用 kafka stream 从canal的事件消息topic中接收数据  </p>
+<ul>
+<li>使用kafka streaming的一个场景</li>
+</ul>
+<p>例如在产品池项目中, 我们用 kafka stream 从canal的事件消息topic中接收数据  </p>
 <p>从中根据不同的消息内容将事件按照<code>库和表</code>发送给不同的后续topic, 达到了消息路由的功能  </p>
 <p>kafka stream将三个不同来源的topic中的待更新产品信息融合到同一个 待更新的产品信息Topic中  </p>
-<h2 id="Kstream和Ktable"><a href="#Kstream和Ktable" class="headerlink" title="Kstream和Ktable"></a>Kstream和Ktable</h2><p>kafka向我们提供了以下两个概念方便我们进行流处理</p>
+<ul>
+<li>Kstream和Ktable</li>
+</ul>
+<p>kafka向我们提供了以下两个概念方便我们进行流处理</p>
 <ol>
 <li>KStream</li>
 </ol>
@@ -529,7 +548,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka分享"><span class="nav-number">1.</span> <span class="nav-text">kafka分享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#消息传递在现代业务中的地位"><span class="nav-number">1.1.</span> <span class="nav-text">消息传递在现代业务中的地位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kafka基础介绍"><span class="nav-number">2.</span> <span class="nav-text">Kafka基础介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#broker"><span class="nav-number">2.1.</span> <span class="nav-text">broker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#topic"><span class="nav-number">2.2.</span> <span class="nav-text">topic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#partition"><span class="nav-number">2.3.</span> <span class="nav-text">partition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#consumer"><span class="nav-number">2.4.</span> <span class="nav-text">consumer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#consumer-group"><span class="nav-number">2.5.</span> <span class="nav-text">consumer group</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#producer"><span class="nav-number">2.6.</span> <span class="nav-text">producer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka的主要应用"><span class="nav-number">3.</span> <span class="nav-text">kafka的主要应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的特性"><span class="nav-number">3.1.</span> <span class="nav-text">kafka的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">3.1.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka作为消息队列的缺点"><span class="nav-number">3.1.2.</span> <span class="nav-text">kafka作为消息队列的缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka大概工作流程示意图"><span class="nav-number">4.</span> <span class="nav-text">kafka大概工作流程示意图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka为什么这么快"><span class="nav-number">5.</span> <span class="nav-text">kafka为什么这么快</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka和ZooKeeper"><span class="nav-number">5.1.</span> <span class="nav-text">kafka和ZooKeeper</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka数据存储"><span class="nav-number">6.</span> <span class="nav-text">kafka数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#segment内的存储细节"><span class="nav-number">6.1.</span> <span class="nav-text">segment内的存储细节</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用kafka遇到的问题"><span class="nav-number">7.</span> <span class="nav-text">使用kafka遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的topic不消费"><span class="nav-number">7.1.</span> <span class="nav-text">kafka的topic不消费</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的topic不能直接删除"><span class="nav-number">7.2.</span> <span class="nav-text">kafka的topic不能直接删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的分片数据分布不均匀"><span class="nav-number">7.3.</span> <span class="nav-text">kafka的分片数据分布不均匀</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的消费者分组的使用"><span class="nav-number">7.4.</span> <span class="nav-text">kafka的消费者分组的使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kafka的其他特性"><span class="nav-number">8.</span> <span class="nav-text">Kafka的其他特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka事务"><span class="nav-number">8.1.</span> <span class="nav-text">kafka事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka事务流程"><span class="nav-number">8.2.</span> <span class="nav-text">kafka事务流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka多版本混布"><span class="nav-number">8.3.</span> <span class="nav-text">kafka多版本混布</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#高级应用-kafka-streams-kafka的流处理"><span class="nav-number">9.</span> <span class="nav-text">高级应用(kafka streams):kafka的流处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#流处理"><span class="nav-number">9.1.</span> <span class="nav-text">流处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流处理的常用方法"><span class="nav-number">9.2.</span> <span class="nav-text">流处理的常用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用kafka-streaming的一个场景"><span class="nav-number">9.3.</span> <span class="nav-text">使用kafka streaming的一个场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kstream和Ktable"><span class="nav-number">9.4.</span> <span class="nav-text">Kstream和Ktable</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka分享"><span class="nav-number">1.</span> <span class="nav-text">kafka分享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#消息传递在现代业务中的地位"><span class="nav-number">1.1.</span> <span class="nav-text">消息传递在现代业务中的地位</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kafka基础介绍"><span class="nav-number">2.</span> <span class="nav-text">Kafka基础介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka的主要应用何特点"><span class="nav-number">3.</span> <span class="nav-text">kafka的主要应用何特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka大概工作流程示意图"><span class="nav-number">4.</span> <span class="nav-text">kafka大概工作流程示意图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka为什么这么快"><span class="nav-number">5.</span> <span class="nav-text">kafka为什么这么快</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka和ZooKeeper"><span class="nav-number">5.1.</span> <span class="nav-text">kafka和ZooKeeper</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka数据存储"><span class="nav-number">6.</span> <span class="nav-text">kafka数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#segment内的存储细节"><span class="nav-number">6.1.</span> <span class="nav-text">segment内的存储细节</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用kafka遇到的问题"><span class="nav-number">7.</span> <span class="nav-text">使用kafka遇到的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Kafka的高级特性和流处理"><span class="nav-number">8.</span> <span class="nav-text">Kafka的高级特性和流处理</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

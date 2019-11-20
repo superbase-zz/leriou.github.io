@@ -59,7 +59,7 @@
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
 <meta property="og:description" content="背景所有的推荐系统都有一个基本的要求：不给用户推荐重复的信息这里的重复的信息有两层含义   这个信息是id完全相同的一条信息 这个很好理解，就是一模一样的两条信息，从数据库的角度将就是信息记录的主键id都相同 如果用户已经接受过一次id为10086的信息的推荐，那这个10086就不能出现在后续的同类推荐中  这两个个信息相似度很高，但是id不同 这种情况出现于两条信息内容相似，比如有两篇文章100">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-09T02:10:45.716Z">
+<meta property="og:updated_time" content="2019-11-20T12:04:53.187Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2019-04-01-recommended-system-filter-module-md/">
@@ -344,6 +344,7 @@
 </ol>
 <h3 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a>缺点</h3><ol>
 <li>有误判</li>
+<li>性能不如</li>
 </ol>
 <h1 id="处理相似文本的重复"><a href="#处理相似文本的重复" class="headerlink" title="处理相似文本的重复"></a>处理相似文本的重复</h1><p>能处理相同的id造成的重复之后，如果我们可以找出一个文章的相似内容， 只要把相似的内容id也添加到需要过滤的集合， 就可以完成对相似内容的过滤</p>
 <h2 id="simhash"><a href="#simhash" class="headerlink" title="simhash"></a>simhash</h2><p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>

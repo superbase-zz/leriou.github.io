@@ -51,15 +51,15 @@
   };
 </script>
 
-  <meta name="description" content="记由于公司内部的研发团队越来越多的接触到复杂的查询需求，也越来越多的依赖大数据部门提供的es搜索引擎提供查询服务特此整理一些es常用的查询语句用于培训数据初始化和准备工作es和kibana安装可以从 https:&#x2F;&#x2F;github.com&#x2F;leriou&#x2F;docker-env&#x2F;tree&#x2F;master&#x2F;elasticsearch">
-<meta name="keywords" content="推荐系统">
+  <meta name="description" content="前记由于公司内部的研发团队越来越多的接触到复杂的查询需求，也越来越多的依赖大数据部门提供的es搜索引擎提供查询服务特此整理一些es常用的查询语句用于培训数据初始化和准备工作es和kibana安装可以从 https:&#x2F;&#x2F;github.com&#x2F;leriou&#x2F;docker-env&#x2F;tree&#x2F;master&#x2F;elasticsearch">
+<meta name="keywords" content="Elasticsearch">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Elasticsearch中的查询语句示例">
+<meta property="og:title" content="Elasticsearch中的常用查询语句示例">
 <meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2019-12-25-es-dsl&#x2F;index.html">
 <meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="记由于公司内部的研发团队越来越多的接触到复杂的查询需求，也越来越多的依赖大数据部门提供的es搜索引擎提供查询服务特此整理一些es常用的查询语句用于培训数据初始化和准备工作es和kibana安装可以从 https:&#x2F;&#x2F;github.com&#x2F;leriou&#x2F;docker-env&#x2F;tree&#x2F;master&#x2F;elasticsearch">
+<meta property="og:description" content="前记由于公司内部的研发团队越来越多的接触到复杂的查询需求，也越来越多的依赖大数据部门提供的es搜索引擎提供查询服务特此整理一些es常用的查询语句用于培训数据初始化和准备工作es和kibana安装可以从 https:&#x2F;&#x2F;github.com&#x2F;leriou&#x2F;docker-env&#x2F;tree&#x2F;master&#x2F;elasticsearch">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-12-26T14:31:52.740Z">
+<meta property="og:updated_time" content="2019-12-26T14:34:43.338Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2019-12-25-es-dsl/">
@@ -76,7 +76,7 @@
   };
 </script>
 
-  <title>Elasticsearch中的查询语句示例 | Leriou's Tavern</title>
+  <title>Elasticsearch中的常用查询语句示例 | Leriou's Tavern</title>
   
 
 
@@ -232,7 +232,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          Elasticsearch中的查询语句示例
+          Elasticsearch中的常用查询语句示例
         </h2>
 
         <div class="post-meta">
@@ -242,7 +242,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-06-01 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-01T00:00:00+08:00">2019-06-01</time>
+              <time title="Created: 2019-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2019-12-25T00:00:00+08:00">2019-12-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -250,14 +250,14 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index">
-                    <span itemprop="name">系统设计</span>
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
+                    <span itemprop="name">编程工具</span>
                   </a>
                 </span>
             </span>
 
           
-            <span id="/2019-12-25-es-dsl/" class="post-meta-item leancloud_visitors" data-flag-title="Elasticsearch中的查询语句示例" title="Views">
+            <span id="/2019-12-25-es-dsl/" class="post-meta-item leancloud_visitors" data-flag-title="Elasticsearch中的常用查询语句示例" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -288,7 +288,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="记"><a href="#记" class="headerlink" title="记"></a>记</h1><p>由于公司内部的研发团队越来越多的接触到复杂的查询需求，也越来越多的依赖大数据部门提供的es搜索引擎提供查询服务</p><p>特此整理一些es常用的查询语句用于培训</p><h1 id="数据初始化和准备工作"><a href="#数据初始化和准备工作" class="headerlink" title="数据初始化和准备工作"></a>数据初始化和准备工作</h1><h2 id="es和kibana安装"><a href="#es和kibana安装" class="headerlink" title="es和kibana安装"></a>es和kibana安装</h2><p>可以从 <a href="https://github.com/leriou/docker-env/tree/master/elasticsearch" target="_blank" rel="noopener">https://github.com/leriou/docker-env/tree/master/elasticsearch</a></p><a id="more"></a>
+        <h1 id="前记"><a href="#前记" class="headerlink" title="前记"></a>前记</h1><p>由于公司内部的研发团队越来越多的接触到复杂的查询需求，也越来越多的依赖大数据部门提供的es搜索引擎提供查询服务</p><p>特此整理一些es常用的查询语句用于培训</p><h1 id="数据初始化和准备工作"><a href="#数据初始化和准备工作" class="headerlink" title="数据初始化和准备工作"></a>数据初始化和准备工作</h1><h2 id="es和kibana安装"><a href="#es和kibana安装" class="headerlink" title="es和kibana安装"></a>es和kibana安装</h2><p>可以从 <a href="https://github.com/leriou/docker-env/tree/master/elasticsearch" target="_blank" rel="noopener">https://github.com/leriou/docker-env/tree/master/elasticsearch</a></p><a id="more"></a>
 
 
 <p>直接使用docker编排文件构建基于docker的es本地服务</p>
@@ -356,24 +356,21 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag"># 推荐系统</a>
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2019-04-01-recommended-system-filter-module-md/" rel="next" title="如何设计一个海量数据过滤模块">
-                  <i class="fa fa-chevron-left"></i> 如何设计一个海量数据过滤模块
+                <a href="/2019-06-01-recommended-system-ranking-system-md/" rel="next" title="排行榜系统设计">
+                  <i class="fa fa-chevron-left"></i> 排行榜系统设计
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019-06-01-recommended-system-ranking-system-md/" rel="prev" title="排行榜系统设计">
-                  排行榜系统设计 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
       </footer>
@@ -413,7 +410,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#记"><span class="nav-number">1.</span> <span class="nav-text">记</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据初始化和准备工作"><span class="nav-number">2.</span> <span class="nav-text">数据初始化和准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#es和kibana安装"><span class="nav-number">2.1.</span> <span class="nav-text">es和kibana安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备测试数据"><span class="nav-number">2.2.</span> <span class="nav-text">准备测试数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单查询示范"><span class="nav-number">3.</span> <span class="nav-text">简单查询示范</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#n对n查询"><span class="nav-number">3.1.</span> <span class="nav-text">n对n查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#万能匹配-match"><span class="nav-number">3.2.</span> <span class="nav-text">万能匹配-match</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他常用查询（range-exist-a-and-b等）"><span class="nav-number">3.3.</span> <span class="nav-text">其他常用查询（range, exist, a and b等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询原理解析"><span class="nav-number">3.4.</span> <span class="nav-text">查询原理解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#es文档字段的存储逻辑"><span class="nav-number">3.4.1.</span> <span class="nav-text">es文档字段的存储逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#match为什么可以做到万能查询"><span class="nav-number">3.4.2.</span> <span class="nav-text">match为什么可以做到万能查询</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分值相关查询"><span class="nav-number">4.</span> <span class="nav-text">分值相关查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#filter过滤"><span class="nav-number">4.1.</span> <span class="nav-text">filter过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#constant-score和boost提权"><span class="nav-number">4.2.</span> <span class="nav-text">constant_score和boost提权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#function-score"><span class="nav-number">4.3.</span> <span class="nav-text">function_score</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询示例：根据用户关注的标签匹配数量计算得分"><span class="nav-number">4.4.</span> <span class="nav-text">查询示例：根据用户关注的标签匹配数量计算得分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#聚合查询"><span class="nav-number">5.</span> <span class="nav-text">聚合查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#terms求count值"><span class="nav-number">5.1.</span> <span class="nav-text">terms求count值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#avg求平均值"><span class="nav-number">5.2.</span> <span class="nav-text">avg求平均值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他查询和dsl"><span class="nav-number">6.</span> <span class="nav-text">其他查询和dsl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原子更新文档"><span class="nav-number">6.1.</span> <span class="nav-text">原子更新文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#explain"><span class="nav-number">6.2.</span> <span class="nav-text">explain</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前记"><span class="nav-number">1.</span> <span class="nav-text">前记</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据初始化和准备工作"><span class="nav-number">2.</span> <span class="nav-text">数据初始化和准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#es和kibana安装"><span class="nav-number">2.1.</span> <span class="nav-text">es和kibana安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备测试数据"><span class="nav-number">2.2.</span> <span class="nav-text">准备测试数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单查询示范"><span class="nav-number">3.</span> <span class="nav-text">简单查询示范</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#n对n查询"><span class="nav-number">3.1.</span> <span class="nav-text">n对n查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#万能匹配-match"><span class="nav-number">3.2.</span> <span class="nav-text">万能匹配-match</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他常用查询（range-exist-a-and-b等）"><span class="nav-number">3.3.</span> <span class="nav-text">其他常用查询（range, exist, a and b等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询原理解析"><span class="nav-number">3.4.</span> <span class="nav-text">查询原理解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#es文档字段的存储逻辑"><span class="nav-number">3.4.1.</span> <span class="nav-text">es文档字段的存储逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#match为什么可以做到万能查询"><span class="nav-number">3.4.2.</span> <span class="nav-text">match为什么可以做到万能查询</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分值相关查询"><span class="nav-number">4.</span> <span class="nav-text">分值相关查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#filter过滤"><span class="nav-number">4.1.</span> <span class="nav-text">filter过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#constant-score和boost提权"><span class="nav-number">4.2.</span> <span class="nav-text">constant_score和boost提权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#function-score"><span class="nav-number">4.3.</span> <span class="nav-text">function_score</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询示例：根据用户关注的标签匹配数量计算得分"><span class="nav-number">4.4.</span> <span class="nav-text">查询示例：根据用户关注的标签匹配数量计算得分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#聚合查询"><span class="nav-number">5.</span> <span class="nav-text">聚合查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#terms求count值"><span class="nav-number">5.1.</span> <span class="nav-text">terms求count值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#avg求平均值"><span class="nav-number">5.2.</span> <span class="nav-text">avg求平均值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他查询和dsl"><span class="nav-number">6.</span> <span class="nav-text">其他查询和dsl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原子更新文档"><span class="nav-number">6.1.</span> <span class="nav-text">原子更新文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#explain"><span class="nav-number">6.2.</span> <span class="nav-text">explain</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

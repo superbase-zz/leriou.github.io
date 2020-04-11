@@ -1,414 +1,162 @@
-<!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="MapReduce," />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多">
+<!DOCTYPE html><html lang="en"><head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内) 我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多 这个事情让我很好奇Google的搜索引擎为什么速度这么快 搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理 后来从网上搜索">
 <meta name="keywords" content="MapReduce">
 <meta property="og:type" content="article">
 <meta property="og:title" content="学习分布式计算框架-MapReduce">
-<meta property="og:url" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-08-distribute-map-reduce&#x2F;index.html">
-<meta property="og:site_name" content="Leriou&#39;s Tavern">
-<meta property="og:description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多">
+<meta property="og:url" content="https://leriou.github.io/2018-02-08-distribute-map-reduce/index.html">
+<meta property="og:site_name" content="Leriou's Tavern">
+<meta property="og:description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内) 我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多 这个事情让我很好奇Google的搜索引擎为什么速度这么快 搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理 后来从网上搜索">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-08-distribute-map-reduce&#x2F;map-reduce.bakedsvg.svg">
+<meta property="og:image" content="https://leriou.github.io/2018-02-08-distribute-map-reduce/map-reduce.bakedsvg.svg">
 <meta property="og:updated_time" content="2019-11-09T02:17:21.303Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;leriou.github.io&#x2F;2018-02-08-distribute-map-reduce&#x2F;map-reduce.bakedsvg.svg">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="https://leriou.github.io/2018-02-08-distribute-map-reduce/"/>
-
-
-
-
-
-  <title>学习分布式计算框架-MapReduce | Leriou's Tavern</title>
-  
-
-
-
-
-
-
-
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  
-  
+<meta name="twitter:image" content="https://leriou.github.io/2018-02-08-distribute-map-reduce/map-reduce.bakedsvg.svg">
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
     
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>学习分布式计算框架-MapReduce</title>
+    <!-- styles -->
+    
+    <!-- persian styles -->
+    
+      
+    
+    <!-- rss -->
+    
+    
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
 
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Leriou's Tavern</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/%20%7C%7C%20about">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018-03-09-woolgather-social-problem/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018-02-02-distribute-storage-gfs/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://leriou.github.io/2018-02-08-distribute-map-reduce/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;text=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;is_video=false&amp;description=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=学习分布式计算框架-MapReduce&amp;body=Check out this article: https://leriou.github.io/2018-02-08-distribute-map-reduce/" target="_blank" rel="noopener"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;name=学习分布式计算框架-MapReduce&amp;description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;t=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
     </div>
-      
-        <p class="site-subtitle">我可能就是在扯淡 ^_^!</p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MapReduce"><span class="toc-number">1.</span> <span class="toc-text">MapReduce</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Map"><span class="toc-number">1.1.</span> <span class="toc-text">Map</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reduce"><span class="toc-number">1.2.</span> <span class="toc-text">Reduce</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#过程图"><span class="toc-number">1.3.</span> <span class="toc-text">过程图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实例"><span class="toc-number">2.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#代码-单机版"><span class="toc-number">2.1.</span> <span class="toc-text">代码(单机版)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MapReduce类"><span class="toc-number">2.1.1.</span> <span class="toc-text">MapReduce类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#map函数"><span class="toc-number">2.1.2.</span> <span class="toc-text">map函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reduce函数"><span class="toc-number">2.1.3.</span> <span class="toc-text">reduce函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
 </div>
 
-<nav class="site-nav">
-  
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        学习分布式计算框架-MapReduce
+    </h1>
 
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            Home
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            About
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            Tags
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            Categories
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            Archives
-          </a>
-        </li>
-      
 
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            Search
-          </a>
-        </li>
-      
-    </ul>
-  
 
-  
-    <div class="site-search">
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">Leriou's Tavern</span>
+      </span>
       
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="Searching..." spellcheck="false"
-             type="text" id="local-search-input">
+    <div class="postdate">
+      
+        <time datetime="2018-02-08T03:07:00.000Z" itemprop="datePublished">2018-02-08</time>
+        
+      
     </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
 
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/">编程工具</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/MapReduce/" rel="tag">MapReduce</a>
+    </div>
 
 
     </div>
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
+  </header>
   
 
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-02-08-distribute-map-reduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">学习分布式计算框架-MapReduce</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-08T11:07:00+08:00">
-                2018-02-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
-                    <span itemprop="name">编程工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018-02-08-distribute-map-reduce/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018-02-08-distribute-map-reduce/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018-02-08-distribute-map-reduce/" class="leancloud_visitors" data-flag-title="学习分布式计算框架-MapReduce">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">Visitors&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)</p><p>我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多</p><a id="more"></a>
-
+  <div class="content" itemprop="articleBody">
+    <p>最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内)</p>
+<p>我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多</p>
 <p>这个事情让我很好奇Google的搜索引擎为什么速度这么快</p>
 <p>搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理</p>
 <p>后来从网上搜索了一下,发现google现有的搜索引擎是基于Caffeine的增量索引系统构建的</p>
@@ -428,912 +176,164 @@ reduce函数接收一个k,v1&lt;list&gt;, 返回一个v2&lt;list&gt;</code></pre
 <p>ps:大多数情况下map的返回结果不能直接用于reduce函数,需要特殊处理一下</p>
 </blockquote>
 <h2 id="过程图"><a href="#过程图" class="headerlink" title="过程图"></a>过程图</h2><p>以下是一个很详细的对MongoDB中的MapReduce过程的解读图</p>
-<p><img alt="mr" data-src="map-reduce.bakedsvg.svg"></p>
+<p><img src="map-reduce.bakedsvg.svg" alt="mr"></p>
 <p>我们可以看到map函数的输入是多个被查询过滤过的文档集合,返回值是一个map对应的值列表,我们可以认为map函数式对所有符合条件的数据进行一次简单的处理</p>
 <p>reduce则是将这个值列表按照key进行处理,即对map的结果进行最终结果操作</p>
 <h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p>我们用一个实际的问题来描述MapReduce的思想</p>
 <p>假设我们有一个文件集合(C),里面包含M个文档,我们要对文件集合中的文档进行单词次数统计,统计在所有文档中的每个单词出现的次数</p>
 <p>可以用以下过程描述:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">map</span>(String key, String value): <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents for each word w in value:</span></span><br><span class="line">    EmitIntermediate(w, <span class="string">"1"</span>);<span class="comment">// 该函数返回一个[("to",1),("yours",12)]这样的列表数据</span></span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values): <span class="comment">// key: a word eg: "t1"</span></span><br><span class="line">    <span class="comment">// values: a list of counts 示例: [1,2,3]</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">      result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result)); <span class="comment">// 该函数同样返回一个[("to",1),("yours",12)]的数据</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">map</span>(String key, String value): <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents for each word w in value:</span></span><br><span class="line">    EmitIntermediate(w, <span class="string">"1"</span>);<span class="comment">// 该函数返回一个[("to",1),("yours",12)]这样的列表数据</span></span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values): <span class="comment">// key: a word eg: "t1"</span></span><br><span class="line">    <span class="comment">// values: a list of counts 示例: [1,2,3]</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">      result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result)); <span class="comment">// 该函数同样返回一个[("to",1),("yours",12)]的数据</span></span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="代码-单机版"><a href="#代码-单机版" class="headerlink" title="代码(单机版)"></a>代码(单机版)</h2><p>以下是使用mapreduce进行文档词频统计的示例代码</p>
 <p>其中的主要代码简单解释一下</p>
 <h3 id="MapReduce类"><a href="#MapReduce类" class="headerlink" title="MapReduce类"></a>MapReduce类</h3><p><code>MapReduce</code>类是一个通用的MapReduce框架,理论上任意MapReduce任务都可以套用这个框架</p>
 <p>要处理不同的问题我们只需要修改对应的map和reduce函数即可</p>
 <p>MapReduce类接收3个参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i:       要处理的数据源,格式是一个普通的字典; </span><br><span class="line">mapper:  映射函数,该函接收一个kv键值对,根据需要对每个v值进行处理,返回一个(k,v&lt;list&gt;),此处的k值并不一定是传入的k值; </span><br><span class="line">reducer: 压缩函数,接收一个(k,v&lt;list&gt;),根据需求对数据进行压缩合并;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i:       要处理的数据源,格式是一个普通的字典; </span><br><span class="line">mapper:  映射函数,该函接收一个kv键值对,根据需要对每个v值进行处理,返回一个(k,v&lt;list&gt;),此处的k值并不一定是传入的k值; </span><br><span class="line">reducer: 压缩函数,接收一个(k,v&lt;list&gt;),根据需求对数据进行压缩合并;</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="map函数"><a href="#map函数" class="headerlink" title="map函数"></a>map函数</h3><p>其中<code>get_most_common_from_text</code>使用了结巴分词插件</p>
 <p>参数:</p>
-<pre><code>k:&quot;a&quot;
-v:&quot;The quick brown fox jumped over the lazy grey dogs.&quot;</code></pre><p>返回:</p>
-<pre><code>eg: [(&quot;the&quot;,1),(&quot;quick&quot;,1),(&quot;fox&quot;,1)...] </code></pre><h3 id="reduce函数"><a href="#reduce函数" class="headerlink" title="reduce函数"></a>reduce函数</h3><p>参数:</p>
-<pre><code>k:&quot;the&quot;
+<pre><code>k:"a"
+v:"The quick brown fox jumped over the lazy grey dogs."</code></pre><p>返回:</p>
+<pre><code>eg: [("the",1),("quick",1),("fox",1)...] </code></pre><h3 id="reduce函数"><a href="#reduce函数" class="headerlink" title="reduce函数"></a>reduce函数</h3><p>参数:</p>
+<pre><code>k:"the"
 v&lt;list&gt;:[1,1,1]</code></pre><p>返回: </p>
-<pre><code>[(&quot;the&quot;,3),(&quot;quick&quot;:1)...]</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MapReduce</span>:</span></span><br><span class="line">    __doc__ = <span class="string">'''提供map_reduce功能'''</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map_reduce</span><span class="params">(i, mapper, reducer)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        map_reduce方法</span></span><br><span class="line"><span class="string">        :param i: 需要MapReduce的集合</span></span><br><span class="line"><span class="string">        :param mapper: 自定义mapper方法</span></span><br><span class="line"><span class="string">        :param reducer: 自定义reducer方法</span></span><br><span class="line"><span class="string">        :return: 以自定义reducer方法的返回值为元素的一个列表</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        intermediate = []  <span class="comment"># 存放所有的(intermediate_key, intermediate_value)</span></span><br><span class="line">        <span class="keyword">for</span> (key, value) <span class="keyword">in</span> i.items():</span><br><span class="line">            intermediate.extend(mapper(key,value))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># sorted返回一个排序好的list，因为list中的元素是一个个的tuple，key设定按照tuple中第几个元素排序</span></span><br><span class="line">        <span class="comment"># groupby把迭代器中相邻的重复元素挑出来放在一起,key设定按照tuple中第几个元素为关键字来挑选重复元素</span></span><br><span class="line">        <span class="comment"># 下面的循环中groupby返回的key是intermediate_key，而group是个list，是1个或多个</span></span><br><span class="line">        <span class="comment"># 有着相同intermediate_key的(intermediate_key, intermediate_value)</span></span><br><span class="line">        groups = &#123;&#125;</span><br><span class="line">        <span class="keyword">for</span> key, group <span class="keyword">in</span> itertools.groupby(sorted(intermediate, key=<span class="keyword">lambda</span> im: im[<span class="number">0</span>]), key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>]):</span><br><span class="line">            groups[key] = [y <span class="keyword">for</span> x, y <span class="keyword">in</span> group]</span><br><span class="line">        <span class="comment"># groups是一个字典，其key为上面说到的intermediate_key，value为所有对应intermediate_key的intermediate_value</span></span><br><span class="line">        <span class="comment"># 组成的一个列表</span></span><br><span class="line">        <span class="comment"># print(groups)</span></span><br><span class="line">        <span class="keyword">return</span> [reducer(intermediate_key, groups[intermediate_key]) <span class="keyword">for</span> intermediate_key <span class="keyword">in</span> groups]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_most_common_from_text</span><span class="params">(self,text,n = <span class="number">100</span>)</span>:</span></span><br><span class="line">        word_list = [x <span class="keyword">for</span> x <span class="keyword">in</span> jieba.cut(text) <span class="keyword">if</span> len(x) &gt;= <span class="number">2</span>]</span><br><span class="line">        <span class="keyword">return</span> Counter(word_list).most_common(n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:文档名, v:文档内容</span></span><br><span class="line">        <span class="keyword">return</span> self.get_most_common_from_text(v,<span class="number">10000</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reducer</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:词  v:词出现的次数</span></span><br><span class="line">         <span class="keyword">return</span> k, sum(v)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        </span><br><span class="line">        i = &#123;</span><br><span class="line">            <span class="string">"a"</span>:<span class="string">"The quick brown fox jumped over the lazy grey dogs."</span>,</span><br><span class="line">            <span class="string">"b"</span>:<span class="string">"That's one small step for a man, one giant leap for mankind."</span>,</span><br><span class="line">            <span class="string">"c"</span>:<span class="string">"　　Mary had a little lamb,Its fleece was white as snow;And everywhere that Mary went,The lamb was sure to go"</span>,</span><br><span class="line">            <span class="string">"d"</span>:<span class="string">"I pledge to honor and defend you and yours above all others"</span>,</span><br><span class="line">            <span class="string">"e"</span>:<span class="string">"To share in blessings and burdens, to be your advocate, your champion"</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        t = MapReduce.map_reduce(i,self.map,self.reducer)</span><br><span class="line">        print(t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">m = test()</span><br><span class="line">m.run()</span><br></pre></td></tr></table></figure>
+<pre><code>[("the",3),("quick":1)...]</code></pre><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MapReduce</span>:</span></span><br><span class="line">    __doc__ = <span class="string">'''提供map_reduce功能'''</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map_reduce</span><span class="params">(i, mapper, reducer)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        map_reduce方法</span></span><br><span class="line"><span class="string">        :param i: 需要MapReduce的集合</span></span><br><span class="line"><span class="string">        :param mapper: 自定义mapper方法</span></span><br><span class="line"><span class="string">        :param reducer: 自定义reducer方法</span></span><br><span class="line"><span class="string">        :return: 以自定义reducer方法的返回值为元素的一个列表</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        intermediate = []  <span class="comment"># 存放所有的(intermediate_key, intermediate_value)</span></span><br><span class="line">        <span class="keyword">for</span> (key, value) <span class="keyword">in</span> i.items():</span><br><span class="line">            intermediate.extend(mapper(key,value))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># sorted返回一个排序好的list，因为list中的元素是一个个的tuple，key设定按照tuple中第几个元素排序</span></span><br><span class="line">        <span class="comment"># groupby把迭代器中相邻的重复元素挑出来放在一起,key设定按照tuple中第几个元素为关键字来挑选重复元素</span></span><br><span class="line">        <span class="comment"># 下面的循环中groupby返回的key是intermediate_key，而group是个list，是1个或多个</span></span><br><span class="line">        <span class="comment"># 有着相同intermediate_key的(intermediate_key, intermediate_value)</span></span><br><span class="line">        groups = {}</span><br><span class="line">        <span class="keyword">for</span> key, group <span class="keyword">in</span> itertools.groupby(sorted(intermediate, key=<span class="keyword">lambda</span> im: im[<span class="number">0</span>]), key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>]):</span><br><span class="line">            groups[key] = [y <span class="keyword">for</span> x, y <span class="keyword">in</span> group]</span><br><span class="line">        <span class="comment"># groups是一个字典，其key为上面说到的intermediate_key，value为所有对应intermediate_key的intermediate_value</span></span><br><span class="line">        <span class="comment"># 组成的一个列表</span></span><br><span class="line">        <span class="comment"># print(groups)</span></span><br><span class="line">        <span class="keyword">return</span> [reducer(intermediate_key, groups[intermediate_key]) <span class="keyword">for</span> intermediate_key <span class="keyword">in</span> groups]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_most_common_from_text</span><span class="params">(self,text,n = <span class="number">100</span>)</span>:</span></span><br><span class="line">        word_list = [x <span class="keyword">for</span> x <span class="keyword">in</span> jieba.cut(text) <span class="keyword">if</span> len(x) &gt;= <span class="number">2</span>]</span><br><span class="line">        <span class="keyword">return</span> Counter(word_list).most_common(n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:文档名, v:文档内容</span></span><br><span class="line">        <span class="keyword">return</span> self.get_most_common_from_text(v,<span class="number">10000</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reducer</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:词  v:词出现的次数</span></span><br><span class="line">         <span class="keyword">return</span> k, sum(v)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        </span><br><span class="line">        i = {</span><br><span class="line">            <span class="string">"a"</span>:<span class="string">"The quick brown fox jumped over the lazy grey dogs."</span>,</span><br><span class="line">            <span class="string">"b"</span>:<span class="string">"That's one small step for a man, one giant leap for mankind."</span>,</span><br><span class="line">            <span class="string">"c"</span>:<span class="string">"　　Mary had a little lamb,Its fleece was white as snow;And everywhere that Mary went,The lamb was sure to go"</span>,</span><br><span class="line">            <span class="string">"d"</span>:<span class="string">"I pledge to honor and defend you and yours above all others"</span>,</span><br><span class="line">            <span class="string">"e"</span>:<span class="string">"To share in blessings and burdens, to be your advocate, your champion"</span></span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        t = MapReduce.map_reduce(i,self.map,self.reducer)</span><br><span class="line">        print(t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">m = test()</span><br><span class="line">m.run()</span><br></pre></td></tr></tbody></table></figure>
 
 
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>MapReduce其实就是我们常说的分而治之的思想</p>
 <p>不过这个过程中借助了中间存储</p>
 <p>统一了数据模型规范, 使之能适用于更广泛的数据计算</p>
 
-      
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/%20%7C%7C%20about">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
     </div>
-    
-    
-    
 
-    
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MapReduce"><span class="toc-number">1.</span> <span class="toc-text">MapReduce</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Map"><span class="toc-number">1.1.</span> <span class="toc-text">Map</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reduce"><span class="toc-number">1.2.</span> <span class="toc-text">Reduce</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#过程图"><span class="toc-number">1.3.</span> <span class="toc-text">过程图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#实例"><span class="toc-number">2.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#代码-单机版"><span class="toc-number">2.1.</span> <span class="toc-text">代码(单机版)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MapReduce类"><span class="toc-number">2.1.1.</span> <span class="toc-text">MapReduce类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#map函数"><span class="toc-number">2.1.2.</span> <span class="toc-text">map函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reduce函数"><span class="toc-number">2.1.3.</span> <span class="toc-text">reduce函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
 
-    
-      <div>
-        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-  <div>你可以请我喝茶呦 🥰</div>
-  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-    <span>Donate</span>
-  </button>
-  <div id="QR" style="display: none;">
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://leriou.github.io/2018-02-08-distribute-map-reduce/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;text=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;is_video=false&amp;description=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=学习分布式计算框架-MapReduce&amp;body=Check out this article: https://leriou.github.io/2018-02-08-distribute-map-reduce/" target="_blank" rel="noopener"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;title=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;name=学习分布式计算框架-MapReduce&amp;description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://leriou.github.io/2018-02-08-distribute-map-reduce/&amp;t=学习分布式计算框架-MapReduce" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
-    
-      <div id="wechat" style="display: inline-block">
-        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="哎呀是太阳嘛 WeChat Pay"/>
-        <p>WeChat Pay</p>
-      </div>
-    
+    </div>
 
-    
-      <div id="alipay" style="display: inline-block">
-        <img id="alipay_qr" src="/images/alipay.jpeg" alt="哎呀是太阳嘛 Alipay"/>
-        <p>Alipay</p>
-      </div>
-    
-
-    
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
 
   </div>
 </div>
 
-      </div>
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018-02-02-distribute-storage-gfs/" rel="next" title="分布式文件系统-GFS学习总结">
-                <i class="fa fa-chevron-left"></i> 分布式文件系统-GFS学习总结
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018-03-09-woolgather-social-problem/" rel="prev" title="胡思乱想-有关当前社会的一些隐忧">
-                胡思乱想-有关当前社会的一些隐忧 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-
-  
-    <div class="comments" id="comments">
-    </div>
-  
-
-
-
-        </div>
         
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright ©
     
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">哎呀是太阳嘛</p>
-              <p class="site-description motion-element" itemprop="description">君子生非异也, 善假于物也</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/%7C%7C%20archive">
-              
-                  <span class="site-state-item-count">50</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">7</span>
-                  <span class="site-state-item-name">categories</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">42</span>
-                  <span class="site-state-item-name">tags</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/leriou" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="https://twitter.com/yange1876" target="_blank" title="Twitter">
-                      
-                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="https://weibo.com/1985364641" target="_blank" title="Weibo">
-                      
-                        <i class="fa fa-fw fa-weibo"></i>Weibo</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MapReduce"><span class="nav-number">1.</span> <span class="nav-text">MapReduce</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">1.1.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reduce"><span class="nav-number">1.2.</span> <span class="nav-text">Reduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程图"><span class="nav-number">1.3.</span> <span class="nav-text">过程图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例"><span class="nav-number">2.</span> <span class="nav-text">实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码-单机版"><span class="nav-number">2.1.</span> <span class="nav-text">代码(单机版)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MapReduce类"><span class="nav-number">2.1.1.</span> <span class="nav-text">MapReduce类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">map函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reduce函数"><span class="nav-number">2.1.3.</span> <span class="nav-text">reduce函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
+    
+    2015-2020
+    哎呀是太阳嘛
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/%20%7C%7C%20about">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
 
     </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">哎呀是太阳嘛</span>
-
-  
-</div>
-
-
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+    <!-- styles -->
 
 
 
-  <span class="post-meta-divider">|</span>
+    <!-- jquery -->
 
 
-
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
+<!-- clipboard -->
 
   
   
 
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
+<!-- Baidu Analytics -->
 
+<!-- Disqus Comments -->
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
 
 
 
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
-  
-  <script type="text/javascript">
-    var GUEST = ['nick','mail','link'];
-    var guest = 'nick';
-    guest = guest.split(',').filter(item=>{
-      return GUEST.indexOf(item)>-1;
-    });
-    new Valine({
-        el: '#comments' ,
-        verify: false,
-        notify: false,
-        appId: 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
-        appKey: 'uRGeMnmfAq6h88QavSUfpS3q',
-        placeholder: '你不想说点什么吗 ???',
-        avatar:'monsterid',
-        guest_info:guest,
-        pageSize:'10' || 10,
-    });
-  </script>
-
-
-
-  
-
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.json";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
-
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url);
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
-
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
-
-                // show search results
-
-                if (isMatch) {
-                  // sort index by position of keyword
-
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
-
-                  // merge hits into slices
-
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
-
-                      // move to next position of hit
-
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
-
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
-
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
-
-                  // sort slices in content by search text's count and hits' count
-
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
-
-                  // select top N slices in content
-
-                  var upperBound = parseInt('3');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
-
-                  // highlight title and content
-
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
+<script src="/bundle.js"></script><script>
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
       }
     });
-  </script>
-
-
-
-
-
-  
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("", "");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
-    }
-
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
-        addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
-
-
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
-</body>
-</html>
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script></body></html>

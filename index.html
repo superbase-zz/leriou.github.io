@@ -408,17 +408,31 @@
 
       
         
-          <h1 id="五分钟搭建一个博客网站（mac-os）"><a href="#五分钟搭建一个博客网站（mac-os）" class="headerlink" title="五分钟搭建一个博客网站（mac os）"></a>五分钟搭建一个博客网站（mac os）</h1><p>这是一个面向纯小白的搭建个人网站的教程，需要的东西如下</p><ol>
+          
+            <h1 id="五分钟搭建一个博客网站（mac-os）"><a href="#五分钟搭建一个博客网站（mac-os）" class="headerlink" title="五分钟搭建一个博客网站（mac os）"></a>五分钟搭建一个博客网站（mac os）</h1><p>这是一个面向纯小白的搭建个人网站的教程，需要的东西如下</p>
+<ol>
 <li>一台能联网的电脑</li>
 <li>一个知道什么是文件以及会创建文件夹的人</li>
-</ol><h2 id="第一步：必备软件和文件下载"><a href="#第一步：必备软件和文件下载" class="headerlink" title="第一步：必备软件和文件下载"></a>第一步：必备软件和文件下载</h2><p>我们的网站的运行需要一个软件的支持，这个软件就是docker，所以我们必须要下载doker </p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020-02-01-build-website-in-5-min/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+</ol>
+<h2 id="第一步：必备软件和文件下载"><a href="#第一步：必备软件和文件下载" class="headerlink" title="第一步：必备软件和文件下载"></a>第一步：必备软件和文件下载</h2><p>我们的网站的运行需要一个软件的支持，这个软件就是docker，所以我们必须要下载doker </p>
+<h3 id="1-下载docker软件"><a href="#1-下载docker软件" class="headerlink" title="1. 下载docker软件"></a>1. 下载docker软件</h3><p>目标：这一步的目的是下载必备的软件docker并安装启动docker</p>
+<p>下载地址： <a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener">https://www.docker.com/products/docker-desktop</a></p>
+<h3 id="2-获取搭建网站需要的文件"><a href="#2-获取搭建网站需要的文件" class="headerlink" title="2. 获取搭建网站需要的文件"></a>2. 获取搭建网站需要的文件</h3><p>目标：这一步的目的用一个文件告诉docker我们要搭建一个网站，这个文件名字必须叫 <code>docker-compose.yml</code></p>
+<p>文件我已经提前准备好了，直接下载就行了</p>
+<p>地址： <a href="https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml`" target="_blank" rel="noopener">https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml`</a></p>
+<p>可以直接使用迅雷啥的下载，也可以使用以下命令直接下载</p>
+<p>打开 Terminal，粘贴命令：</p>
+<pre><code>$ wget https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml</code></pre><p>并回车，等待下载文件</p>
+<hr>
+<p>到此，我们的准备工作就结束了</p>
+<p>总结一下，我们需要一个docker软件和一个告诉docker我们要搭建一个网站的文件docker-compose.yml</p>
+<h2 id="第二步：启动网站"><a href="#第二步：启动网站" class="headerlink" title="第二步：启动网站"></a>第二步：启动网站</h2><p>找到<code>docker-compose.yml</code>文件所在的目录 ，一般都是在下载文件夹</p>
+<p>需要把终端切换到该目录下面，同时输入：<code>docker-compose up</code> 并回车，等待下载必备的东西完毕就可以使用网站了</p>
+<h2 id="第三步：管理和使用网站"><a href="#第三步：管理和使用网站" class="headerlink" title="第三步：管理和使用网站"></a>第三步：管理和使用网站</h2><h3 id="测试网站是否成功"><a href="#测试网站是否成功" class="headerlink" title="测试网站是否成功"></a>测试网站是否成功</h3><p>打开浏览器，访问 <a href="http://localhost:8077" target="_blank" rel="noopener">http://localhost:8077</a> </p>
+<h3 id="设置网站语言和账号密码"><a href="#设置网站语言和账号密码" class="headerlink" title="设置网站语言和账号密码"></a>设置网站语言和账号密码</h3><p>就可以设置网站使用的语言和账号密码</p>
+<h3 id="设置网站的主题，变得更好看"><a href="#设置网站的主题，变得更好看" class="headerlink" title="设置网站的主题，变得更好看"></a>设置网站的主题，变得更好看</h3><p>网站是基于Wordpress制作的，所以可以直接从主题库选择喜欢的主题换上就可以了</p>
+
+          
         
       
     </div>

@@ -457,6 +457,9 @@ function PointLight() {
 </article>
 
 
+    <div class="comments" id="valine-comments"></div>
+
+
 
         
           <div id="footer-post-container">
@@ -549,6 +552,7 @@ function PointLight() {
     <!-- jquery -->
 
 
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
 <!-- clipboard -->
 
   
@@ -562,6 +566,11 @@ function PointLight() {
 <!-- Baidu Analytics -->
 
 <!-- Disqus Comments -->
+
+
+<!-- valine -->
+
+  
 
 
 
@@ -584,4 +593,23 @@ function PointLight() {
       e.clearSelection();
     })
   })
+  ;
+
+      (function(){
+        new Valine({
+          el         : '#valine-comments',
+          verify     : 'false',
+          notify     : 'false',
+          appId      : 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+          appKey     : 'uRGeMnmfAq6h88QavSUfpS3q',
+          placeholder: 'Just go go',
+          avatar     : 'robohash',
+          meta       : 'nick'.split(","),
+          pageSize   : '10',
+          visitor    : 'false',
+          lang       : 'zh-cn',
+          recordIP   : 'true',
+          serverURLs : ''
+        })
+      }());
   </script></body></html>

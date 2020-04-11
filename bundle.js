@@ -43,7 +43,7 @@ $(document).ready(function() {
     /**
      * Display the menu on hi-res laptops and desktops.
      */
-    if ($(document).width() >= 1440) {
+    if ($(document).width() >= 1080) {
       menu.css("visibility", "visible");
       menuIcon.addClass("active");
     }
@@ -183,14 +183,13 @@ var searchFunc = function(path, searchId, contentId) {
         return {
           title: $("title", this).text(),
           content: $("content", this).text(),
-          url: $("link", this).attr("href")
+          url: $("url", this).text()
         };
       }).get();
 
       var $input = document.getElementById(searchId);
       if (!$input) { return; }
       var $resultContent = document.getElementById(contentId);
-
       $input.addEventListener("input", function(){
         var resultList = [];
         var keywords = getAllCombinations(this.value.trim().toLowerCase().split(" "))

@@ -209,6 +209,9 @@ v&lt;list&gt;:[1,1,1]</code></pre><p>返回: </p>
 </article>
 
 
+    <div class="comments" id="valine-comments"></div>
+
+
 
         
           <div id="footer-post-container">
@@ -301,6 +304,7 @@ v&lt;list&gt;:[1,1,1]</code></pre><p>返回: </p>
     <!-- jquery -->
 
 
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
 <!-- clipboard -->
 
   
@@ -314,6 +318,11 @@ v&lt;list&gt;:[1,1,1]</code></pre><p>返回: </p>
 <!-- Baidu Analytics -->
 
 <!-- Disqus Comments -->
+
+
+<!-- valine -->
+
+  
 
 
 
@@ -336,4 +345,23 @@ v&lt;list&gt;:[1,1,1]</code></pre><p>返回: </p>
       e.clearSelection();
     })
   })
+  ;
+
+      (function(){
+        new Valine({
+          el         : '#valine-comments',
+          verify     : 'false',
+          notify     : 'false',
+          appId      : 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+          appKey     : 'uRGeMnmfAq6h88QavSUfpS3q',
+          placeholder: 'Just go go',
+          avatar     : 'robohash',
+          meta       : 'nick'.split(","),
+          pageSize   : '10',
+          visitor    : 'false',
+          lang       : 'zh-cn',
+          recordIP   : 'true',
+          serverURLs : ''
+        })
+      }());
   </script></body></html>

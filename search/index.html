@@ -179,7 +179,7 @@
 
     // get search zip version
     $.get('/searchVersion.txt?t=' + (+new Date()), function(res) {
-      if (localStorage.getItem('searchVersion') !== res) {
+      if (localStorage.getItem('searchVersion') !== res || !localStorage.hasOwnProperty("searchJson")) {
         localStorage.setItem('searchVersion', res);
         initSearchJson();
       }
@@ -189,6 +189,7 @@
       initLoad(['/search.flv'], {
         loadOptions: {
           success: function(obj) {
+            console.log("success")
             localStorage.setItem('searchJson', obj['search.json'])
           },
           error: function(e) {
@@ -202,6 +203,27 @@
           'json':'application/json'
         }
       })
+    }
+
+    if (!localStorage.hasOwnProperty("searchJson")) {
+      $.ajax({
+        url: path,
+        dataType: "json",
+        success: function(xmlResponse) {
+          // get the contents from search data
+          var datas = xmlResponse;
+          if (this.dataType == "xml") {
+            datas = $("entry", xmlResponse).map(function() {
+              return {
+                title: $("title", this).text(),
+                content: $("content", this).text(),
+                url: $("url", this).text()
+              };
+            }).get();
+          }
+          localStorage.setItem("searchJson", JSON.stringify(datas));
+        }
+      });
     }
       
     $inputArea.focus(function() { 

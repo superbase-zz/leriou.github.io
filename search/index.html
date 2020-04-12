@@ -146,6 +146,7 @@
 
   
   
+  
 
 <!-- Google Analytics -->
 
@@ -163,25 +164,54 @@
 
 <script src="/bundle.js"></script><script>
   $(function() {
-
     var $inputArea = $("input#search-input");
     var $resultArea = document.querySelector("div#search-result");
+    var search_path = "search.json";
 
-    $inputArea.focus(function() {
-      var search_path = "search.xml";
-      if (search_path.length == 0) {
-        search_path = "search.xml";
+    var isXml = true;
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    } else if (!search_path.endsWith("xml")) {
+      search_path = "search.json";
+      isXml = false;
+    }
+    var path = "/" + search_path;
+
+    // get search zip version
+    $.get('/searchVersion.txt?t=' + (+new Date()), function(res) {
+      if (localStorage.getItem('searchVersion') !== res) {
+        localStorage.setItem('searchVersion', res);
+        initSearchJson();
       }
-      var path = "/" + search_path;
-      searchFunc(path, 'search-input', 'search-result');
     });
 
+    function initSearchJson() {
+      initLoad(['/search.flv'], {
+        loadOptions: {
+          success: function(obj) {
+            localStorage.setItem('searchJson', obj['search.json'])
+          },
+          error: function(e) {
+            return console.log(e)
+          }
+        },
+        returnOptions: {
+          'json': TYPE_TEXT
+        },
+        mimeOptions:{
+          'json':'application/json'
+        }
+      })
+    }
+      
+    $inputArea.focus(function() { 
+      searchFunc(path, 'search-input', 'search-result');
+    });
     $inputArea.keydown(function(e) {
       if (e.which == 13) {
         e.preventDefault();
       }
     });
-
     var observer = new MutationObserver(function(mutationsList, observer) {
       if (mutationsList.length == 1) {
         if (mutationsList[0].addedNodes.length) {
@@ -191,9 +221,7 @@
         }
       }
     });
-
     observer.observe($resultArea, { childList: true });
-
   });
   ;
 

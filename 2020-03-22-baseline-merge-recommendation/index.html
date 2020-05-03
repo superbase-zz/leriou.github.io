@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="en"><head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="推荐系统的排序策略排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推结果内容  返回结果应平衡多种来源的密度分布  根据排版要求进行精排序 问题和需求描述假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个  新内容约 2000 个  热门内容约 200 个   我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行推">
+<meta name="keywords" content="推荐系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基线融合排序算法">
+<meta property="og:url" content="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/index.html">
+<meta property="og:site_name" content="Leriou's Tavern">
+<meta property="og:description" content="推荐系统的排序策略排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推结果内容  返回结果应平衡多种来源的密度分布  根据排版要求进行精排序 问题和需求描述假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个  新内容约 2000 个  热门内容约 200 个   我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行推">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/math1.png">
+<meta property="og:updated_time" content="2020-05-03T16:51:46.942Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/math1.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>基线融合排序算法</title>
+    <!-- styles -->
+    
+    <!-- persian styles -->
+    
+      
+    
+    <!-- rss -->
+    
+    
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020-03-11-content-evaluate/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;text=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;is_video=false&amp;description=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基线融合排序算法&amp;body=Check out this article: https://leriou.github.io/2020-03-22-baseline-merge-recommendation/" target="_blank" rel="noopener"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;name=基线融合排序算法&amp;description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;t=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#推荐系统的排序策略"><span class="toc-number">1.</span> <span class="toc-text">推荐系统的排序策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题和需求描述"><span class="toc-number">2.</span> <span class="toc-text">问题和需求描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#朴素处理"><span class="toc-number">3.</span> <span class="toc-text">朴素处理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基线排序法"><span class="toc-number">4.</span> <span class="toc-text">基线排序法</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        基线融合排序算法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">Leriou's Tavern</span>
+      </span>
+      -&gt;
+      
+    <div class="postdate">
+      
+        <i class="fas fa-pencil-alt"></i>          
+        <time datetime="2020-03-21T16:00:00.000Z" itemprop="datePublished">2020-03-22</time>
+        
+      
+    </div>
+
+
+      <span>|</span>
+<span id="/2020-03-22-baseline-merge-recommendation/" class="leancloud_visitors" data-flag-title="Your Article Title">
+    <i class="fas fa-eye"></i>
+    <em class="post-meta-item-text">读者</em>
+    <i class="leancloud-visitors-count">0</i>
+</span>
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">推荐系统</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="推荐系统的排序策略"><a href="#推荐系统的排序策略" class="headerlink" title="推荐系统的排序策略"></a>推荐系统的排序策略</h1><p>排序策略起到的作用</p>
+<ol>
+<li><p>将多种召回集的结果进行融合，挑出少量的推结果内容</p>
+</li>
+<li><p>返回结果应平衡多种来源的密度分布</p>
+</li>
+<li><p>根据排版要求进行精排序</p>
+<h1 id="问题和需求描述"><a href="#问题和需求描述" class="headerlink" title="问题和需求描述"></a>问题和需求描述</h1><p>假设我们现在拥有3个召回策略的来源的数据分别为</p>
+</li>
+<li><p>个性化内容约 200 个</p>
+</li>
+<li><p>新内容约 2000 个</p>
+</li>
+<li><p>热门内容约 200 个</p>
+</li>
+</ol>
+<p>我们希望达到如下目标</p>
+<ol>
+<li>从这么多用户可能感兴趣的内容中挑出来10个内容返回</li>
+<li>用户已经推荐过的不再进行推荐</li>
+<li>用户的推荐结果中,结果保持多样性各种来源按照一定比例，个性化：新内容：热门内容比例为  3:4:3， 某种题材比例不足采用其他内容进行填充<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">;用代码描述如下</span></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name">recommendation</span> user)</span><br><span class="line">	(<span class="name"><span class="builtin-name">lambda</span></span> (user)</span><br><span class="line">    (<span class="name"><span class="builtin-name">cons</span></span> (<span class="name"><span class="builtin-name">cond</span></span> (<span class="name">personal?</span> user) (<span class="name">get-personal</span> user)</span><br><span class="line">                (<span class="name"><span class="builtin-name">else</span></span> '()))</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> hottest? (<span class="name">get-hottest</span>) '())</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> lattest? (<span class="name">get-lattest</span>) '())</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> hot-spot? (<span class="name">get-hot-spot</span>) '()))))</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="朴素处理"><a href="#朴素处理" class="headerlink" title="朴素处理"></a>朴素处理</h1></li>
+<li>直接从个性化内容里面 取10<em>0.3 个没有推荐过的，从新内容里面取 10 * 0.4 个， 从热门里面取 10</em> 0.3 个放到一个队列返回<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rec</span></span>(a:<span class="type">Set</span>[个性化], b: <span class="type">Set</span>[新], c: <span class="type">Set</span>[热门],d: <span class="type">Set</span>[看过]): <span class="type">Set</span>[<span class="number">10</span>] = {</span><br><span class="line">    ans = <span class="type">Set</span>()</span><br><span class="line">    ans += a.forEach(v -&gt; !d.contains(v)).take(<span class="number">3</span>)</span><br><span class="line">    ans += b.forEach(v -&gt; !d.contains(v)).take(<span class="number">4</span>)</span><br><span class="line">    ans += c.forEach(v -&gt; !d.contains(v)).take(<span class="number">3</span>)</span><br><span class="line">    ans</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+这种处理方法在遇到 某种策略内容不够的时候 就需要手动做判断，再从其他两种内容里面获取<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ans.size() &lt; rec {</span><br><span class="line">  ans += b.forEach(v -&gt; !d.contains(v)).take(<span class="number">4</span>)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+假如其他集合还是不够的话还要继续处理，代码复杂度就直线上升</li>
+</ol>
+<h1 id="基线排序法"><a href="#基线排序法" class="headerlink" title="基线排序法"></a>基线排序法</h1><p>先选择一个数量较多的内容集合作为基线：例如 新内容。将基线集合的数据通过排名映射到[0，1]的空间之内</p>
+<p>计分函数</p>
+<p><img src="math1.png" alt="计分函数"></p>
+<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 新内容：假设我们有2000个新内容，那第400个的得分应该为</span></span><br><span class="line">         第400个</span><br><span class="line">  ｜       ｜       ｜       ｜       ｜      ｜</span><br><span class="line">  <span class="number">1.0</span>     <span class="number">0.8</span>      <span class="number">0.6</span>      <span class="number">0.4</span>      <span class="number">0.2</span>     <span class="number">0</span></span><br></pre></td></tr></tbody></table></figure>
+<p>然后我们把其他召回集内容也通过某个积分函数均匀散列在以上区间</p>
+<p>由于我们要满足 3:4:3的概率所以我们要求在原来的40个新内容的范围里面，均匀混进去30个热门和30个个性化内容，这样比例就满足了</p>
+<p>也就是说我们要满足如下公式， 由于内容密度要满足一定条件（3:4:3）</p>
+<p>计算热门内容的分数范围的公示如下</p>
+<p>x = 0.02 * 200 / 30  = 0.133</p>
+<p>也就是说热门内容分布的边界范围应该为 [1，0.867]</p>
+<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 热门内容</span></span><br><span class="line">       第30个         第100个         第200个</span><br><span class="line">  ｜     ｜            ｜              ｜      </span><br><span class="line">  <span class="number">1.0</span>   <span class="number">0.98</span>         <span class="number">0.935</span>          <span class="number">0.867</span></span><br></pre></td></tr></tbody></table></figure>
+<p>个性化内容也是同理<br>最后三者进行融合以后重新排序结果如下</p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 融合之后的内容集合分布</span></span><br><span class="line">        第800个</span><br><span class="line">  ｜       ｜       ｜       ｜       ｜      ｜</span><br><span class="line">  <span class="number">1.0</span>     <span class="number">0.8</span>      <span class="number">0.6</span>      <span class="number">0.4</span>      <span class="number">0.2</span>     <span class="number">0</span></span><br><span class="line">[1， 0.8]的空间内同时含有 400个新内容，200个热门内容和200个个性化内容</span><br></pre></td></tr></tbody></table></figure>
+<p>这种情况下顺序取前10个内容， 三种来源的比例就是 3:4:3<br>同样在这种算法情况下， 无论是调整 结果数量， 还是调整比例，都可以用同一个逻辑轻松实现需求， 实现优雅，性能也得到了保证</p>
+
+  </div>
+</article>
+
+
+    <div class="comments" id="valine-comments"></div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#推荐系统的排序策略"><span class="toc-number">1.</span> <span class="toc-text">推荐系统的排序策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题和需求描述"><span class="toc-number">2.</span> <span class="toc-text">问题和需求描述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#朴素处理"><span class="toc-number">3.</span> <span class="toc-text">朴素处理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基线排序法"><span class="toc-number">4.</span> <span class="toc-text">基线排序法</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;text=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;is_video=false&amp;description=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基线融合排序算法&amp;body=Check out this article: https://leriou.github.io/2020-03-22-baseline-merge-recommendation/" target="_blank" rel="noopener"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;title=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;name=基线融合排序算法&amp;description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://leriou.github.io/2020-03-22-baseline-merge-recommendation/&amp;t=基线融合排序算法" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright ©
+    
+    
+    2015-2020
+    哎呀是太阳嘛
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+    <!-- jquery -->
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<!-- clipboard -->
+
+  
+  
+
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+<!-- valine -->
+
+  
+
+
+
+
+<script src="/bundle.js"></script><script>
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  ;
+
+      (function(){
+        new Valine({
+          el         : '#valine-comments',
+          verify     : 'false',
+          notify     : 'false',
+          appId      : 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+          appKey     : 'uRGeMnmfAq6h88QavSUfpS3q',
+          placeholder: 'Just go go',
+          avatar     : 'robohash',
+          meta       : 'nick'.split(","),
+          pageSize   : '10',
+          visitor    : 'true',
+          lang       : 'zh-cn',
+          recordIP   : 'true',
+          serverURLs : ''
+        })
+      }());
+  </script></body></html>

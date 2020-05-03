@@ -1,0 +1,337 @@
+<!DOCTYPE html><html lang="en"><head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="背景在推荐系统的业务场景中我们的最终目的是把优质的内容从内容池中挑出来推荐给用户  降低用户获取信息的成本 提供给用户平均质量更高的内容 助力运营等提高内容分发的效率如何评价一个内容的质量好坏就成了我们面对的一个重要问题如何找到用技术手段评估内容的质量通过用户行为来辅助评估我们可以很明显的知道用户点击率高的内容大概率会是吸引人的内容。由此我们可以对内容的点击率进行统计，根据点击率给予内容一定的分数">
+<meta name="keywords" content="推荐系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文本内容价值评估的方法">
+<meta property="og:url" content="https://leriou.github.io/2020-03-11-content-evaluate/index.html">
+<meta property="og:site_name" content="Leriou's Tavern">
+<meta property="og:description" content="背景在推荐系统的业务场景中我们的最终目的是把优质的内容从内容池中挑出来推荐给用户  降低用户获取信息的成本 提供给用户平均质量更高的内容 助力运营等提高内容分发的效率如何评价一个内容的质量好坏就成了我们面对的一个重要问题如何找到用技术手段评估内容的质量通过用户行为来辅助评估我们可以很明显的知道用户点击率高的内容大概率会是吸引人的内容。由此我们可以对内容的点击率进行统计，根据点击率给予内容一定的分数">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-05-03T16:46:21.614Z">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>文本内容价值评估的方法</title>
+    <!-- styles -->
+    
+    <!-- persian styles -->
+    
+      
+    
+    <!-- rss -->
+    
+    
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2020-03-22-baseline-merge-recommendation/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2020-02-01-build-website-in-5-min/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://leriou.github.io/2020-03-11-content-evaluate/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;text=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;is_video=false&amp;description=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=文本内容价值评估的方法&amp;body=Check out this article: https://leriou.github.io/2020-03-11-content-evaluate/" target="_blank" rel="noopener"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;name=文本内容价值评估的方法&amp;description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://leriou.github.io/2020-03-11-content-evaluate/&amp;t=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何找到用技术手段评估内容的质量"><span class="toc-number">2.</span> <span class="toc-text">如何找到用技术手段评估内容的质量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过用户行为来辅助评估"><span class="toc-number">2.1.</span> <span class="toc-text">通过用户行为来辅助评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#挖掘内容本身的特征属性进行评估"><span class="toc-number">2.2.</span> <span class="toc-text">挖掘内容本身的特征属性进行评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#考虑现在的时间和环境因素进行评估"><span class="toc-number">2.3.</span> <span class="toc-text">考虑现在的时间和环境因素进行评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#考虑目标用户特征"><span class="toc-number">2.4.</span> <span class="toc-text">考虑目标用户特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#综合多种因素进行评估"><span class="toc-number">2.5.</span> <span class="toc-text">综合多种因素进行评估</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        文本内容价值评估的方法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">Leriou's Tavern</span>
+      </span>
+      -&gt;
+      
+    <div class="postdate">
+      
+        <i class="fas fa-pencil-alt"></i>          
+        <time datetime="2020-03-10T16:00:00.000Z" itemprop="datePublished">2020-03-11</time>
+        
+      
+    </div>
+
+
+      <span>|</span>
+<span id="/2020-03-11-content-evaluate/" class="leancloud_visitors" data-flag-title="Your Article Title">
+    <i class="fas fa-eye"></i>
+    <em class="post-meta-item-text">读者</em>
+    <i class="leancloud-visitors-count">0</i>
+</span>
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">推荐系统</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在推荐系统的业务场景中我们的最终目的是把优质的内容从内容池中挑出来推荐给用户</p>
+<ol>
+<li>降低用户获取信息的成本</li>
+<li>提供给用户平均质量更高的内容</li>
+<li>助力运营等提高内容分发的效率<br>如何评价一个内容的质量好坏就成了我们面对的一个重要问题<h2 id="如何找到用技术手段评估内容的质量"><a href="#如何找到用技术手段评估内容的质量" class="headerlink" title="如何找到用技术手段评估内容的质量"></a>如何找到用技术手段评估内容的质量</h2><h3 id="通过用户行为来辅助评估"><a href="#通过用户行为来辅助评估" class="headerlink" title="通过用户行为来辅助评估"></a>通过用户行为来辅助评估</h3>我们可以很明显的知道用户点击率高的内容大概率会是吸引人的内容。由此我们可以对内容的点击率进行统计，根据点击率给予内容一定的分数，点击率越高，内容分数越高, 我们认为内容越优质。<br>例如我们可以开发如下函数<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate</span></span>(a:<span class="type">Article</span>):<span class="type">Double</span> = {</span><br><span class="line">	<span class="keyword">if</span> (a.showCount &gt;= <span class="number">200</span>) {</span><br><span class="line">	 	<span class="keyword">return</span> a.clickRate/getMaxClickRate()</span><br><span class="line">	}</span><br><span class="line">	<span class="number">0.0</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+这种情况是最直观的也最简单的, 但是我们会遇到一些问题</li>
+</ol>
+<ul>
+<li>问题1: 如果一个内容刚刚发布，还没有被展示或者被点击，此时没有用户行为数据，该如何评估内容的质量呢, 就像上面我们过滤掉了展示200次以下的内容，这部分内容因为展示次数少，误差较大</li>
+<li>问题2: 如果一个内容A 刚刚发布不久，被展示了10次，点击了5次， 点击率50%， 另一个内容B发布了2天，被展示了20万次，点击了5万次，点击率 25%， 是否能说明A内容比B内容优秀<br>相信从上面两个问题也能看出来了，单纯的依靠点击率是肯定不合适的，既会受到一定的限制，又会造成得分结果的不稳定。处理1，2问题的方法也比较简单，只需要按照根据分布情况给一个预估的默认值， 并加上一定的统计门槛就可以了<h3 id="挖掘内容本身的特征属性进行评估"><a href="#挖掘内容本身的特征属性进行评估" class="headerlink" title="挖掘内容本身的特征属性进行评估"></a>挖掘内容本身的特征属性进行评估</h3>假如一个内容A点击率比较高，我们可以思考可能的原因是什么呢？<br>有可能是作者文字功底比较好，有可能是作者比较出名， 有可能是里面有一些特征一看就知道内容质量比较差。比如 标题很短，或者标题没有信息含量。<br>总而言之我们可以根据内容的 发布时间， 作者，含有的关键词，视频的清晰度，内容的长度，等各种属性给内容计算一个基础的内容得分。大概函数定义如下<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate</span></span>(c: <span class="type">Article</span>) -&gt; <span class="type">Double</span> {</span><br><span class="line">  	f(c.title, c.author, c.published, c.length, c.keywords)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+如此一来我们就可以对各种内容做一个基本的价值评估，可以在视频还未获得曝光和点击的时候对视频有一个大概的评价。后续的点击率等行为表现可以辅助纠正各种特征的积分权重<h3 id="考虑现在的时间和环境因素进行评估"><a href="#考虑现在的时间和环境因素进行评估" class="headerlink" title="考虑现在的时间和环境因素进行评估"></a>考虑现在的时间和环境因素进行评估</h3>内容的质量表现还会随着时间和环境因素而变化。<br>比如股市的资讯类消息， 就是在发布的12小时内价值比较高，而且其价值会随着时间逐渐减少，3天以上基本就毫无价值了。<br>内容受到环境影响也很明显，这次的新冠疫情导致口罩，病毒等相关的内容受到了极大的关注。可能在平时来说，口罩等关键词并不会有如此大的权重，但是在疫情期间，全民关注，这个时候就应该根据环境适当的给热门词增加权重表现<br>环境和内容的匹配主要还是要依据统计数据来预估一个特征在环境中的匹配度，然后根据这个匹配度对内容进行评估，在根据用户对内容后续的行为表现来调整这个匹配度的计算规则<h3 id="考虑目标用户特征"><a href="#考虑目标用户特征" class="headerlink" title="考虑目标用户特征"></a>考虑目标用户特征</h3>同样的内容对不同的用户也会有不同的价值。同一篇手机评测内容，对魅族手机用户和小米手机用户分别展示1000次收到的点击返回结果可能就有很大不同， 对数码爱好者和小白分开推送效果也会不一样。<br>我们如果要对用户和内容匹配一方面要获取到用户的用户画像信息，一方面要对内容做内容特征分析， 然后再进行match。<br>定义计分函数如下<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calScore</span></span>(user:<span class="type">Set</span>, env:<span class="type">Set</span>&lt;&gt;) -&gt; <span class="type">Double</span> {</span><br><span class="line">  f(user, env, content)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="综合多种因素进行评估"><a href="#综合多种因素进行评估" class="headerlink" title="综合多种因素进行评估"></a>综合多种因素进行评估</h3>上面的几种方法都有各自的优点和缺点，多种评估策略一起配合使用可以一定程度上增强价值评估的可信度。综合推荐就是同时考虑 用户， 环境，时间，内容本身等多种因素，根据情况实时的计算<br>不同属性的得分之间可以采用加和或者相乘 的方法。<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>内容的价值评估是一个跟场景，用户，内容都相关的事情， 没有办法使用一个统一的，固定的算法或者模型对内容进行价值评估， 但是我们可以根据现有的用户行为， 环境特征， 内容特征等，尽可能的覆盖所有可能的影响因子， 给出一个相对比较可信的价值度量标准</li>
+</ul>
+
+  </div>
+</article>
+
+
+    <div class="comments" id="valine-comments"></div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何找到用技术手段评估内容的质量"><span class="toc-number">2.</span> <span class="toc-text">如何找到用技术手段评估内容的质量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过用户行为来辅助评估"><span class="toc-number">2.1.</span> <span class="toc-text">通过用户行为来辅助评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#挖掘内容本身的特征属性进行评估"><span class="toc-number">2.2.</span> <span class="toc-text">挖掘内容本身的特征属性进行评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#考虑现在的时间和环境因素进行评估"><span class="toc-number">2.3.</span> <span class="toc-text">考虑现在的时间和环境因素进行评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#考虑目标用户特征"><span class="toc-number">2.4.</span> <span class="toc-text">考虑目标用户特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#综合多种因素进行评估"><span class="toc-number">2.5.</span> <span class="toc-text">综合多种因素进行评估</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://leriou.github.io/2020-03-11-content-evaluate/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;text=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;is_video=false&amp;description=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=文本内容价值评估的方法&amp;body=Check out this article: https://leriou.github.io/2020-03-11-content-evaluate/" target="_blank" rel="noopener"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;title=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://leriou.github.io/2020-03-11-content-evaluate/&amp;name=文本内容价值评估的方法&amp;description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://leriou.github.io/2020-03-11-content-evaluate/&amp;t=文本内容价值评估的方法" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright ©
+    
+    
+    2015-2020
+    哎呀是太阳嘛
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">Category</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+    <!-- jquery -->
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<!-- clipboard -->
+
+  
+  
+
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+<!-- valine -->
+
+  
+
+
+
+
+<script src="/bundle.js"></script><script>
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  ;
+
+      (function(){
+        new Valine({
+          el         : '#valine-comments',
+          verify     : 'false',
+          notify     : 'false',
+          appId      : 'd3Ferur4FUri7vERAylGpome-gzGzoHsz',
+          appKey     : 'uRGeMnmfAq6h88QavSUfpS3q',
+          placeholder: 'Just go go',
+          avatar     : 'robohash',
+          meta       : 'nick'.split(","),
+          pageSize   : '10',
+          visitor    : 'true',
+          lang       : 'zh-cn',
+          recordIP   : 'true',
+          serverURLs : ''
+        })
+      }());
+  </script></body></html>

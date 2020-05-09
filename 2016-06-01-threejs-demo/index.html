@@ -28,7 +28,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/UjivxQIND2FwgXu.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/OMT2v7BDgYNmpXS.jpg">
-<meta property="og:updated_time" content="2020-05-09T01:22:36.834Z">
+<meta property="og:updated_time" content="2020-05-09T02:36:40.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/UjivxQIND2FwgXu.png">
 
@@ -1269,7 +1269,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff4fad;
+  background: #ff0b73;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2807,7 +2807,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 09:22:36" itemprop="dateModified" datetime="2020-05-09T09:22:36+08:00">2020-05-09</time>
+                <time title="Modified: 2020-05-09 10:36:40" itemprop="dateModified" datetime="2020-05-09T10:36:40+08:00">2020-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2901,10 +2901,7 @@ ul.breadcrumb li + li:last-child {
 <p>效果如下:</p>
 <div id="Orthographic1" style="margin:0;text-align: center;"></div>
 
-<p>但是由于角度问题,我们现在只能看到正方体的正面,现在我们调整相机位置</p>
-<p><code>camera.position.set(4, -3, 5);</code></p>
-<p>调整视角方向(看向原点),这样我们就能看到整个正方体的线框了</p>
-<p><code>camera.lookAt(new THREE.Vector3(0, 0, 0));</code></p>
+<p>但是由于角度问题,我们现在只能看到正方体的正面,现在我们调整相机位置<br><code>camera.position.set(4, -3, 5);</code><br>调整视角方向(看向原点),这样我们就能看到整个正方体的线框了<br><code>camera.lookAt(new THREE.Vector3(0, 0, 0));</code></p>
 <div id="Orthographic2" style="margin:0;text-align: center;"></div>
 
 <script>
@@ -2916,10 +2913,8 @@ function Orthographic2(){
     renderer.setSize(600,400);
     document.getElementById("Orthographic2").appendChild(renderer.domElement);
     renderer.setClearColor(new THREE.Color(0X000000,0.5)); // black
-
     // scene
     var scene = new THREE.Scene();
-
     //camara
     var camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10);
     camera.position.set(4, -3, 5);
@@ -2936,17 +2931,14 @@ function Orthographic2(){
     // render
     renderer.render(scene, camera)
 }
-
 function Orthographic1(){
     // renderer
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(600,400);
     document.getElementById("Orthographic1").appendChild(renderer.domElement);
     renderer.setClearColor(new THREE.Color(0X000000,0.5)); // black
-
     // scene
     var scene = new THREE.Scene();
-
     //camara
     var camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10);
     camera.position.set(0,0,5);
@@ -3032,7 +3024,7 @@ function Perspective() {
 <figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> light = <span class="keyword">new</span> THREE.AmbientLight({<span class="number">0xffffff</span>});</span><br><span class="line">scene.add(light);</span><br></pre></td></tr></tbody></table></figure>
 
 <p>但是只添加环境光而没有物体是无法看出来效果的<br>所以再添加两个长方体</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> greenCube = <span class="keyword">new</span> THREE.Mesh(<span class="keyword">new</span> THREE.BoxGeometry(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="keyword">new</span> THREE.MeshLambertMaterial({<span class="attr">color</span>: <span class="number">0x00ff00</span>}));</span><br><span class="line">greenCube.position.x = <span class="number">3</span>;</span><br><span class="line">scene.add(greenCube);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> whiteCube = <span class="keyword">new</span> THREE.Mesh(<span class="keyword">new</span> THREE.BoxGeometry(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="keyword">new</span> THREE.MeshLambertMaterial({<span class="attr">color</span>: <span class="number">0xffffff</span>}));</span><br><span class="line">whiteCube.position.x = <span class="number">-3</span>;</span><br><span class="line">scene.add(whiteCube);</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> greenCube = <span class="keyword">new</span> THREE.Mesh(<span class="keyword">new</span> THREE.BoxGeometry(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="keyword">new</span> THREE.MeshLambertMaterial({<span class="attr">color</span>: <span class="number">0x00ff00</span>}));</span><br><span class="line">greenCube.position.x = <span class="number">3</span>;</span><br><span class="line">scene.add(greenCube);</span><br><span class="line"><span class="keyword">var</span> whiteCube = <span class="keyword">new</span> THREE.Mesh(<span class="keyword">new</span> THREE.BoxGeometry(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="keyword">new</span> THREE.MeshLambertMaterial({<span class="attr">color</span>: <span class="number">0xffffff</span>}));</span><br><span class="line">whiteCube.position.x = <span class="number">-3</span>;</span><br><span class="line">scene.add(whiteCube);</span><br></pre></td></tr></tbody></table></figure>
 
 <div id="Ambient" style="margin:0;text-align: center;"></div>
 
@@ -3059,7 +3051,6 @@ function Ambient() {
         new THREE.MeshLambertMaterial({color: 0x00ff00}));
     greenCube.position.x = 2;
     scene.add(greenCube);
-
     var whiteCube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2),
             new THREE.MeshLambertMaterial({color: 0xff0000}));
     whiteCube.position.x = -2;
@@ -3113,17 +3104,14 @@ function PointLight() {
     camera.position.set(0, 5, 5);
     camera.lookAt(new THREE.Vector3(0,0,0));
     scene.add(camera);
-
     var light = new THREE.PointLight(0xffffff, 2, 100);
     light.position.set(0, 1.5, 2);
     scene.add(light);
-
     //cube
     var greenCube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2),
         new THREE.MeshLambertMaterial({color: 0x00ff00}));
     greenCube.position.x = 2;
     scene.add(greenCube);
-
     var whiteCube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2),
             new THREE.MeshLambertMaterial({color: 0xff0000}));
     whiteCube.position.x = -2;
@@ -3140,7 +3128,7 @@ function PointLight() {
 <figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> light = <span class="keyword">new</span> THREE.DirectionalLight();</span><br><span class="line">light.position.set(<span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>);</span><br><span class="line">scene.add(light);</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="在线演示"><a href="#在线演示" class="headerlink" title="在线演示"></a>在线演示</h2><p>好啦,了解以上知识,再稍微熟悉一下基础<code>three.js</code>类就能做一个简单的东西了<br>比如:</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span><br><span class="line"><span class="keyword">var</span> width = <span class="number">700</span>;</span><br><span class="line"><span class="keyword">var</span> height = <span class="number">330</span>;</span><br><span class="line"><span class="keyword">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera(<span class="number">45</span>,width/height,<span class="number">0.1</span>,<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span><br><span class="line">renderer.setClearColor(<span class="keyword">new</span> THREE.Color(<span class="number">0x000000</span>,<span class="number">0.5</span>));</span><br><span class="line">renderer.setSize(width, height);</span><br><span class="line">camera.position.set(<span class="number">-30</span>,<span class="number">50</span>,<span class="number">50</span>);</span><br><span class="line">camera.lookAt(<span class="keyword">new</span> THREE.Vector3(<span class="number">10</span>,<span class="number">10</span>,<span class="number">10</span>));</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">"scene"</span>).appendChild(renderer.domElement);</span><br><span class="line"><span class="keyword">var</span> groundGeom = <span class="keyword">new</span> THREE.PlaneGeometry(<span class="number">100</span>,<span class="number">100</span>);</span><br><span class="line"><span class="keyword">var</span> groundMesh = <span class="keyword">new</span> THREE.Mesh(groundGeom,<span class="keyword">new</span> THREE.MeshBasicMaterial({<span class="attr">color</span>:<span class="number">0xffee00</span>}));</span><br><span class="line">groundMesh.rotation.x = -<span class="built_in">Math</span>.PI/<span class="number">2</span><span class="number">-0.08</span>;</span><br><span class="line">scene.add(groundMesh);</span><br><span class="line"><span class="keyword">var</span> geomCube = <span class="keyword">new</span> THREE.BoxGeometry(<span class="number">16</span>,<span class="number">32</span>,<span class="number">16</span>);</span><br><span class="line"><span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh(geomCube,<span class="keyword">new</span> THREE.MeshNormalMaterial({<span class="attr">color</span>:<span class="number">0x7777ff</span>}));</span><br><span class="line">scene.add(cube);</span><br><span class="line"><span class="keyword">var</span> ambientLight = <span class="keyword">new</span> THREE.AmbientLight({<span class="attr">color</span>:<span class="number">0xff0000</span>});</span><br><span class="line">scene.add(ambientLight);</span><br><span class="line">scene.fog = <span class="keyword">new</span> THREE.Fog(<span class="number">0x0000ff</span>,<span class="number">0.03</span>,<span class="number">100</span>);</span><br><span class="line"><span class="keyword">var</span> spotLight = <span class="keyword">new</span> THREE.SpotLight(<span class="number">0x00ff00</span>);</span><br><span class="line">spotLight.position.set(<span class="number">40</span>,<span class="number">20</span>,<span class="number">10</span>);</span><br><span class="line">spotLight.castShadow = <span class="literal">true</span>;</span><br><span class="line">scene.add(spotLight);</span><br><span class="line">render();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>)</span>{</span><br><span class="line">    cube.rotation.y += <span class="number">0.01</span>;</span><br><span class="line">    requestAnimationFrame(render);</span><br><span class="line">    renderer.render(scene,camera);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span><br><span class="line"><span class="keyword">var</span> width = <span class="number">700</span>;</span><br><span class="line"><span class="keyword">var</span> height = <span class="number">330</span>;</span><br><span class="line"><span class="keyword">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera(<span class="number">45</span>,width/height,<span class="number">0.1</span>,<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span><br><span class="line">renderer.setClearColor(<span class="keyword">new</span> THREE.Color(<span class="number">0x000000</span>,<span class="number">0.5</span>));</span><br><span class="line">renderer.setSize(width, height);</span><br><span class="line">camera.position.set(<span class="number">-30</span>,<span class="number">50</span>,<span class="number">50</span>);</span><br><span class="line">camera.lookAt(<span class="keyword">new</span> THREE.Vector3(<span class="number">10</span>,<span class="number">10</span>,<span class="number">10</span>));</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">"scene"</span>).appendChild(renderer.domElement);</span><br><span class="line"><span class="keyword">var</span> groundGeom = <span class="keyword">new</span> THREE.PlaneGeometry(<span class="number">100</span>,<span class="number">100</span>);</span><br><span class="line"><span class="keyword">var</span> groundMesh = <span class="keyword">new</span> THREE.Mesh(groundGeom,<span class="keyword">new</span> THREE.MeshBasicMaterial({<span class="attr">color</span>:<span class="number">0xffee00</span>}));</span><br><span class="line">groundMesh.rotation.x = -<span class="built_in">Math</span>.PI/<span class="number">2</span><span class="number">-0.08</span>;</span><br><span class="line">scene.add(groundMesh);</span><br><span class="line"><span class="keyword">var</span> geomCube = <span class="keyword">new</span> THREE.BoxGeometry(<span class="number">16</span>,<span class="number">32</span>,<span class="number">16</span>);</span><br><span class="line"><span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh(geomCube,<span class="keyword">new</span> THREE.MeshNormalMaterial({<span class="attr">color</span>:<span class="number">0x7777ff</span>}));</span><br><span class="line">scene.add(cube);</span><br><span class="line"><span class="keyword">var</span> ambientLight = <span class="keyword">new</span> THREE.AmbientLight({<span class="attr">color</span>:<span class="number">0xff0000</span>});</span><br><span class="line">scene.add(ambientLight);</span><br><span class="line">scene.fog = <span class="keyword">new</span> THREE.Fog(<span class="number">0x0000ff</span>,<span class="number">0.03</span>,<span class="number">100</span>);</span><br><span class="line"><span class="keyword">var</span> spotLight = <span class="keyword">new</span> THREE.SpotLight(<span class="number">0x00ff00</span>);</span><br><span class="line">spotLight.position.set(<span class="number">40</span>,<span class="number">20</span>,<span class="number">10</span>);</span><br><span class="line">spotLight.castShadow = <span class="literal">true</span>;</span><br><span class="line">scene.add(spotLight);</span><br><span class="line">render();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>)</span>{</span><br><span class="line">    cube.rotation.y += <span class="number">0.01</span>;</span><br><span class="line">    requestAnimationFrame(render);</span><br><span class="line">    renderer.render(scene,camera);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>测试区域(代码复制到下边文本框运行即可):<br><textarea id="test" style="width:600px;height:400px; border:1px solid #ccc;border-radius:5px;"></textarea></p>
 <p><button class="btn btn-info" onclick="eval(document.getElementById('test').value)">运行测试代码</button></p>
 <div id="scene" style="margin:0;text-align: center;">
@@ -3171,8 +3159,8 @@ function PointLight() {
       <i class="fa fa-chevron-left"></i> 菊与刀
     </a></div>
       <div class="post-nav-item">
-    <a href="/2016-06-07-pili-music/" rel="next" title="音乐推荐-霹雳音乐集锦">
-      音乐推荐-霹雳音乐集锦 <i class="fa fa-chevron-right"></i>
+    <a href="/2016-06-08-idea-programing-language/" rel="next" title="关于编程语言的一些看法">
+      关于编程语言的一些看法 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -3247,20 +3235,20 @@ function PointLight() {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

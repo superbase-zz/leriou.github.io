@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="redis的AOF和RDB持久化Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式 RDB持久化特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态 例如: 1234&amp;#123;	&quot;age&quot;:1,	&quot;name&quot;:&quot;zhangsan&quot;&amp;#125; 这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据 拥有持久化的能力">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-09T02:15:22.976Z">
+<meta property="og:updated_time" content="2020-05-09T02:19:39.332Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-01-29-redis-persistence/">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff4fad;
+  background: #ff0b73;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2804,7 +2804,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-09 10:15:22" itemprop="dateModified" datetime="2019-11-09T10:15:22+08:00">2019-11-09</time>
+                <time title="Modified: 2020-05-09 10:19:39" itemprop="dateModified" datetime="2020-05-09T10:19:39+08:00">2020-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2865,7 +2865,7 @@ ul.breadcrumb li + li:last-child {
 <h2 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a>AOF持久化</h2><p>特点: 对写命令进行备份,一般是再有写命令的时候吧命令追加到AOF文件中,客户端每进行一次操作,服务器吧命令写入AOF文件,数据恢复就是从AOF文件中读取命令并执行</p>
 <p>但是会出现这么一种情况(ABA):</p>
 <p>对某个命令的写命令太多的话,有可能会出现这种情况</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 18 </span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 20</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 18 </span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 20</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>这种情况下a的值实际最终还是10,不过因为aof对所有操作的命令都会记录,导致大量的命令对数据最终的状态来说其实都是”无效”的</p>
 <p>这种情况还会引起效率问题,为了减小AOF文件的大小,这个时候需要对AOF进行重写</p>
@@ -2974,20 +2974,20 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

@@ -18,15 +18,15 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="适配器模式 概念  将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作  主要角色  目标(Target)角色：定义客户端使用的与特定领域相关的接口，这也就是我们所期待得到的 源(Adaptee)角色：需要进行适配的接口 适配器(Adapter)角色：对Adaptee的接口与Target接口进行适配；适配器是本模式的核心，适配器把">
+  <meta name="description" content="总结一些常用的设计模式 适配器模式 概念  将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作  主要角色  目标(Target)角色：定义客户端使用的与特定领域相关的接口，这也就是我们所期待得到的 源(Adaptee)角色：需要进行适配的接口 适配器(Adapter)角色：对Adaptee的接口与Target接口进行适配；适配器">
 <meta name="keywords" content="design-pattern">
 <meta property="og:type" content="article">
 <meta property="og:title" content="常用的设计模式总结">
 <meta property="og:url" content="https://leriou.github.io/2015-12-30-design-pattern/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="适配器模式 概念  将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作  主要角色  目标(Target)角色：定义客户端使用的与特定领域相关的接口，这也就是我们所期待得到的 源(Adaptee)角色：需要进行适配的接口 适配器(Adapter)角色：对Adaptee的接口与Target接口进行适配；适配器是本模式的核心，适配器把">
+<meta property="og:description" content="总结一些常用的设计模式 适配器模式 概念  将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作  主要角色  目标(Target)角色：定义客户端使用的与特定领域相关的接口，这也就是我们所期待得到的 源(Adaptee)角色：需要进行适配的接口 适配器(Adapter)角色：对Adaptee的接口与Target接口进行适配；适配器">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-09T02:08:45.347Z">
+<meta property="og:updated_time" content="2020-05-09T02:24:42.906Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2015-12-30-design-pattern/">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff4fad;
+  background: #ff0b73;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2804,7 +2804,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-09 10:08:45" itemprop="dateModified" datetime="2019-11-09T10:08:45+08:00">2019-11-09</time>
+                <time title="Modified: 2020-05-09 10:24:42" itemprop="dateModified" datetime="2020-05-09T10:24:42+08:00">2020-05-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2848,7 +2848,8 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><ul>
+        <p>总结一些常用的设计模式</p>
+<h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><ul>
 <li><strong>概念</strong></li>
 </ul>
 <p>将一个类的接口转换成客户希望的另外一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作</p>
@@ -3337,20 +3338,20 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

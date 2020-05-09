@@ -12,10 +12,10 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="最近在使用Google搜索的时候发现搜索结果显示的速度非常的快(一般在0.1s-0.4s内) 我们之前也做过一部分搜索引擎相关的工作(基于Sphinx和Elasticsearch), 但是发现Google搜索引擎的性能和准确度要比我们做的快上许多 这个事情让我很好奇Google的搜索引擎为什么速度这么快 搜索引擎一般来说都会随着数据量的增加而变慢,即便使用了索引也有很多的问题要处理 后来从网上搜索">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2018-02-08-distribute-map-reduce/map-reduce.bakedsvg.svg">
-<meta property="og:updated_time" content="2019-11-09T02:17:21.303Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/4lu5Ek2yZDi7doF.png">
+<meta property="og:updated_time" content="2020-05-09T01:48:31.892Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2018-02-08-distribute-map-reduce/map-reduce.bakedsvg.svg">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/4lu5Ek2yZDi7doF.png">
     
     
         
@@ -184,7 +184,7 @@ reduce函数接收一个k,v1&lt;list&gt;, 返回一个v2&lt;list&gt;</code></pre
 <p>ps:大多数情况下map的返回结果不能直接用于reduce函数,需要特殊处理一下</p>
 </blockquote>
 <h2 id="过程图"><a href="#过程图" class="headerlink" title="过程图"></a>过程图</h2><p>以下是一个很详细的对MongoDB中的MapReduce过程的解读图</p>
-<p><img src="map-reduce.bakedsvg.svg" alt="mr"></p>
+<p><img src="https://i.loli.net/2020/05/09/4lu5Ek2yZDi7doF.png" alt="map-reduce.png"></p>
 <p>我们可以看到map函数的输入是多个被查询过滤过的文档集合,返回值是一个map对应的值列表,我们可以认为map函数式对所有符合条件的数据进行一次简单的处理</p>
 <p>reduce则是将这个值列表按照key进行处理,即对map的结果进行最终结果操作</p>
 <h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p>我们用一个实际的问题来描述MapReduce的思想</p>

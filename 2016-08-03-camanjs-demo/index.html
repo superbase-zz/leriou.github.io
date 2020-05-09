@@ -12,10 +12,10 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="CamanJS图形处理库之前我曾想过自己做一个简单的图片处理库自己用,后来做了几个基本效果以后发现了成本太高 然后就放弃了,去找了个现成的图形库:CamanJS 发现用起来也不错,也就没有再做下去 简介CamanJS是一个图片处理类库,能十分方便的处理图片 本身已经提供了许多效果和操作 使用起来也十分方便 项目地址：https://github.com/meltingice/CamanJS">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2016-08-03-camanjs-demo/20160803_21.png?v=10086">
-<meta property="og:updated_time" content="2019-11-09T02:13:34.270Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/1LzfsPa7U6D3oWx.png">
+<meta property="og:updated_time" content="2020-05-09T01:28:48.962Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2016-08-03-camanjs-demo/20160803_21.png?v=10086">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/1LzfsPa7U6D3oWx.png">
     
     
         
@@ -182,9 +182,10 @@
 <h2 id="测试工具"><a href="#测试工具" class="headerlink" title="测试工具"></a>测试工具</h2><p><button class="btn btn-info" id="reset">RESET</button>(尽量使用chrome浏览器,请等待网页加载完毕)</p>
 <div>
     <div id="stage">
-        <img id="image" src="20160803_21.png?v=10086" style="float: auto">
+        <img id="image" src="https://i.loli.net/2020/05/09/1LzfsPa7U6D3oWx.png" style="float: auto">
     </div>
 </div>
+
 
 <h1 id="预置效果"><a href="#预置效果" class="headerlink" title="预置效果"></a>预置效果</h1><p><code>Caman</code>内置了一批现成的图片效果，使用起来非常简单<br><code>this.revert()</code>用来重置图片效果,保证各个效果不互相影响<br><code>this.lomo()</code>将lomo效果用到图片上<br><code>this.render()</code>渲染图片</p>
 <figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caman(<span class="string">"#image"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">    <span class="keyword">this</span>.revert();</span><br><span class="line">    <span class="keyword">this</span>.lomo();</span><br><span class="line">    <span class="keyword">this</span>.render();</span><br><span class="line">    })</span><br></pre></td></tr></tbody></table></figure>

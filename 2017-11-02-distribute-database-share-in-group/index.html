@@ -12,10 +12,10 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="这个是写给组内成员的分布式知识简单分享 什么是分布式什么是集群? 什么是分布式?集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题    几个典型的分布式系统:    名称 类型 数据分布方式 故障转移 底层存储 节点类型    kafka 消息系统 broke">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2017-11-02-distribute-database-share-in-group/cap.jpg">
-<meta property="og:updated_time" content="2019-11-09T02:16:46.836Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/bO1gZiWHtFBvKj2.jpg">
+<meta property="og:updated_time" content="2020-05-09T01:37:48.289Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2017-11-02-distribute-database-share-in-group/cap.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/bO1gZiWHtFBvKj2.jpg">
     
     
         
@@ -227,7 +227,7 @@
 </ul>
 <p>CAP三个特性不可能同时满足, 只能同时满足两个特性<br>对大多数的分布式应用来说 CAP中的 P 是必不可少的<br>所以我们一般都会从CA中选取一个, 一般会选择CP 或者 AP   </p>
 <p>具体处理cap协议的方法如下图</p>
-<p><img src="cap.jpg" alt="cap"></p>
+<p><img src="https://i.loli.net/2020/05/09/bO1gZiWHtFBvKj2.jpg" alt="cap.jpg"></p>
 <h1 id="如何解决分区容忍性"><a href="#如何解决分区容忍性" class="headerlink" title="如何解决分区容忍性"></a>如何解决分区容忍性</h1><p>解决分区容忍性问题首先就是对数据进行分区或者叫分片</p>
 <p>分区手段有很多, 但大多分两种, hash分区和线性分区<br>系统将数据分为逻辑上的几个区块, 每个区块可以在多个机器上进行自由的部署和移动<br>这样就做到了将数据和机器进行隔离, 可以以分片为单位在不同机器上进行数据的移动和备份<br>但是这样在使用数据的时候就需要从多个分片同时获取数据进行合并<br>如果因为某些原因， 导致某些分片所在的节点出现故障， 此时我们就认为出现了网络分区，<br>分区容忍性要求在此种状况下，系统依然能对外提供有效服务 </p>
 <h2 id="Gossip"><a href="#Gossip" class="headerlink" title="Gossip"></a>Gossip</h2><p>使用者: Redis<br>Gossip协议是节点将自己的数据通知给集群内所有节点的协议, 但是不能做到数据一致性<br>Gossip只能保证可用性和分区容忍性</p>

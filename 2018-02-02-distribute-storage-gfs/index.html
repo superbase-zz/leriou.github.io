@@ -12,11 +12,11 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="GFS是谷歌的底层文件系统 GFS简介GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务 GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GFS的读写基本都是其他应用的大文件批量数据读写 Google于2003年放出了GFS的设计论文 论文地址 The Google Fil">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2018-02-02-distribute-storage-gfs/1334712344_6225.jpg">
-<meta property="og:image" content="https://leriou.github.io/2018-02-02-distribute-storage-gfs/1334931385_9113.jpg">
-<meta property="og:updated_time" content="2019-11-09T02:17:11.432Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/J5EbuqjnQHvRUIf.jpg">
+<meta property="og:updated_time" content="2020-05-09T01:38:26.598Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2018-02-02-distribute-storage-gfs/1334712344_6225.jpg">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg">
     
     
         
@@ -176,7 +176,7 @@
 <li>基于廉价服务器实现高容错高可用</li>
 </ol>
 <h1 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h1><p>GFS的核心服务分为三个部分</p>
-<p><img src="1334712344_6225.jpg" alt="GFS核心"></p>
+<p><img src="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg" alt="1334712344_6225.jpg"></p>
 <p>GFS采用中心化的管理方式,Client作为应用使用方,Master作为ChunkServer的管理者,ChunkServer来负责数据的存储,client与master进行交互获取控制信息,然后与对应的ChunkServer交互获取具体的数据</p>
 <ol>
 <li><p>Client</p>
@@ -238,7 +238,7 @@
 <p>ps: client会缓存一部分的ChunkServer元信息(某个ChunkServer在某个机器上面,副本分布情况等),但并不会缓存具体的文件内容, 以此降低Master服务器的负载, ChunkServer会对服务器的请求进行校验, 当ChunkServer信息有变动时, 客户端如果使用过期的Chunk信息, 能从ChunkServer得到反馈, 重新去Master获取最新的Chunk信息</p>
 </blockquote>
 <h2 id="数据的写"><a href="#数据的写" class="headerlink" title="数据的写"></a>数据的写</h2><p>GFS中写入数据的流程如下:</p>
-<p><img src="1334931385_9113.jpg" alt="GFS写"></p>
+<p><img src="https://i.loli.net/2020/05/09/J5EbuqjnQHvRUIf.jpg" alt="1334931385_9113.jpg"></p>
 <p>master使用租约授权一个chunk副本为primary副本,执行client的写操作</p>
 <ol>
 <li>client需要更新一个数据块，询问master谁拥有该数据块的租约（谁是primary）；</li>

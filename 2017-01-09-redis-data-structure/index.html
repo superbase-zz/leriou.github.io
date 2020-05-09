@@ -12,10 +12,10 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="redis基础数据结构redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象 redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此 sds简单动态字符串对应的上层对象是 字符串 数据结构具体的数据结构如下: 12345typedef struct sdstr&amp;#123;	int">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2017-01-09-redis-data-structure/IMG_0256.jpeg">
-<meta property="og:updated_time" content="2019-11-09T02:14:06.549Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/K4POMmsa7duy3Nf.jpg">
+<meta property="og:updated_time" content="2020-05-09T01:30:48.007Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2017-01-09-redis-data-structure/IMG_0256.jpeg">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/K4POMmsa7duy3Nf.jpg">
     
     
         
@@ -242,7 +242,7 @@
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">{</span><br><span class="line">    zskiplist: {</span><br><span class="line">        header: {</span><br><span class="line">            obj: <span class="string">"aa"</span>,</span><br><span class="line">            score: <span class="number">45</span>,</span><br><span class="line">            backforward: null,</span><br><span class="line">            zskiplevel: [{</span><br><span class="line">                forward: null,</span><br><span class="line">                span: <span class="number">9</span></span><br><span class="line">            },{</span><br><span class="line">                forward: *p,</span><br><span class="line">                span: <span class="number">8</span></span><br><span class="line">            }]</span><br><span class="line">        },</span><br><span class="line">        tail: {</span><br><span class="line">            obj: <span class="string">"aa"</span>,</span><br><span class="line">            score: <span class="number">45</span>,</span><br><span class="line">            backforward: null,</span><br><span class="line">            zskiplevel: [{</span><br><span class="line">                forward: null,</span><br><span class="line">                span: <span class="number">9</span></span><br><span class="line">            }]</span><br><span class="line">        },</span><br><span class="line">        length: <span class="number">100</span>,</span><br><span class="line">        level: <span class="number">32</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <p>跳跃表图示:</p>
-<p><img src="IMG_0256.jpeg" alt="跳跃表"></p>
+<p><img src="https://i.loli.net/2020/05/09/K4POMmsa7duy3Nf.jpg" alt="IMG_0256.jpeg"></p>
 <p>跳跃表是有序集合的底层实现之一</p>
 <p>跳跃表中的头结点不计算在length长度之内,跳跃表的节点排序按照分值从小到大排序</p>
 <p>每次创建新节点的时候,redis会根据幂次定律随机生成一个1-32的层数作为level数组的大小</p>

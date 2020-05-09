@@ -12,10 +12,10 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="推荐系统的排序策略排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推结果内容  返回结果应平衡多种来源的密度分布  根据排版要求进行精排序 问题和需求描述假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个  新内容约 2000 个  热门内容约 200 个   我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行推">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/math1.png">
-<meta property="og:updated_time" content="2020-05-03T16:51:46.942Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/v7xnQTdfiqLJDC2.png">
+<meta property="og:updated_time" content="2020-05-09T01:44:37.956Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/math1.png">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/v7xnQTdfiqLJDC2.png">
     
     
         
@@ -189,7 +189,7 @@
 </ol>
 <h1 id="基线排序法"><a href="#基线排序法" class="headerlink" title="基线排序法"></a>基线排序法</h1><p>先选择一个数量较多的内容集合作为基线：例如 新内容。将基线集合的数据通过排名映射到[0，1]的空间之内</p>
 <p>计分函数</p>
-<p><img src="math1.png" alt="计分函数"></p>
+<p><img src="https://i.loli.net/2020/05/09/v7xnQTdfiqLJDC2.png" alt="QsBjsd0gNmbnail.png"></p>
 <figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 新内容：假设我们有2000个新内容，那第400个的得分应该为</span></span><br><span class="line">         第400个</span><br><span class="line">  ｜       ｜       ｜       ｜       ｜      ｜</span><br><span class="line">  <span class="number">1.0</span>     <span class="number">0.8</span>      <span class="number">0.6</span>      <span class="number">0.4</span>      <span class="number">0.2</span>     <span class="number">0</span></span><br></pre></td></tr></tbody></table></figure>
 <p>然后我们把其他召回集内容也通过某个积分函数均匀散列在以上区间</p>
 <p>由于我们要满足 3:4:3的概率所以我们要求在原来的40个新内容的范围里面，均匀混进去30个热门和30个个性化内容，这样比例就满足了</p>

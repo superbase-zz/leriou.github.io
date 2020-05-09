@@ -12,12 +12,12 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="redis分享Author:   leriou lee       2017.10.12本篇内容主要是针对团队成员的redis中间件分享 目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案 redis基础 redis是什么  redis是一个使用c语言开发的k-v存储系统,其实不仅仅">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://leriou.github.io/2017-10-29-redis-share-in-group/redis.png">
-<meta property="og:image" content="https://leriou.github.io/2017-10-29-redis-share-in-group/IMG_0255.jpeg">
-<meta property="og:image" content="https://leriou.github.io/2017-10-29-redis-share-in-group/flow1.png">
-<meta property="og:updated_time" content="2019-11-09T02:16:29.403Z">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/deSBNkvgwpaE2tK.jpg">
+<meta property="og:image" content="https://i.loli.net/2020/05/09/xpNhU9XPYFn4OcA.png">
+<meta property="og:updated_time" content="2020-05-09T01:34:42.886Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://leriou.github.io/2017-10-29-redis-share-in-group/redis.png">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png">
     
     
         
@@ -265,7 +265,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <pre><code>redis的内部排序主要对set,sort set,list这三个数据结构起作用,旨在让用户可以用过自定义的方式对内部数据进行排序</code></pre></li>
 </ol>
 <h1 id="redis-Representation"><a href="#redis-Representation" class="headerlink" title="redis Representation"></a>redis Representation</h1><p>这里做了一个简单的redis的脑图, 着重描述了一下内部的基本数据结构的关系</p>
-<p><img src="redis.png" alt="redis"></p>
+<p><img src="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png" alt="redis.png"></p>
 <p>百度脑图地址:<br><a href="http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037" target="_blank" rel="noopener">http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037</a></p>
 <h1 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h1><p>redis的常见高可用部署方案</p>
 <ul>
@@ -305,7 +305,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>其他一些不建议的数据对象使用方法:</p>
 <figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1.</span> 使用str存储json对象</span><br><span class="line"></span><br><span class="line">	如: a:{<span class="string">"name"</span>:<span class="string">"xiaohua"</span>,<span class="string">"age"</span>:<span class="number">8</span>},像这种可以使用hash来存储</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 过度使用有序集合</span><br><span class="line"></span><br><span class="line">	集合和有序集合和list在部分特性上面比较类似,很多人时候问题都可以使用list替代而不必要使用集合,因为有序集合底层使用的跳跃表,性能方面比简单的列表稍微差点,但是集合和有序集合都可以方便的使用集合操作,交/并/差集等</span><br></pre></td></tr></tbody></table></figure>
 <p><strong>redis中的数据库键空间</strong></p>
-<p><img src="IMG_0255.jpeg" alt="数据库"></p>
+<p><img src="https://i.loli.net/2020/05/09/deSBNkvgwpaE2tK.jpg" alt="IMG_0255.jpeg"></p>
 <p><strong>数据对象和底层实现的数据结构对应关系</strong></p>
 <p>数据对象的实现之所以有这种情况,其实是适应2个不同场景, 省内存和常规使用</p>
 <table>
@@ -376,7 +376,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>查询操作就是最常见的<code>幂等操作</code></p>
 <p><strong>流程图</strong></p>
 <p>具体流程图:</p>
-<p><img src="flow1.png" alt="flow"></p>
+<p><img src="https://i.loli.net/2020/05/09/xpNhU9XPYFn4OcA.png" alt="flow1.png"></p>
 <ol start="2">
 <li>使用redis解决超高并发</li>
 </ol>

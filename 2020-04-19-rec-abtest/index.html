@@ -21,13 +21,13 @@
   <meta name="description" content="A/B实验平台的目标希望同时能进行多组召回和排序策略的对比实验，由于多组实验同时执行，所以需要不同组实验之间互相隔离，又因为可能会同时进行多层实验，所以要求多层实验之间满足正交 实验平台的架构设计 用户实验我们会根据当前的实验层数和每层的正在执行的实验组数为每个用户分配一个流量桶。实验需要有版本设计，每个版本的实验，同一个用户只能存在于一个桶中，实验版本更新，用户分桶随之重新分配。 用户分桶的本质">
 <meta name="keywords" content="推荐系统">
 <meta property="og:type" content="article">
-<meta property="og:title" content="用户特征挖掘的方案">
+<meta property="og:title" content="推荐系统AB实验平台">
 <meta property="og:url" content="https://leriou.github.io/2020-04-19-rec-abtest/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="A/B实验平台的目标希望同时能进行多组召回和排序策略的对比实验，由于多组实验同时执行，所以需要不同组实验之间互相隔离，又因为可能会同时进行多层实验，所以要求多层实验之间满足正交 实验平台的架构设计 用户实验我们会根据当前的实验层数和每层的正在执行的实验组数为每个用户分配一个流量桶。实验需要有版本设计，每个版本的实验，同一个用户只能存在于一个桶中，实验版本更新，用户分桶随之重新分配。 用户分桶的本质">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/Eh862JtjNPmkVCS.png">
-<meta property="og:updated_time" content="2020-05-10T06:07:13.612Z">
+<meta property="og:updated_time" content="2020-05-10T06:11:57.172Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/Eh862JtjNPmkVCS.png">
 
@@ -44,7 +44,7 @@
   };
 </script>
 
-  <title>用户特征挖掘的方案 | Leriou's Tavern</title>
+  <title>推荐系统AB实验平台 | Leriou's Tavern</title>
   
 
 
@@ -1268,7 +1268,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffc603;
+  background: #1ca758;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2789,7 +2789,7 @@ ul.breadcrumb li + li:last-child {
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          用户特征挖掘的方案
+          推荐系统AB实验平台
         </h1>
 
         <div class="post-meta">
@@ -2799,14 +2799,14 @@ ul.breadcrumb li + li:last-child {
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-05 16:12:45" itemprop="dateCreated datePublished" datetime="2020-05-05T16:12:45+08:00">2020-05-05</time>
+              <time title="Created: 2020-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-19T00:00:00+08:00">2020-04-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-10 14:07:13" itemprop="dateModified" datetime="2020-05-10T14:07:13+08:00">2020-05-10</time>
+                <time title="Modified: 2020-05-10 14:11:57" itemprop="dateModified" datetime="2020-05-10T14:11:57+08:00">2020-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2816,14 +2816,10 @@ ul.breadcrumb li + li:last-child {
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
                   <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
                 </span>
-                  , 
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/object-Object/" itemprop="url" rel="index"><span itemprop="name">[object Object]</span></a>
-                </span>
             </span>
 
           
-            <span id="/2020-04-19-rec-abtest/" class="post-meta-item leancloud_visitors" data-flag-title="用户特征挖掘的方案" title="Views">
+            <span id="/2020-04-19-rec-abtest/" class="post-meta-item leancloud_visitors" data-flag-title="推荐系统AB实验平台" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -2882,10 +2878,13 @@ ul.breadcrumb li + li:last-child {
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020-05-02-rec-flows-pool/" rel="prev" title="推荐系统流量池的构建">
-      <i class="fa fa-chevron-left"></i> 推荐系统流量池的构建
+    <a href="/2020-04-11-analyze-user-feture/" rel="prev" title="用户特征挖掘的方案">
+      <i class="fa fa-chevron-left"></i> 用户特征挖掘的方案
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020-05-02-rec-flows-pool/" rel="next" title="推荐系统流量池的构建">
+      推荐系统流量池的构建 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -2966,7 +2965,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">

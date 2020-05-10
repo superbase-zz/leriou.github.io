@@ -1265,7 +1265,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cfdf78;
+  background: #4dd400;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2772,6 +2772,425 @@ ul.breadcrumb li + li:last-child {
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-05-02-rec-flows-pool/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020-05-02-rec-flows-pool/" class="post-title-link" itemprop="url">推荐系统流量池的构建</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-02T00:00:00+08:00">2020-05-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-10 09:48:37" itemprop="dateModified" datetime="2020-05-10T09:48:37+08:00">2020-05-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020-05-02-rec-flows-pool/" class="post-meta-item leancloud_visitors" data-flag-title="推荐系统流量池的构建" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020-05-02-rec-flows-pool/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020-05-02-rec-flows-pool/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这篇文章的目的是希望构建一套可行的，灵活的，能支持我们常见业务需求的流量池系统架构设计</p>
+<h2 id="内容流量池的目的"><a href="#内容流量池的目的" class="headerlink" title="内容流量池的目的"></a>内容流量池的目的</h2><p>我们希望通过流量池达到以下目标</p>
+<ul>
+<li><p>解决内容推荐的马太效应</p>
+</li>
+<li><p>限制点击率比较低的内容的投放次数</p>
+</li>
+<li><p>帮助运营提升内容分发的效率</p>
+</li>
+</ul>
+<h2 id="流量池的整体架构设计"><a href="#流量池的整体架构设计" class="headerlink" title="流量池的整体架构设计"></a>流量池的整体架构设计</h2><p><img data-src="https://i.loli.net/2020/05/09/sGhXxjwLYngEePB.jpg" alt="推荐系统流量池.jpg"></p>
+<p>所有召回策略从流量池中进行内容的召回，内容必须拥有流量才能被推荐系统推荐出去。</p>
+<h2 id="内容流量池的概念"><a href="#内容流量池的概念" class="headerlink" title="内容流量池的概念"></a>内容流量池的概念</h2><p>一个承载内容和内容可推荐次数的数据集合，流量池的核心数据是一个类似于<code>&lt;c10086, 1000&gt;</code>的<code>&lt;k，v&gt;</code>结构。表示的含义也很简单，就是c10086这个编号的内容拥有1000次的推荐次数。</p>
+<p>流量池内容的推荐符合如下基本规则</p>
+<ol>
+<li>拥有流量的内容才允许被推荐，内容每推荐一次消耗一个推荐流量</li>
+<li>内容的流量消耗完毕可以继续添加流量</li>
+<li>内容流量拥有不同的类型，同一个内容可以同时拥有多种流量</li>
+</ol>
+<h2 id="流量的定义"><a href="#流量的定义" class="headerlink" title="流量的定义"></a>流量的定义</h2><p>一个流量代表对某个用户的某一次推荐的某一个内容，如果一个用户一次请求中请求了10条的数据， 那么这一次推荐就消耗了10个流量， 推荐结果中的每个内容推荐流量 -1。</p>
+<p>用户对某一个内容的推荐不会重复， 所以一个用户对某个内容至多拥有一个流量。同时推荐流量也限制了内容的被推荐次数，假设一个内容的总流量是1000，意味着至多被推荐给1000个人。</p>
+<h2 id="流量池的生成和使用规则"><a href="#流量池的生成和使用规则" class="headerlink" title="流量池的生成和使用规则"></a>流量池的生成和使用规则</h2><ol>
+<li>流量分批次，一个批次500个流量。所有内容默认拥有500次的测试流量， 也就是说所有内容至少应被推荐500次</li>
+<li>每个批次的流量消耗完毕进行点击率/互动率的计算，达标的继续分发流量。除第一次外的流量批次统一为叠加流量。叠加流量消耗完毕也进行点击率的计算，达标的继续进行新的流量分发。</li>
+<li>运营可以为内容投放运营流量，流量消耗的优先级：运营流量&gt;叠加流量&gt;测试流量。运营流量也分批次投放，也需要计算点击率，运营流量消耗完毕以后不再进行叠加流量的追加。</li>
+</ol>
+<h3 id="如何限制点击率比较低的内容的投放次数"><a href="#如何限制点击率比较低的内容的投放次数" class="headerlink" title="如何限制点击率比较低的内容的投放次数"></a>如何限制点击率比较低的内容的投放次数</h3><p>每个批次的内容流量消耗完毕立即进行点击掉过计算， 达标的才能继续活的流量。点击率低的不达标内容不再进行推荐。<br>每个内容至少拥有500次的测试流量，用于充分测试其质量表现。</p>
+<h3 id="如何解决马太效应"><a href="#如何解决马太效应" class="headerlink" title="如何解决马太效应"></a>如何解决马太效应</h3><p>内容流量的生成门槛随着流量分发的次数逐步提高。 例如，a内容前1000次流量点击率12%， 阈值为 6% ，将继续获得1000次流量的额度，等这1000个流量消耗完毕，对应的门槛提高到 12%， 假如这第二批次的流量点击率为10%， 将被终止流量的继续投放。已消耗流量越多，获得新流量的点击率阈值越高。</p>
+<h3 id="如何帮助运营人员提高内容分发效率"><a href="#如何帮助运营人员提高内容分发效率" class="headerlink" title="如何帮助运营人员提高内容分发效率"></a>如何帮助运营人员提高内容分发效率</h3><p>运营人员可以为内容赋予额外的流量，拥有充足流量的内容将在推荐策略中获得加权， 可用流量越多的内容，越容易被推荐出去。</p>
+<h2 id="定向推荐-指定用户范围的推荐"><a href="#定向推荐-指定用户范围的推荐" class="headerlink" title="定向推荐: 指定用户范围的推荐"></a>定向推荐: 指定用户范围的推荐</h2><p>上面的流量池只能实现对某内容的一定次数的推荐， 其实还可以在此基础上实现对特征用户的定向流量投放。即我们可以指定某内容向某一类用户进行推荐的次数。</p>
+<p>这个功能可以用来进行运营赋能， 帮助运营更精准的进行流量投放， 也可以帮助创作者进行早期的用户积累和帮创作者提高内容的曝光度。</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>我们可以为用户设置一系列的特征列表例如</p>
+<table>
+<thead>
+<tr>
+<th>用户/特征</th>
+<th>&gt;30岁</th>
+<th>男性</th>
+<th>郭德纲粉丝</th>
+<th>杨幂粉丝</th>
+<th>喜欢综艺</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>我们如果要对用户进行精准投放，只需要选中一部分特征用户， 例如，我们要把内容A对杨幂的粉丝进行投放， 内容B对30岁以下的男性用进行投放<br>那我们可以生成如下两个数据序列</p>
+<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> 杨幂粉丝 = <span class="type">Set</span>(<span class="type">A</span>)</span><br><span class="line"><span class="keyword">val</span> <span class="number">30</span>岁以下男性用户 = <span class="type">Set</span>(<span class="type">B</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>用户1 在获取推荐结果的时候，根据自己的用户特征列表和列表中特征对应的待推荐内容进行融合排序推荐</p>
+<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getRecommendations</span></span>(user:<span class="type">String</span>): <span class="type">Seq</span> = {</span><br><span class="line">	<span class="keyword">val</span> fetureList:<span class="type">Seq</span> = getFeture(user)</span><br><span class="line">	fetureList.flatMap(f =&gt; getRecallByFeture())</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>流量池系统其实是通过认为的控制内容的可曝光次数， 来对推荐结果的分布进行干预， 为了保证新内容的充分曝光，新内容会被给予一定次数的固定流量。表现好的内容将持续不断的获得推荐流量，表现不好的内容将在一定的推荐次数后不再推荐，空出来的推荐机会留给其他表现更好的内容。</p>
+<p>流量池的逻辑相对简单</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-04-12-content-evaluate/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020-04-12-content-evaluate/" class="post-title-link" itemprop="url">内容价值评估的技术分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-12T00:00:00+08:00">2020-04-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-10 09:47:15" itemprop="dateModified" datetime="2020-05-10T09:47:15+08:00">2020-05-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020-04-12-content-evaluate/" class="post-meta-item leancloud_visitors" data-flag-title="内容价值评估的技术分析" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020-04-12-content-evaluate/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020-04-12-content-evaluate/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在推荐系统的业务场景中我们的最终目的是把优质的内容从内容池中挑出来推荐给用户</p>
+<ol>
+<li>降低用户获取信息的成本</li>
+<li>提供给用户平均质量更高的内容</li>
+<li>助力运营等提高内容分发的效率<br>如何评价一个内容的质量好坏就成了我们面对的一个重要问题<h2 id="如何找到用技术手段评估内容的质量"><a href="#如何找到用技术手段评估内容的质量" class="headerlink" title="如何找到用技术手段评估内容的质量"></a>如何找到用技术手段评估内容的质量</h2><h3 id="通过用户行为来辅助评估"><a href="#通过用户行为来辅助评估" class="headerlink" title="通过用户行为来辅助评估"></a>通过用户行为来辅助评估</h3>我们可以很明显的知道用户点击率高的内容大概率会是吸引人的内容。由此我们可以对内容的点击率进行统计，根据点击率给予内容一定的分数，点击率越高，内容分数越高, 我们认为内容越优质。<br>例如我们可以开发如下函数<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate</span></span>(a:<span class="type">Article</span>):<span class="type">Double</span> = {</span><br><span class="line">	<span class="keyword">if</span> (a.showCount &gt;= <span class="number">200</span>) {</span><br><span class="line">	 	<span class="keyword">return</span> a.clickRate/getMaxClickRate()</span><br><span class="line">	}</span><br><span class="line">	<span class="number">0.0</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+这种情况是最直观的也最简单的, 但是我们会遇到一些问题</li>
+</ol>
+<ul>
+<li>问题1: 如果一个内容刚刚发布，还没有被展示或者被点击，此时没有用户行为数据，该如何评估内容的质量呢, 就像上面我们过滤掉了展示200次以下的内容，这部分内容因为展示次数少，误差较大</li>
+<li>问题2: 如果一个内容A 刚刚发布不久，被展示了10次，点击了5次， 点击率50%， 另一个内容B发布了2天，被展示了20万次，点击了5万次，点击率 25%， 是否能说明A内容比B内容优秀<br>相信从上面两个问题也能看出来了，单纯的依靠点击率是肯定不合适的，既会受到一定的限制，又会造成得分结果的不稳定。处理1，2问题的方法也比较简单，只需要按照根据分布情况给一个预估的默认值， 并加上一定的统计门槛就可以了<h3 id="挖掘内容本身的特征属性进行评估"><a href="#挖掘内容本身的特征属性进行评估" class="headerlink" title="挖掘内容本身的特征属性进行评估"></a>挖掘内容本身的特征属性进行评估</h3>假如一个内容A点击率比较高，我们可以思考可能的原因是什么呢？<br>有可能是作者文字功底比较好，有可能是作者比较出名， 有可能是里面有一些特征一看就知道内容质量比较差。比如 标题很短，或者标题没有信息含量。<br>总而言之我们可以根据内容的 发布时间， 作者，含有的关键词，视频的清晰度，内容的长度，等各种属性给内容计算一个基础的内容得分。大概函数定义如下<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate</span></span>(c: <span class="type">Article</span>) -&gt; <span class="type">Double</span> {</span><br><span class="line">  	f(c.title, c.author, c.published, c.length, c.keywords)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+如此一来我们就可以对各种内容做一个基本的价值评估，可以在视频还未获得曝光和点击的时候对视频有一个大概的评价。后续的点击率等行为表现可以辅助纠正各种特征的积分权重<h3 id="考虑现在的时间和环境因素进行评估"><a href="#考虑现在的时间和环境因素进行评估" class="headerlink" title="考虑现在的时间和环境因素进行评估"></a>考虑现在的时间和环境因素进行评估</h3>内容的质量表现还会随着时间和环境因素而变化。<br>比如股市的资讯类消息， 就是在发布的12小时内价值比较高，而且其价值会随着时间逐渐减少，3天以上基本就毫无价值了。<br>内容受到环境影响也很明显，这次的新冠疫情导致口罩，病毒等相关的内容受到了极大的关注。可能在平时来说，口罩等关键词并不会有如此大的权重，但是在疫情期间，全民关注，这个时候就应该根据环境适当的给热门词增加权重表现<br>环境和内容的匹配主要还是要依据统计数据来预估一个特征在环境中的匹配度，然后根据这个匹配度对内容进行评估，在根据用户对内容后续的行为表现来调整这个匹配度的计算规则<h3 id="考虑目标用户特征"><a href="#考虑目标用户特征" class="headerlink" title="考虑目标用户特征"></a>考虑目标用户特征</h3>同样的内容对不同的用户也会有不同的价值。同一篇手机评测内容，对魅族手机用户和小米手机用户分别展示1000次收到的点击返回结果可能就有很大不同， 对数码爱好者和小白分开推送效果也会不一样。<br>我们如果要对用户和内容匹配一方面要获取到用户的用户画像信息，一方面要对内容做内容特征分析， 然后再进行match。<br>定义计分函数如下<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calScore</span></span>(user:<span class="type">Set</span>, env:<span class="type">Set</span>&lt;&gt;) -&gt; <span class="type">Double</span> {</span><br><span class="line">  f(user, env, content)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="综合多种因素进行评估"><a href="#综合多种因素进行评估" class="headerlink" title="综合多种因素进行评估"></a>综合多种因素进行评估</h3>上面的几种方法都有各自的优点和缺点，多种评估策略一起配合使用可以一定程度上增强价值评估的可信度。综合推荐就是同时考虑 用户， 环境，时间，内容本身等多种因素，根据情况实时的计算<br>不同属性的得分之间可以采用加和或者相乘 的方法。<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>内容的价值评估是一个跟场景，用户，内容都相关的事情， 没有办法使用一个统一的，固定的算法或者模型对内容进行价值评估， 但是我们可以根据现有的用户行为， 环境特征， 内容特征等，尽可能的覆盖所有可能的影响因子， 给出一个相对比较可信的价值度量标准</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-04-11-analyze-user-feture/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020-04-11-analyze-user-feture/" class="post-title-link" itemprop="url">用户特征挖掘的方案</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-11 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-11T00:00:00+08:00">2020-04-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-10 09:44:00" itemprop="dateModified" datetime="2020-05-10T09:44:00+08:00">2020-05-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020-04-11-analyze-user-feture/" class="post-meta-item leancloud_visitors" data-flag-title="用户特征挖掘的方案" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020-04-11-analyze-user-feture/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020-04-11-analyze-user-feture/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>文中所有内容均以类似今日头条的内容平台做例子</p>
+<h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><p><img data-src="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png" alt="user-feture.png"></p>
+<h2 id="用户兴趣特征的挖掘"><a href="#用户兴趣特征的挖掘" class="headerlink" title="用户兴趣特征的挖掘"></a>用户兴趣特征的挖掘</h2><p>推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。<br>其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征。难的地方是你如果想要获得比较完整的，或者比较准确的用户兴趣，其实也是非常有挑战性的工作。<br>我想分享一点我自己在挖掘用户兴趣方面的想法和经验。</p>
+<blockquote>
+<p>ps:  我们这里所提及的用户兴趣统统是指用户的隐式特征，就是从用户行为中提取的非主动操作的信息</p>
+</blockquote>
+<h2 id="行为数据-用户特征矩阵-内容特征匹配"><a href="#行为数据-用户特征矩阵-内容特征匹配" class="headerlink" title="行为数据-用户特征矩阵-内容特征匹配"></a>行为数据-用户特征矩阵-内容特征匹配</h2><p>假设我们拥有一段用户的行为信息序列， 我们可以非常简单的统计出来用户经常观看的文章。<br>但是我们不能向用户推荐已经看过的文章， 所以我们需要挖掘用户观看某文章背后的潜在信息， 并给用户推荐内容比较相似的或者关键词比较相关的文章内容。</p>
+<h3 id="用户特征矩阵的生成"><a href="#用户特征矩阵的生成" class="headerlink" title="用户特征矩阵的生成"></a>用户特征矩阵的生成</h3><p>比如：我们可以基于用户观看的文章背后的标签出现次数进行分数统计，标签每出现一次记一分，获得一个用户对标签的喜好表。如下<br>| 用户 | 新冠肺炎 | 金融政策 | 李大霄 | 新闻资讯 |<br>| —- | ——– | ——– | —— | ——– |<br>| 1    | 5        | 6        | 0      | 1        |<br>| 2    | 2        | 0        | 9      | 3        |<br>| 3    | 3        | 4        | 3      | 1        |<br>| 4    | 0        | 5        | 4      | 9        |</p>
+<p>从上面我们可以知道用户1喜欢 金融政策和新冠肺炎相关的内容，用户2可能是李大霄的粉丝，喜欢看李大霄相关的文章。</p>
+<p>为了获取这个列表我们也可以根据用户对不同内容标签的点击率进行归一化的分数统计， 取点击率比较高的标签。一样可以得到蕾丝上面的<strong>&lt;用户, 特征,喜好程度&gt;</strong>的三元序列</p>
+<h3 id="根据特征矩阵进行内容推荐"><a href="#根据特征矩阵进行内容推荐" class="headerlink" title="根据特征矩阵进行内容推荐"></a>根据特征矩阵进行内容推荐</h3><p>然后我们就可以根据未推荐文章中出现的用户喜欢的特征和特征权重对不同文章进行计分， 对内容综合积分，按照分数进行排序输出。<br>| 文章 | 新冠肺炎 | 金融政策 | 李大霄 | 新闻咨询 |<br>| —- | ——– | ——– | —— | ——– |<br>| A    | 0        | 3        | 1      | 0        |<br>| B    | 1        | 0        | 1      | 2        |</p>
+<p>假设我们有A,B两篇文章，内容标签如上。我们可以对用户1， 2与内容的匹配程度进行分值计算。可以得到如下表格<br>| 用户/文章 | a           | b                          |<br>| ——— | ———– | ————————– |<br>| 1         | 3 x 6  = 18 | 5 x 1+ 2 x  1 = 7          |<br>| 2         | 9 x 1 = 9   | 1 x 2 + 1 x 9 + 2 x 3 = 17 |</p>
+<p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
+<h2 id="行为数据-用户特征-用户相似度-内容推荐"><a href="#行为数据-用户特征-用户相似度-内容推荐" class="headerlink" title="行为数据/用户特征-用户相似度-内容推荐"></a>行为数据/用户特征-用户相似度-内容推荐</h2><p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
+<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><ul>
+<li>使用用户行为计算相似度</li>
+</ul>
+<p>我们可以使用用户行为信息如此计算两个用户的相似度<br>$$ Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2) $$<br>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
+<ul>
+<li>使用用户特征计算相似度</li>
+</ul>
+<p>我们也可以通过用户身上的标签，比如 ，使用的手机型号，年龄，性别，地区等信息。 一样采用如下公式进行用户标签相似度的计算。计算结果与上面用户行为相似度结果一样 </p>
+<p>$$Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2)$$</p>
+<h3 id="根据相似用户进行推荐"><a href="#根据相似用户进行推荐" class="headerlink" title="根据相似用户进行推荐"></a>根据相似用户进行推荐</h3><p>这个比例可以作用两个用户相似度的评价标准, 拿到用户的相似用户集合以后，通过统计相似用户已观看列表中的的内容的出现次数。可以得到如下表格</p>
+<table>
+<thead>
+<tr>
+<th align="center">用户/内容</th>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>5</td>
+<td>2</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>9</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>选择出现次数多的进行推荐即可。</p>
+<p>也可以进一步利用相似用户的内容出现次数，通过统计去更新用户的特征矩阵中的(用户-&gt;特征)的分值。然后再根据特征的加权获取最终的推荐结果</p>
+<h2 id="用户数据-用户特征-用户分群-用户相似推荐"><a href="#用户数据-用户特征-用户分群-用户相似推荐" class="headerlink" title="用户数据-用户特征-用户分群-用户相似推荐"></a>用户数据-用户特征-用户分群-用户相似推荐</h2><p>我们也可以根据用户本身的特征，对用户进行分类。例如：女性用户，30-35岁， 使用安卓手机，经常在晚上6-9点使用app等特征对相似的用户进行分群</p>
+<p>然后统计分析该分群用户的行为记录。采用类似于上面用户相似度的统计方法，获得用户对内容或者对特征的分数矩阵结果</p>
+<h2 id="综合方案"><a href="#综合方案" class="headerlink" title="综合方案"></a>综合方案</h2><p>我们在实际的生产中可以综合以上各种策略， 获取用户的特征矩阵并对内容进行计算分数。在根据实际场景中的效果进行不同权重和比例的动态调整。<br>一般来说是可以获得不错的效果的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -3160,7 +3579,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-04-10 23:42:17" itemprop="dateModified" datetime="2020-04-10T23:42:17+08:00">2020-04-10</time>
+                <time title="Modified: 2020-05-10 09:43:01" itemprop="dateModified" datetime="2020-05-10T09:43:01+08:00">2020-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -4261,429 +4680,6 @@ ul.breadcrumb li + li:last-child {
   
   
 
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-09-30-real-time-proccess/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018-09-30-real-time-proccess/" class="post-title-link" itemprop="url">初步探索实时数据处理系统</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-10-19 15:31:44" itemprop="dateCreated datePublished" datetime="2018-10-19T15:31:44+08:00">2018-10-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 09:42:51" itemprop="dateModified" datetime="2020-05-09T09:42:51+08:00">2020-05-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">系统设计</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2018-09-30-real-time-proccess/" class="post-meta-item leancloud_visitors" data-flag-title="初步探索实时数据处理系统" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2018-09-30-real-time-proccess/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018-09-30-real-time-proccess/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p>
-<p>借这个机会, 对我们用到的相关技术部分进行了整理</p>
-<h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用</p>
-<p>以及其中遇到的一些坑</p>
-<h1 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h1><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul>
-<li>统一产品数据池</li>
-</ul>
-<p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL</p>
-<p>我们组的业务由于含有统一的列表页和内容服务, 所有分类产品的相关信息都需要进行聚合展示, 所以原来我们使用产品都需要根据产品品类调用不同部门提供的接口进行数据查询</p>
-<p>考虑到接口性能和未来业务的增长，我们需要一个统一的产品池功能来帮助汇总所有的产品信息，向上曾业务提供一个统一的最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
-<p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可，同时作为基础的数据服务还需要保证服务的性能和高可用性，于是有了产品池这个项目   </p>
-<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>主要涉及的中间件和服务<code>redis</code>,<code>kafka</code>,<code>storm</code>,<code>elasticsearch</code>,<code>mysql</code></p>
-<h2 id="项目详情"><a href="#项目详情" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
-<li>对接各BU, 整合各BU的产品信息到统一的产品容器内(选择redis/es作为主要的对外存储容器)</li>
-<li>提供统一的产品信息获取接口</li>
-</ol>
-<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img data-src="https://i.loli.net/2020/05/09/DOkCVIlZ7BKz16r.png" alt="productpool.jpg"></p>
-<p>其中各组件的主要功能:</p>
-<p><code>Redis</code>: 存储k-v结构的产品信息, 提供前台api接口的产品基础信息查询数据</p>
-<p><code>Elasticsearch</code>: 提供后台和部分前台对产品的搜索功能</p>
-<p><code>kafka</code>: 数据总线, 后台数据流转的核心</p>
-<p><code>mysql/oracle</code>: 提供最初始的数据源</p>
-<p><code>storm</code>: 产品信息计算平台</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><h3 id="前台api获取产品的流程"><a href="#前台api获取产品的流程" class="headerlink" title="前台api获取产品的流程"></a>前台api获取产品的流程</h3><p><img data-src="https://i.loli.net/2020/05/09/YlEnJMbQuqDXBNh.png" alt="flow1.png"></p>
-<h3 id="后台构建产品的流程"><a href="#后台构建产品的流程" class="headerlink" title="后台构建产品的流程"></a>后台构建产品的流程</h3><p><img data-src="https://i.loli.net/2020/05/09/iVF5gAlwafOmSXv.png" alt="flow2.png"></p>
-<h2 id="详细步骤描述"><a href="#详细步骤描述" class="headerlink" title="详细步骤描述"></a>详细步骤描述</h2><ul>
-<li><p>定时的产品id添加: 定期进行全量的产品数据重建, 为了方便控制重建过程, 将要处理的产品id分批存入kafka中的<code>全量重建topic</code>, 也就是把批处理转化为流处理  </p>
-</li>
-<li><p>失效的产品id: 当某个产品不存在于redis中时, 也会重新放入kafka的另外的<code>miss产品topic</code>中进行重建  </p>
-</li>
-<li><p>当产品信息变更时候也会有对应的变更产品id入kafka的<code>变更产品topic</code>中进行重建  </p>
-</li>
-<li><p>处理产品时会从以上三个产品源topic中读取需要重建的产品, 根据分类发放到<code>不同的分类topic</code>, 然后交给storm进行产品信息计算, 这部分信息只有简单的产品ID和更新类型标识  </p>
-</li>
-<li><p>storm中构建失败的产品(数据库中不存在等原因), 会在redis中进行标记暂时不可用(有效期1天), 不可用的产品不会继续进行重建  </p>
-</li>
-<li><p>kafka多个topic中的消息含有需要构建的 产品id和产品需要构建的内容, 也就是说可以通过消息内容格式控制构建产品的某个部分的信息(例如: 只更新产品的基本信息, 只更新价格信息, 只更新评论数,好评数等信息)</p>
-</li>
-<li><p>storm从kafka中获取消息, 进行产品的信息计算, 计算完成的信息会重新返回kafka, 同样根据产品分类发放到不同的<code>分类topic</code>, 这部分信息含有全量的产品信息数据</p>
-</li>
-<li><p>整合各个分类topic的产品计算结果, 写入redis 和 es, 并回写部分mysql表</p>
-</li>
-</ul>
-<h2 id="产品数据更新"><a href="#产品数据更新" class="headerlink" title="产品数据更新"></a>产品数据更新</h2><p>通过<code>canal</code>监听mysql数据库的产品表数据变更, 将变更数据发给kafka中的<code>产品表日志topic</code>, 后续从kafka的<code>产品日志topic</code> ,根据数据内容解析出来产品更新事件, 封装对应的事件消息, 存入<code>产品事件topic</code>  </p>
-<p>通过读取<code>产品事件topic</code>中的数据, 根据品类和变更内容, 向产品池<code>变更产品topic中发送</code>发送产品池信息重构需求</p>
-<h2 id="经验和总结"><a href="#经验和总结" class="headerlink" title="经验和总结"></a>经验和总结</h2><ul>
-<li>为什么要分多个产品数据源topic</li>
-</ul>
-<ol>
-<li><p>为了优先级考虑, 不同来源的产品对时效性要求是不同的, 但是kafka本身又做不了带有优先级的消息处理</p>
-</li>
-<li><p>不同的分类的产品的处理逻辑不同, 更新频率和数据量也不同, 提前进行分流</p>
-</li>
-</ol>
-<ul>
-<li>为什么不同分类的产品要用不同的写入topic</li>
-</ul>
-<ol>
-<li>如果有其他业务需要使用其中某个分类的产品数据只需订阅对应的产品topic流就可以了, 免去了从全量产品流中过滤的步骤 </li>
-</ol>
-<ul>
-<li>为什么最后还要把产品信息吐会回kafka</li>
-</ul>
-<ol>
-<li><p>为了统一控制写入源并做优化, 使用统一的topic存储数据可以让整个程序只有一个数据写入的源, 所有写入操作统统使用写总线来处理, 解耦了功能, 提高了可靠性, 扩展性和可维护性</p>
-</li>
-<li><p>可以对数据写入做优化, 比如:幂等处理, 批压缩写入处理, ABA问题的重写</p>
-</li>
-<li><p>为了数据重用, 因为其他部分业务组也可能需要使用产品信息, 到时候直接订阅最终的产品信息表就可以了</p>
-</li>
-<li><p>为了方便扩展, 如果将来数据量大, 出现了写入瓶颈, 只要对这一部分承担写总线功能的写入程序进行扩展就可以了</p>
-</li>
-</ol>
-<h1 id="业务2-用户画像之用户信息完善系统"><a href="#业务2-用户画像之用户信息完善系统" class="headerlink" title="业务2. 用户画像之用户信息完善系统"></a>业务2. 用户画像之用户信息完善系统</h1><h2 id="需求-1"><a href="#需求-1" class="headerlink" title="需求"></a>需求</h2><p>这个项目是用户画像的子项目, 目的是将用户分布在不同BU的信息进行整合, 提供一份统一最完整的用户信息出来</p>
-<p>同时进行一些数据清洗和数据统计</p>
-<ul>
-<li>对分散在各个表中的会员信息进行梳理, 整合一份相对比较完善的用户信息</li>
-</ul>
-<p>例如: 用户1在基本信息中填写了一份信息 </p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">{ </span><br><span class="line">    "username":"zhang",</span><br><span class="line">    "birthday":"1990-01-01",</span><br><span class="line">    "gender":"M"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>同时用户上传了一张个人身份证, 通过解析, 身份证含有的信息是</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    "birthday":"1990-12-07",</span><br><span class="line">    "gender":"F"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>也就是说用户自己填写的信息和身份证中的信息不一致, 相同的情况可能出现在多个业务部门, 因为业务拆分各部门相互独立, 同一个用户在多个业务部门可能拥有多份不太一致的用户信息  </p>
-<ul>
-<li>对进行过清洗的用户数据进行完善度的计算</li>
-</ul>
-<p>根据不同用户信息字段占有的不同分值权重, 使用完善后的用户信息, 对用户的完善度进行实时统计</p>
-<ul>
-<li>定期统计用户的完善度报表</li>
-</ul>
-<p>根据用户会员等级/地区/性别 等基本属性和 对应的销售vip客服人员进行用户信息的报表统计</p>
-<h2 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h2><p>主要相关的组件有 <code>mysql</code>,<code>kafka</code>,<code>storm</code>,<code>hbase</code>, <code>es</code></p>
-<h2 id="项目详情-1"><a href="#项目详情-1" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
-<li>对接各数据源, 根据用户身份表示整合统一的用户信息</li>
-<li>统一存储用户信息</li>
-</ol>
-<blockquote>
-<p>ps:由于部分原因, 项目的实际开发时间很短, 只有200左右的工时, 也就是一个人工作一个月, 而且大部分时间都花在内部数据问题的处理上面, 所以项目未能做到最终非常完善的程度</p>
-</blockquote>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
-<li>定期的全量用户信息补全</li>
-<li>用户信息变更以后触发的补全</li>
-<li>用户资料补全以后进行完善度的计算</li>
-<li>定期根据用户属性对用户完善度进行报表统计</li>
-</ol>
-<p>具体的细节跟上面产品池相似, 都是利用<code>kafka</code>的数据流转, 将需要计算的消息流到<code>storm</code>, 经过计算以后再通过<code>kafka</code> 回馈给数据库和存储 </p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实回顾这两个项目</p>
-<p>在其中主要起作用的中间件主要是<code>kafka</code>和<code>storm</code></p>
-<p><code>kafka</code> 承担了系统几乎所有的数据流转需求, 做了一个数据总线的角色, 提供了<code>事件驱动</code>,<code>ETL</code>,<code>解耦</code>等功能   </p>
-<p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能  </p>
-<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的网关作用   </p>
-<p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力  </p>
-<p>希望以后可以多尝试, 并进行改进</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-06-06-balance/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018-06-06-balance/" class="post-title-link" itemprop="url">平衡和度</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-08-23 09:21:00" itemprop="dateCreated datePublished" datetime="2018-08-23T09:21:00+08:00">2018-08-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 09:42:09" itemprop="dateModified" datetime="2020-05-09T09:42:09+08:00">2020-05-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">生活记录</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2018-06-06-balance/" class="post-meta-item leancloud_visitors" data-flag-title="平衡和度" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2018-06-06-balance/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018-06-06-balance/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是智慧"><a href="#什么是智慧" class="headerlink" title="什么是智慧"></a>什么是智慧</h1><p>一直以来我都很认同<code>大道至简</code>的看法</p>
-<p>所以我天真的认为处理世界上的所有事情肯定有一个通用的框架, 该框架应该适用于所有麻烦的事情<br>而我们庸庸众人只需要学习这一种处事方式就能轻松应付生活,即所谓的The One Truth<br>后来的我渐渐意识到,<code>世界本来就是混乱无序的</code>, 那个万能法则肯定是不存在的   </p>
-<blockquote>
-<p>从物理学上来讲, 一个封闭的系统中, 熵(代表混乱程度)处在不断增加的状态,一味地想维持低熵状态往往需要额外的付出更多能量.同样的,如果我强行要求这个系统是有序的并且规则的,那对这个系统来说,必然需要极大的能量来维持这种状态</p>
-</blockquote>
-<p><strong>智慧的本质, 就是对空间和时间的理解</strong></p>
-<p><img data-src="https://i.loli.net/2020/05/09/b2at6W9HpIVl4rJ.png" alt="wisdom_mindnode1.png"></p>
-<p>所谓智慧, 就是能很好地平衡时间和空间, 而怎么平衡, 就涉及到度的把握</p>
-<h2 id="度"><a href="#度" class="headerlink" title="度"></a>度</h2><p><strong>度</strong>或者叫<strong>分寸</strong>, 一种抉择中的取舍<br>我们无时无刻不在面临许多的抉择<br>大部分的抉择都存在我们可以感知的正面和反面效果,即便看起来非常正面的行为背后也隐藏着隐忧<br>例如:    </p>
-<ul>
-<li>培养好的习惯是应该的, 但是好的习惯不可能一直增加. 我们的精力是有限的,我们所处的的环境也在不断改变, 根据环境调整自己习惯才是我们要做的,否则随着时间增加我们的习惯也越来越多,如果不及时调整, 你的所有时间会被积累下来的习惯完全占据</li>
-</ul>
-<p>一个人在待人接物方面能很好地把握分寸, 我们会说他情商高<br>一个人在自己和外界的联系方面能很好地把握分寸, 我们会说他有品位<br>一个人在处理冲突方面能很好地把握分寸, 我们会说他有智慧   </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-05-20-meizi-qingguya/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018-05-20-meizi-qingguya/" class="post-title-link" itemprop="url">终于找到了魅族flow耳机的模特啦</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-05-20 00:00:00" itemprop="dateCreated datePublished" datetime="2018-05-20T00:00:00+08:00">2018-05-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 09:41:41" itemprop="dateModified" datetime="2020-05-09T09:41:41+08:00">2020-05-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">生活记录</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2018-05-20-meizi-qingguya/" class="post-meta-item leancloud_visitors" data-flag-title="终于找到了魅族flow耳机的模特啦" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2018-05-20-meizi-qingguya/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018-05-20-meizi-qingguya/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>前几天找到了我一直寻找的给魅族耳机代言的小姐姐, 微博: @青谷娅</p>
-<p>我从第一眼看到这个小姐姐就觉得气质好好啊</p>
-<p>从网上搜了好久都找不到个人信息</p>
-<p>后来偶然间从某个摄影师处了解到这个小姐姐的微博</p>
-<p>开心了好多天</p>
-<h1 id="以下是美图欣赏"><a href="#以下是美图欣赏" class="headerlink" title="以下是美图欣赏"></a>以下是美图欣赏</h1><p>魅族耳机照</p>
-<p><img data-src="https://i.loli.net/2020/05/09/MHXrfROKTq7JNgS.png" alt="WX20180528-200414.png"></p>
-<p><img data-src="https://i.loli.net/2020/05/09/6jiXNxMYbq8UuOe.png" alt="WX20180529-095529.png"></p>
-<p>以下图片来自微博</p>
-<p><img data-src="https://i.loli.net/2020/05/09/9w3e671KApZhjOk.jpg" alt="IMG_1104.JPG"></p>
-<p><img data-src="https://i.loli.net/2020/05/09/MRLX5p3rikS2W74.jpg" alt="IMG_1107.JPG"></p>
-<p><img data-src="https://i.loli.net/2020/05/09/sdLI9fo5q8P4miS.jpg" alt="IMG_1106.JPG"></p>
-<p><img data-src="https://i.loli.net/2020/05/09/oiAJGuB9EVlxpcN.jpg" alt="IMG_1103.JPG"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -4753,7 +4749,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

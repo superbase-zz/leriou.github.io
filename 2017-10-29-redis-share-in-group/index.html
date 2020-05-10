@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/deSBNkvgwpaE2tK.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/xpNhU9XPYFn4OcA.png">
-<meta property="og:updated_time" content="2020-05-09T01:34:42.886Z">
+<meta property="og:updated_time" content="2020-05-10T01:27:11.130Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png">
 
@@ -1270,7 +1270,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cfdf78;
+  background: #4dd400;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2808,7 +2808,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 09:34:42" itemprop="dateModified" datetime="2020-05-09T09:34:42+08:00">2020-05-09</time>
+                <time title="Modified: 2020-05-10 09:27:11" itemprop="dateModified" datetime="2020-05-10T09:27:11+08:00">2020-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2958,7 +2958,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <ul>
 <li>keepalived(基于VRRP协议)</li>
 <li>哨兵(sentinal)</li>
-<li>集群(cluster): redis3.0之后提供</li>
+<li>集群(cluster): redis3.0之后提供，同时也是个人比较建议的方案</li>
 <li>其他第三方方案</li>
 </ul>
 <p>其中各种方案各有优点, 我们使用的是redis的官方cluster方案</p>
@@ -3037,7 +3037,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <li>使用redis注册器起到类似分布式锁的作用</li>
 </ol>
 <p>一个曾经的小问题,一段伪代码</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">flag = get(redis_key)?redis_key:<span class="number">0</span></span><br><span class="line"></span><br><span class="line">res = DB.op(select * from table where id &gt; flag)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(res) {</span><br><span class="line">	foreach(a in res) {</span><br><span class="line">		<span class="keyword">do</span>(a)</span><br><span class="line">	}</span><br><span class="line">	write(redis_key,flag)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flag = get(redis_key)?redis_key:<span class="number">0</span></span><br><span class="line">res = DB.op(select * from table where id &gt; flag)</span><br><span class="line"><span class="keyword">while</span>(res) {</span><br><span class="line">	foreach(a in res) {</span><br><span class="line">		<span class="keyword">do</span>(a)</span><br><span class="line">	}</span><br><span class="line">	write(redis_key,flag)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <p>潜在的问题: 不支持多线程并发, 任务不能多线程同时进行</p>
 <p>解决方案:   借用redis作为注册器,实现类似乐观锁的机制</p>
@@ -3174,7 +3174,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

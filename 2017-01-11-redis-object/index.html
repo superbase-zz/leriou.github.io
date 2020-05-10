@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="redis对象redis中有五种常用对象 我们所说的对象的类型大多是值的类型,键的类型大多是字符串对象,值得类型大概有以下几种,但是无论哪种都是基于redisObject实现的">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-09T02:20:15.039Z">
+<meta property="og:updated_time" content="2020-05-10T01:25:10.706Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-01-11-redis-object/">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cfdf78;
+  background: #4dd400;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2804,7 +2804,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-09 10:20:15" itemprop="dateModified" datetime="2019-11-09T10:20:15+08:00">2019-11-09</time>
+                <time title="Modified: 2020-05-10 09:25:10" itemprop="dateModified" datetime="2020-05-10T09:25:10+08:00">2020-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -2951,10 +2951,7 @@ ul.breadcrumb li + li:last-child {
 <h2 id="有序集合"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合</h2><p>有序集合对象的编码可以是ziplist或者skiplist</p>
 <p>有序集合对象跟前面的几个对象不大一样</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span>{</span></span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">    dict *dict;</span><br><span class="line">} zset;</span><br></pre></td></tr></tbody></table></figure>
-<p>zsl中保存一个跳跃表,表节点的对象即是键,score即是分值,该结构主要为 zrange,zrank等函数服务</p>
-<p>同时还保存一个dict,dict中也保存有键和对应的分值,获取某键的函数zscore使用这个结构,</p>
-<p>同时持有字典和跳跃表是为了性能考虑</p>
-<p>当有序集合满足一下两个条件时候,使用ziplist编码</p>
+<p>zsl中保存一个跳跃表,表节点的对象即是键,score即是分值,该结构主要为 zrange,zrank等函数服务同时还保存一个dict,dict中也保存有键和对应的分值,获取某键的函数zscore使用这个结构,同时持有字典和跳跃表是为了性能考虑，当有序集合满足一下两个条件时候,使用ziplist编码</p>
 <ol>
 <li>有序集合元素数量小于128</li>
 <li>有序集合元素长度小于64</li>
@@ -2996,14 +2993,8 @@ ul.breadcrumb li + li:last-child {
 </tr>
 </tbody></table>
 <h2 id="回收"><a href="#回收" class="headerlink" title="回收"></a>回收</h2><p>redis的对象资源垃圾回收是基于引用计数</p>
-<p>当一个对象被使用一次,引用计数增加1</p>
-<p>当一个引用被销毁,对象的引用计数会减1</p>
-<p>当一个对象的引用计数为0,会被销毁</p>
-<blockquote>
-<p>ps: 这有点像PHP的垃圾回收机制</p>
-</blockquote>
-<h2 id="对象共享"><a href="#对象共享" class="headerlink" title="对象共享"></a>对象共享</h2><p>redis默认创建了0到9999的数字对象1万个</p>
-<p>其他用到这些对象的时候可以不用创建新对象,直接使用已有的对象</p>
+<p>当一个对象被使用一次,引用计数增加1，当一个引用被销毁,对象的引用计数会减1，当一个对象的引用计数为0,会被销毁。</p>
+<h2 id="对象共享"><a href="#对象共享" class="headerlink" title="对象共享"></a>对象共享</h2><p>redis默认创建了0到9999的数字对象1万个，其他用到这些对象的时候可以不用创建新对象,直接使用已有的对象</p>
 
     </div>
 
@@ -3104,7 +3095,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

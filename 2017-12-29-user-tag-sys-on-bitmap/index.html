@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="用户标签的存储方案背景我们在日常的工作中经常遇到这种场景 对一个用户添加许多的标签信息方便对用户身份进行搜索和精细化运营  ps:本文我们不考虑用户身上的标签是怎么来的,只讨论用户已经拥有标签的情况下怎么进行存储  需求分析我们给用户做标签的目的是为了支持更加精细化的运营,算是用户画像的一部分,用户的标签来源可能跟消费,登录,浏览等记录都有关系 我们要做的是可以根据用户身上已经存在的标签,筛选出来">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-20T12:04:43.380Z">
+<meta property="og:updated_time" content="2020-05-10T01:32:26.422Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-12-29-user-tag-sys-on-bitmap/">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cfdf78;
+  background: #4dd400;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2804,7 +2804,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-20 20:04:43" itemprop="dateModified" datetime="2019-11-20T20:04:43+08:00">2019-11-20</time>
+                <time title="Modified: 2020-05-10 09:32:26" itemprop="dateModified" datetime="2020-05-10T09:32:26+08:00">2020-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -3096,7 +3096,7 @@ ul.breadcrumb li + li:last-child {
 <p>同样我们也可以将所有标签存储成一个<code>usertag:alltag</code>键, 再使用异或运算计算某用户不含有的标签</p>
 <h2 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h2><p>我们如果自己来对位运算做管理就有点麻烦了,我们可以借助<code>redis</code></p>
 <p><code>redis</code>原生提供了可以对字符串进行位操作的命令,具体如下</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SETBIT key pos value  // 将 key 的第 pos 位设为 value(只能取1/0)</span><br><span class="line">GETBIT key pos        // 获取 key 的第 pos 位的值</span><br><span class="line">BITOP cmd key1 key2 key3 ... // 对 key2,key3 等执行 </span><br><span class="line">BITOP AND destkey srckey1 srckey2 srckey3 ... srckeyN</span><br><span class="line">BITOP OR destkey srckey1 srckey2 srckey3 ... srckeyN</span><br><span class="line">BITOP XOR destkey srckey1 srckey2 srckey3 ... srckeyN</span><br><span class="line">BITOP NOT destkey srckey</span><br><span class="line">BITPOS key bit start end  // 将 key 的 strat 到 end 位全部设为 bit(0/1)</span><br><span class="line">BITCOUNT mykey 1 1</span><br><span class="line">BITFIELD mystring SET i8 #0 100 i8 #1 200</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> SETBIT key pos value  // 将 key 的第 pos 位设为 value(只能取1/0)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> GETBIT key pos        // 获取 key 的第 pos 位的值</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP cmd key1 key2 key3 ... // 对 key2,key3 等执行 </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP AND destkey srckey1 srckey2 srckey3 ... srckeyN</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP OR destkey srckey1 srckey2 srckey3 ... srckeyN</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP XOR destkey srckey1 srckey2 srckey3 ... srckeyN</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP NOT destkey srckey</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITPOS key bit start end  // 将 key 的 strat 到 end 位全部设为 bit(0/1)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITCOUNT mykey 1 1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITFIELD mystring SET i8 <span class="comment">#0 100 i8 #1 200</span></span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>我们就直接使用<code>redis</code>来存储数据了,这样方便点</p>
 <h2 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h2><p>我们这边为了方便直接使用redis提供的<code>setbit</code>,<code>getbit</code>和<code>bitop</code>来进行字符串的位操作</p>
@@ -3185,16 +3185,16 @@ ul.breadcrumb li + li:last-child {
 </tbody></table>
 <h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p>我们这里为了性能考虑使用redis来进行存储</p>
 <p>我们将最上面的表格数据转换成以下键值对</p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">{</span><br><span class="line">    // 所有用户</span><br><span class="line">    "user:all":{</span><br><span class="line">        <span class="string">"01111111"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有vip用户</span><br><span class="line">    "user:vip":{</span><br><span class="line">        <span class="string">"01001001"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有绑定了手机的用户</span><br><span class="line">    "user:mobile":{</span><br><span class="line">        <span class="string">"01101010"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有绑定了邮箱的用户</span><br><span class="line">    "user:email":{</span><br><span class="line">        <span class="string">"00001010"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有男性用户</span><br><span class="line">    "user:male":{</span><br><span class="line">        <span class="string">"01010011"</span></span><br><span class="line">    },</span><br><span class="line">    // 用户1的所有标签</span><br><span class="line">    "usertag:all:1":{</span><br><span class="line">        <span class="string">"01101010"</span></span><br><span class="line">    },</span><br><span class="line">    //用户2的所有标签</span><br><span class="line">    "usertag:all:2":{</span><br><span class="line">        <span class="string">"00100001"</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    // 所有用户</span><br><span class="line">    "user:all":{</span><br><span class="line">        <span class="string">"01111111"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有vip用户</span><br><span class="line">    "user:vip":{</span><br><span class="line">        <span class="string">"01001001"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有绑定了手机的用户</span><br><span class="line">    "user:mobile":{</span><br><span class="line">        <span class="string">"01101010"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有绑定了邮箱的用户</span><br><span class="line">    "user:email":{</span><br><span class="line">        <span class="string">"00001010"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有男性用户</span><br><span class="line">    "user:male":{</span><br><span class="line">        <span class="string">"01010011"</span></span><br><span class="line">    },</span><br><span class="line">    // 用户1的所有标签</span><br><span class="line">    "usertag:all:1":{</span><br><span class="line">        <span class="string">"01101010"</span></span><br><span class="line">    },</span><br><span class="line">    //用户2的所有标签</span><br><span class="line">    "usertag:all:2":{</span><br><span class="line">        <span class="string">"00100001"</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h2><p>我们可以使用redis的命令<code>getbit</code>来查询某个键的某个位置的值<br>比如,我们要查询5号用户是否具有vip标签,可以使用以下命令   </p>
 <figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ getbit user:vip <span class="number">5</span> <span class="comment">// 返回 0</span></span><br></pre></td></tr></tbody></table></figure>
 <p>要查询某用户身上的所有标签可以使用如下   </p>
 <figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ get usertag:all:<span class="number">1</span> <span class="comment">// 获取用户1的所有标签 返回'01101010'</span></span><br></pre></td></tr></tbody></table></figure>
 <p>我们如果要获取某标签下的所有用户可以使用如下命令   </p>
-<figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ get user:vip <span class="comment">// 返回一个二进制字符串 类似 '01001001'</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> get user:vip // 返回一个二进制字符串 类似 <span class="string">'01001001'</span></span></span><br></pre></td></tr></tbody></table></figure>
 <p>查询不具有某个标签的用户   </p>
-<figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ bitop <span class="keyword">xor</span> user:not_vip user:all user:vip <span class="comment">// 根据所有用户和具有标签的用户进行异或运算,得到不含有某标签的用户</span></span><br><span class="line">$ get user:not_vip <span class="comment">// 返回二进制字符串</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> bitop xor user:not_vip user:all user:vip // 根据所有用户和具有标签的用户进行异或运算,得到不含有某标签的用户</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> get user:not_vip // 返回二进制字符串</span></span><br></pre></td></tr></tbody></table></figure>
 
 <p>我们现在知道如何快速的获取我们想要的数据了,但是我们发现有时候我们获取到的都是二进制的数据例如 <code>00001000</code> 这种,而群殴们想从这样的数据中获取的是 <code>[5]</code> 这样的比较易读的信息</p>
 <p>我们需要有一个将二进制字符串 转化为对应位置为1的位置数组的形式</p>
@@ -3234,18 +3234,12 @@ ul.breadcrumb li + li:last-child {
 <blockquote>
 <p>ps: 第一个word存储头信息, 625 = floor( (40000 + 1) / 64 ) </p>
 </blockquote>
-<p>存储跨度信息的word和普通的存储数据的word虽然空间一样但是存储的内容不一样</p>
-<p>存储跨度信息的word大概内容这样</p>
-<pre><code>前32位存储 `当前跨度word(RLW)横跨了多少空word`
-
+<p>存储跨度信息的word和普通的存储数据的word虽然空间一样但是存储的内容不一样,存储跨度信息的word大概内容这样</p>
+<pre><code>前32位存储 `当前跨度word(RLW)横跨了多少空word`    
 后32位存储 `当前跨度word(RLW)后方有多少个连续的LW`</code></pre><p>当我们存储 位置在跨度word(RLW)之中的数据(例如:20000), RLW会进行分裂</p>
 <p>变成3个word,中间一个存储20000所在的LW信息,前后各有一个RLW保存新的跨度信息</p>
 <p>EWAHCompressedBitmap对应的maven依赖如下：</p>
-<pre><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.googlecode.javaewah&lt;/groupId&gt;
-  &lt;artifactId&gt;JavaEWAH&lt;/artifactId&gt;
-  &lt;version&gt;1.1.0&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.googlecode.javaewah<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>JavaEWAH<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
     </div>
 
     
@@ -3345,7 +3339,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

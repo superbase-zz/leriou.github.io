@@ -1265,7 +1265,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #4dd400;
+  background: #603c28;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2942,113 +2942,6 @@ ul.breadcrumb li + li:last-child {
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-04-12-content-evaluate/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020-04-12-content-evaluate/" class="post-title-link" itemprop="url">内容价值评估的技术分析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-12T00:00:00+08:00">2020-04-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-10 09:47:15" itemprop="dateModified" datetime="2020-05-10T09:47:15+08:00">2020-05-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020-04-12-content-evaluate/" class="post-meta-item leancloud_visitors" data-flag-title="内容价值评估的技术分析" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2020-04-12-content-evaluate/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020-04-12-content-evaluate/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在推荐系统的业务场景中我们的最终目的是把优质的内容从内容池中挑出来推荐给用户</p>
-<ol>
-<li>降低用户获取信息的成本</li>
-<li>提供给用户平均质量更高的内容</li>
-<li>助力运营等提高内容分发的效率<br>如何评价一个内容的质量好坏就成了我们面对的一个重要问题<h2 id="如何找到用技术手段评估内容的质量"><a href="#如何找到用技术手段评估内容的质量" class="headerlink" title="如何找到用技术手段评估内容的质量"></a>如何找到用技术手段评估内容的质量</h2><h3 id="通过用户行为来辅助评估"><a href="#通过用户行为来辅助评估" class="headerlink" title="通过用户行为来辅助评估"></a>通过用户行为来辅助评估</h3>我们可以很明显的知道用户点击率高的内容大概率会是吸引人的内容。由此我们可以对内容的点击率进行统计，根据点击率给予内容一定的分数，点击率越高，内容分数越高, 我们认为内容越优质。<br>例如我们可以开发如下函数<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate</span></span>(a:<span class="type">Article</span>):<span class="type">Double</span> = {</span><br><span class="line">	<span class="keyword">if</span> (a.showCount &gt;= <span class="number">200</span>) {</span><br><span class="line">	 	<span class="keyword">return</span> a.clickRate/getMaxClickRate()</span><br><span class="line">	}</span><br><span class="line">	<span class="number">0.0</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-这种情况是最直观的也最简单的, 但是我们会遇到一些问题</li>
-</ol>
-<ul>
-<li>问题1: 如果一个内容刚刚发布，还没有被展示或者被点击，此时没有用户行为数据，该如何评估内容的质量呢, 就像上面我们过滤掉了展示200次以下的内容，这部分内容因为展示次数少，误差较大</li>
-<li>问题2: 如果一个内容A 刚刚发布不久，被展示了10次，点击了5次， 点击率50%， 另一个内容B发布了2天，被展示了20万次，点击了5万次，点击率 25%， 是否能说明A内容比B内容优秀<br>相信从上面两个问题也能看出来了，单纯的依靠点击率是肯定不合适的，既会受到一定的限制，又会造成得分结果的不稳定。处理1，2问题的方法也比较简单，只需要按照根据分布情况给一个预估的默认值， 并加上一定的统计门槛就可以了<h3 id="挖掘内容本身的特征属性进行评估"><a href="#挖掘内容本身的特征属性进行评估" class="headerlink" title="挖掘内容本身的特征属性进行评估"></a>挖掘内容本身的特征属性进行评估</h3>假如一个内容A点击率比较高，我们可以思考可能的原因是什么呢？<br>有可能是作者文字功底比较好，有可能是作者比较出名， 有可能是里面有一些特征一看就知道内容质量比较差。比如 标题很短，或者标题没有信息含量。<br>总而言之我们可以根据内容的 发布时间， 作者，含有的关键词，视频的清晰度，内容的长度，等各种属性给内容计算一个基础的内容得分。大概函数定义如下<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">evaluate</span></span>(c: <span class="type">Article</span>) -&gt; <span class="type">Double</span> {</span><br><span class="line">  	f(c.title, c.author, c.published, c.length, c.keywords)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-如此一来我们就可以对各种内容做一个基本的价值评估，可以在视频还未获得曝光和点击的时候对视频有一个大概的评价。后续的点击率等行为表现可以辅助纠正各种特征的积分权重<h3 id="考虑现在的时间和环境因素进行评估"><a href="#考虑现在的时间和环境因素进行评估" class="headerlink" title="考虑现在的时间和环境因素进行评估"></a>考虑现在的时间和环境因素进行评估</h3>内容的质量表现还会随着时间和环境因素而变化。<br>比如股市的资讯类消息， 就是在发布的12小时内价值比较高，而且其价值会随着时间逐渐减少，3天以上基本就毫无价值了。<br>内容受到环境影响也很明显，这次的新冠疫情导致口罩，病毒等相关的内容受到了极大的关注。可能在平时来说，口罩等关键词并不会有如此大的权重，但是在疫情期间，全民关注，这个时候就应该根据环境适当的给热门词增加权重表现<br>环境和内容的匹配主要还是要依据统计数据来预估一个特征在环境中的匹配度，然后根据这个匹配度对内容进行评估，在根据用户对内容后续的行为表现来调整这个匹配度的计算规则<h3 id="考虑目标用户特征"><a href="#考虑目标用户特征" class="headerlink" title="考虑目标用户特征"></a>考虑目标用户特征</h3>同样的内容对不同的用户也会有不同的价值。同一篇手机评测内容，对魅族手机用户和小米手机用户分别展示1000次收到的点击返回结果可能就有很大不同， 对数码爱好者和小白分开推送效果也会不一样。<br>我们如果要对用户和内容匹配一方面要获取到用户的用户画像信息，一方面要对内容做内容特征分析， 然后再进行match。<br>定义计分函数如下<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calScore</span></span>(user:<span class="type">Set</span>, env:<span class="type">Set</span>&lt;&gt;) -&gt; <span class="type">Double</span> {</span><br><span class="line">  f(user, env, content)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="综合多种因素进行评估"><a href="#综合多种因素进行评估" class="headerlink" title="综合多种因素进行评估"></a>综合多种因素进行评估</h3>上面的几种方法都有各自的优点和缺点，多种评估策略一起配合使用可以一定程度上增强价值评估的可信度。综合推荐就是同时考虑 用户， 环境，时间，内容本身等多种因素，根据情况实时的计算<br>不同属性的得分之间可以采用加和或者相乘 的方法。<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>内容的价值评估是一个跟场景，用户，内容都相关的事情， 没有办法使用一个统一的，固定的算法或者模型对内容进行价值评估， 但是我们可以根据现有的用户行为， 环境特征， 内容特征等，尽可能的覆盖所有可能的影响因子， 给出一个相对比较可信的价值度量标准</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-04-11-analyze-user-feture/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -3222,7 +3115,7 @@ ul.breadcrumb li + li:last-child {
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-09 09:44:37" itemprop="dateModified" datetime="2020-05-09T09:44:37+08:00">2020-05-09</time>
+                <time title="Modified: 2020-05-10 09:47:17" itemprop="dateModified" datetime="2020-05-10T09:47:17+08:00">2020-05-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -4680,6 +4573,215 @@ ul.breadcrumb li + li:last-child {
   
   
 
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2018-09-30-real-time-proccess/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018-09-30-real-time-proccess/" class="post-title-link" itemprop="url">初步探索实时数据处理系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-10-19 15:31:44" itemprop="dateCreated datePublished" datetime="2018-10-19T15:31:44+08:00">2018-10-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-09 10:40:26" itemprop="dateModified" datetime="2020-05-09T10:40:26+08:00">2020-05-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">系统设计</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018-09-30-real-time-proccess/" class="post-meta-item leancloud_visitors" data-flag-title="初步探索实时数据处理系统" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018-09-30-real-time-proccess/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018-09-30-real-time-proccess/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p>
+<p>借这个机会, 对我们用到的相关技术部分进行了整理</p>
+<h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用</p>
+<p>以及其中遇到的一些坑</p>
+<h1 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h1><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul>
+<li>统一产品数据池</li>
+</ul>
+<p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL</p>
+<p>我们组的业务由于含有统一的列表页和内容服务, 所有分类产品的相关信息都需要进行聚合展示, 所以原来我们使用产品都需要根据产品品类调用不同部门提供的接口进行数据查询</p>
+<p>考虑到接口性能和未来业务的增长，我们需要一个统一的产品池功能来帮助汇总所有的产品信息，向上曾业务提供一个统一的最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
+<p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可，同时作为基础的数据服务还需要保证服务的性能和高可用性，于是有了产品池这个项目   </p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>主要涉及的中间件和服务<code>redis</code>,<code>kafka</code>,<code>storm</code>,<code>elasticsearch</code>,<code>mysql</code></p>
+<h2 id="项目详情"><a href="#项目详情" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
+<li>对接各BU, 整合各BU的产品信息到统一的产品容器内(选择redis/es作为主要的对外存储容器)</li>
+<li>提供统一的产品信息获取接口</li>
+</ol>
+<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img data-src="https://i.loli.net/2020/05/09/DOkCVIlZ7BKz16r.png" alt="productpool.jpg"></p>
+<p>其中各组件的主要功能:</p>
+<p><code>Redis</code>: 存储k-v结构的产品信息, 提供前台api接口的产品基础信息查询数据</p>
+<p><code>Elasticsearch</code>: 提供后台和部分前台对产品的搜索功能</p>
+<p><code>kafka</code>: 数据总线, 后台数据流转的核心</p>
+<p><code>mysql/oracle</code>: 提供最初始的数据源</p>
+<p><code>storm</code>: 产品信息计算平台</p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><h3 id="前台api获取产品的流程"><a href="#前台api获取产品的流程" class="headerlink" title="前台api获取产品的流程"></a>前台api获取产品的流程</h3><p><img data-src="https://i.loli.net/2020/05/09/YlEnJMbQuqDXBNh.png" alt="flow1.png"></p>
+<h3 id="后台构建产品的流程"><a href="#后台构建产品的流程" class="headerlink" title="后台构建产品的流程"></a>后台构建产品的流程</h3><p><img data-src="https://i.loli.net/2020/05/09/iVF5gAlwafOmSXv.png" alt="flow2.png"></p>
+<h2 id="详细步骤描述"><a href="#详细步骤描述" class="headerlink" title="详细步骤描述"></a>详细步骤描述</h2><ul>
+<li><p>定时的产品id添加: 定期进行全量的产品数据重建, 为了方便控制重建过程, 将要处理的产品id分批存入kafka中的<code>全量重建topic</code>, 也就是把批处理转化为流处理  </p>
+</li>
+<li><p>失效的产品id: 当某个产品不存在于redis中时, 也会重新放入kafka的另外的<code>miss产品topic</code>中进行重建  </p>
+</li>
+<li><p>当产品信息变更时候也会有对应的变更产品id入kafka的<code>变更产品topic</code>中进行重建  </p>
+</li>
+<li><p>处理产品时会从以上三个产品源topic中读取需要重建的产品, 根据分类发放到<code>不同的分类topic</code>, 然后交给storm进行产品信息计算, 这部分信息只有简单的产品ID和更新类型标识  </p>
+</li>
+<li><p>storm中构建失败的产品(数据库中不存在等原因), 会在redis中进行标记暂时不可用(有效期1天), 不可用的产品不会继续进行重建  </p>
+</li>
+<li><p>kafka多个topic中的消息含有需要构建的 产品id和产品需要构建的内容, 也就是说可以通过消息内容格式控制构建产品的某个部分的信息(例如: 只更新产品的基本信息, 只更新价格信息, 只更新评论数,好评数等信息)</p>
+</li>
+<li><p>storm从kafka中获取消息, 进行产品的信息计算, 计算完成的信息会重新返回kafka, 同样根据产品分类发放到不同的<code>分类topic</code>, 这部分信息含有全量的产品信息数据</p>
+</li>
+<li><p>整合各个分类topic的产品计算结果, 写入redis 和 es, 并回写部分mysql表</p>
+</li>
+</ul>
+<h2 id="产品数据更新"><a href="#产品数据更新" class="headerlink" title="产品数据更新"></a>产品数据更新</h2><p>通过<code>canal</code>监听mysql数据库的产品表数据变更, 将变更数据发给kafka中的<code>产品表日志topic</code>, 后续从kafka的<code>产品日志topic</code> ,根据数据内容解析出来产品更新事件, 封装对应的事件消息, 存入<code>产品事件topic</code>  </p>
+<p>通过读取<code>产品事件topic</code>中的数据, 根据品类和变更内容, 向产品池<code>变更产品topic中发送</code>发送产品池信息重构需求</p>
+<h2 id="经验和总结"><a href="#经验和总结" class="headerlink" title="经验和总结"></a>经验和总结</h2><ul>
+<li>为什么要分多个产品数据源topic</li>
+</ul>
+<ol>
+<li><p>为了优先级考虑, 不同来源的产品对时效性要求是不同的, 但是kafka本身又做不了带有优先级的消息处理</p>
+</li>
+<li><p>不同的分类的产品的处理逻辑不同, 更新频率和数据量也不同, 提前进行分流</p>
+</li>
+</ol>
+<ul>
+<li>为什么不同分类的产品要用不同的写入topic</li>
+</ul>
+<ol>
+<li>如果有其他业务需要使用其中某个分类的产品数据只需订阅对应的产品topic流就可以了, 免去了从全量产品流中过滤的步骤 </li>
+</ol>
+<ul>
+<li>为什么最后还要把产品信息吐会回kafka</li>
+</ul>
+<ol>
+<li><p>为了统一控制写入源并做优化, 使用统一的topic存储数据可以让整个程序只有一个数据写入的源, 所有写入操作统统使用写总线来处理, 解耦了功能, 提高了可靠性, 扩展性和可维护性</p>
+</li>
+<li><p>可以对数据写入做优化, 比如:幂等处理, 批压缩写入处理, ABA问题的重写</p>
+</li>
+<li><p>为了数据重用, 因为其他部分业务组也可能需要使用产品信息, 到时候直接订阅最终的产品信息表就可以了</p>
+</li>
+<li><p>为了方便扩展, 如果将来数据量大, 出现了写入瓶颈, 只要对这一部分承担写总线功能的写入程序进行扩展就可以了</p>
+</li>
+</ol>
+<h1 id="业务2-用户画像之用户信息完善系统"><a href="#业务2-用户画像之用户信息完善系统" class="headerlink" title="业务2. 用户画像之用户信息完善系统"></a>业务2. 用户画像之用户信息完善系统</h1><h2 id="需求-1"><a href="#需求-1" class="headerlink" title="需求"></a>需求</h2><p>这个项目是用户画像的子项目, 目的是将用户分布在不同BU的信息进行整合, 提供一份统一最完整的用户信息出来</p>
+<p>同时进行一些数据清洗和数据统计</p>
+<ul>
+<li>对分散在各个表中的会员信息进行梳理, 整合一份相对比较完善的用户信息</li>
+</ul>
+<p>例如: 用户1在基本信息中填写了一份信息 </p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">{ </span><br><span class="line">    "username":"zhang",</span><br><span class="line">    "birthday":"1990-01-01",</span><br><span class="line">    "gender":"M"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同时用户上传了一张个人身份证, 通过解析, 身份证含有的信息是</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    "birthday":"1990-12-07",</span><br><span class="line">    "gender":"F"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>也就是说用户自己填写的信息和身份证中的信息不一致, 相同的情况可能出现在多个业务部门, 因为业务拆分各部门相互独立, 同一个用户在多个业务部门可能拥有多份不太一致的用户信息  </p>
+<ul>
+<li>对进行过清洗的用户数据进行完善度的计算</li>
+</ul>
+<p>根据不同用户信息字段占有的不同分值权重, 使用完善后的用户信息, 对用户的完善度进行实时统计</p>
+<ul>
+<li>定期统计用户的完善度报表</li>
+</ul>
+<p>根据用户会员等级/地区/性别 等基本属性和 对应的销售vip客服人员进行用户信息的报表统计</p>
+<h2 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h2><p>主要相关的组件有 <code>mysql</code>,<code>kafka</code>,<code>storm</code>,<code>hbase</code>, <code>es</code></p>
+<h2 id="项目详情-1"><a href="#项目详情-1" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
+<li>对接各数据源, 根据用户身份表示整合统一的用户信息</li>
+<li>统一存储用户信息</li>
+</ol>
+<blockquote>
+<p>ps:由于部分原因, 项目的实际开发时间很短, 只有200左右的工时, 也就是一个人工作一个月, 而且大部分时间都花在内部数据问题的处理上面, 所以项目未能做到最终非常完善的程度</p>
+</blockquote>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
+<li>定期的全量用户信息补全</li>
+<li>用户信息变更以后触发的补全</li>
+<li>用户资料补全以后进行完善度的计算</li>
+<li>定期根据用户属性对用户完善度进行报表统计</li>
+</ol>
+<p>具体的细节跟上面产品池相似, 都是利用<code>kafka</code>的数据流转, 将需要计算的消息流到<code>storm</code>, 经过计算以后再通过<code>kafka</code> 回馈给数据库和存储 </p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实回顾这两个项目</p>
+<p>在其中主要起作用的中间件主要是<code>kafka</code>和<code>storm</code></p>
+<p><code>kafka</code> 承担了系统几乎所有的数据流转需求, 做了一个数据总线的角色, 提供了<code>事件驱动</code>,<code>ETL</code>,<code>解耦</code>等功能   </p>
+<p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能  </p>
+<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的网关作用   </p>
+<p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力  </p>
+<p>希望以后可以多尝试, 并进行改进</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -4749,7 +4851,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

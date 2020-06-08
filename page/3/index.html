@@ -1265,7 +1265,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff6cf1;
+  background: #afff41;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2768,6 +2768,157 @@ ul.breadcrumb li + li:last-child {
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-10-03-redis-cluster-problem/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017-10-03-redis-cluster-problem/" class="post-title-link" itemprop="url">Redis集群遇到的一些问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-10-03 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-03T00:00:00+08:00">2017-10-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">编程工具</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017-10-03-redis-cluster-problem/" class="post-meta-item leancloud_visitors" data-flag-title="Redis集群遇到的一些问题" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2017-10-03-redis-cluster-problem/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017-10-03-redis-cluster-problem/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>我们在使用Redis集群的使用过程中发现了很多问题</p>
+<p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p>
+<h1 id="键分布导致的问题"><a href="#键分布导致的问题" class="headerlink" title="键分布导致的问题"></a>键分布导致的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p>
+<p><code>CROSSSLOT Keys in request don't hash to the same slot</code></p>
+<p>例如:</p>
+<p><code>hmget key1 key2</code></p>
+<p><code>rename key1 key2</code></p>
+<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><ul>
+<li>moved错误</li>
+</ul>
+<p>该错误表明当前键的落点槽不属于当前Node, 一般之后会跟着一个槽落点和节点地址</p>
+<p>例如:</p>
+<p><code>MOVED 1584 10.200.6.185:7001</code></p>
+<ol>
+<li><p>基于该错误可以调整客户端, 让不支持集群模式的客户端也能支持集群功能</p>
+</li>
+<li><p>也可以提前计算好key, 直接去负责该key所在槽的服务器上取数据</p>
+</li>
+</ol>
+<ul>
+<li>ASK错误</li>
+</ul>
+<p>该错误表明该key对应的数据正在做数据迁移, 槽迁移会引起该槽上的数据返回该错误</p>
+<h1 id="集群模式下不支持select-db"><a href="#集群模式下不支持select-db" class="headerlink" title="集群模式下不支持select db"></a>集群模式下不支持select db</h1><p>单机模式我们可以使用 <code>select 1</code> 来选择使用的数据库(redis默认提供16个数据库)</p>
+<p>但是集群模式下redis不支持该功能</p>
+<p>如果不同的业务组之间需要做业务隔离最好采用不同redis集群的形式进行</p>
+<p>可以把多个redis集群组成redis组，多个redis组组成redis池进行资源的统一管理</p>
+<h1 id="cluster模式不支持使用Pipeline"><a href="#cluster模式不支持使用Pipeline" class="headerlink" title="cluster模式不支持使用Pipeline"></a>cluster模式不支持使用Pipeline</h1><p>在缓存的使用过程中，有时候我们会有快速获取一批k-v存储结果的需求，比如首页列表产品页，此时如果我们对每一个记录使用get操作在数据量较大的时候将会导致整个请求时间过长难以接受</p>
+<p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段，我们可以用pipeline一次性读取多个key的值 </p>
+<p>像这样</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> batch </span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> get a</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> get b </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> get c</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ....</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exec</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>但是有一个缺点, 我们一旦使用了Redis的Cluster集群, 就没有办法对整个集群使用Pipeline功能</p>
+<p><strong>原因</strong></p>
+<p>因为Redis的Pipeline的原理是在一个连接中持续的进行命令发送, 需要持有一个稳定的连接</p>
+<p>但是一旦使用了集群, 我们每个连接只能连接一个Node节点, 可是Pipeline中发送的数据键的数据落点未必会落到我们当前连接的集群节点上去</p>
+<p>那经过Pipeline发送过去的key就很明显不能正确的拿到内容</p>
+<h2 id="解决方案1"><a href="#解决方案1" class="headerlink" title="解决方案1"></a>解决方案1</h2><ul>
+<li>我们先计算出来每个key的数据落点, 然后将key进行分组, 分组取数据</li>
+</ul>
+<p>步骤:</p>
+<ol>
+<li><p>实现集群节点选择方法, 给每个节点起一个名字, 例如 节点1, 节点2, 节点3</p>
+</li>
+<li><p>查找每个节点上面的数据槽(slot)的范围</p>
+</li>
+<li><p>对Pipeline中的每个key进行<code>crc16(key)&amp;16383</code>, 计算出来每个key的槽, 并找到槽对应的节点</p>
+</li>
+<li><p>将落到相同节点的key进行分组</p>
+</li>
+<li><p>对每一组key再进行Pipeline操作</p>
+</li>
+</ol>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>充分利用集群特性, 普适性好, 不会造成数据倾斜</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>按照节点计算key, 最大请求次数等于节点数, 节点太多的情况下不太合适, 适合小规模集群</p>
+<h2 id="解决方案2"><a href="#解决方案2" class="headerlink" title="解决方案2"></a>解决方案2</h2><ul>
+<li>存储时候就把key存到一起</li>
+</ul>
+<p>使用<code>{}</code>来对key进行标记</p>
+<p>例如: <code>{user}:name:3</code>, <code>{user}:name</code>,<code>{user}:age</code> </p>
+<p>这三个key因为{}部分都相同所以会落到同一个slot上面, 数据自然就落到同一台redis机器上面了</p>
+<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><p>不受集群规模和节点数量的影响</p>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>但是这种方法限制很大, 没办法充分利用Redis的集群特性, 仅仅适合使用比较频繁的小数据量</p>
+<p>数据量太大会导致大量数据存储在同一个槽内, 造成数据倾斜</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -4487,156 +4638,6 @@ ul.breadcrumb li + li:last-child {
   
   
 
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2016-06-08-idea-programing-language/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016-06-08-idea-programing-language/" class="post-title-link" itemprop="url">关于编程语言的一些看法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-06-08 00:00:00" itemprop="dateCreated datePublished" datetime="2016-06-08T00:00:00+08:00">2016-06-08</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">计算机编程</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2016-06-08-idea-programing-language/" class="post-meta-item leancloud_visitors" data-flag-title="关于编程语言的一些看法" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2016-06-08-idea-programing-language/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2016-06-08-idea-programing-language/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>我希望通过描述我自己对各种编程语言的看法，能帮助到对编程有兴趣的或者是刚工作不久的同学选择适合自己的编程语言。</p>
-<h2 id="我对各种编程语言的看法"><a href="#我对各种编程语言的看法" class="headerlink" title="我对各种编程语言的看法"></a>我对各种编程语言的看法</h2><p>很多语言都是在特定时期，在特定领域，为了解决特定问题而出现的。所以如果我们能了解各种编程语言的特性和出现的原因，选择语言就没有那么困难。</p>
-<p>先看一个Tiobe编程语言的流行趋势</p>
-<p><img data-src="https://i.loli.net/2020/05/09/NfK3Vc9jqiHy7OE.png" alt="20181108-11394.png"></p>
-<p>我简单列举一下我熟悉的上面出现的几个语言的优缺点</p>
-<ul>
-<li>c/c++</li>
-</ul>
-<p>优点 -&gt; 性能强，资源占用低，足够底层，满足你对代码的精确控制能力</p>
-<p>缺点 -&gt; 开发效率太低了，像c语言本身标准库带有的函数太少，c++的stl倒是工具比较多，但是包管理工具什么的还是没有比较标准的。其实项目中工程构建方面的成本往往要超过语言本身带来的成本。</p>
-<p>建议 -&gt; 嵌入式，操作系统，数据库等领域的开发者，普通开发者拿来做算法研究还是比较合适的，不建议个人用此类语言来做私人项目。不过还是建议个人能拥有该语言的代码阅读能力， 便于精研技术。</p>
-<ul>
-<li>Rust</li>
-</ul>
-<p>优点 -&gt; rust某种程度上正好补足了c/c++的部分不足，比如标准库比较丰富，内存安全，性能没有太多损失，包管理和工具链还比较现代化。</p>
-<p>缺点 -&gt; 上手门槛高，语言限制太多，不统一，unsafe下面的rust失去了诸多优点</p>
-<p>建议 -&gt; 部分原来的c++的领域很适合用rust重构，包括数据库和存储系统，消息中间件，操作系统等。而且对底层原理有兴趣的其他开发者也可以借助完善的工具链来构建个人项目，如果你想做一个偏低层的项目的话。</p>
-<ul>
-<li>Java</li>
-</ul>
-<p>优点 -&gt; 工程化好，生态强大。适合企业</p>
-<p>缺点 -&gt; 太中庸了，啥都能干，干啥都不够有优势</p>
-<p>建议 -&gt; 企业项目，个人做算法研究。</p>
-<ul>
-<li>Go</li>
-</ul>
-<p>优点 -&gt; 并发处理简单，工程化方便</p>
-<p>缺点 -&gt; 简约到有点简陋， 语言本身缺少太多东西</p>
-<p>建议 -&gt; 原PHP/Java开发者， 企业项目。同样适合个人做项目使用。</p>
-<ul>
-<li>Python</li>
-</ul>
-<p>优点 -&gt; 简单，开发效率高。</p>
-<p>缺点 -&gt; 不适合企业拿来做生产项目</p>
-<p>建议 -&gt; 适合编程初学者。快速搭建项目demo。</p>
-<ul>
-<li>Scala</li>
-</ul>
-<p>优点 -&gt; 表达能力强，函数式 + 面向对象</p>
-<p>缺点 -&gt; 受JVM限制做了很多妥协，想深入太过复杂，成也JVM，败也JVM</p>
-<p>建议 -&gt; 数据分析和处理工作者。也适合作为伪代码想别人描述算法思路</p>
-<ul>
-<li>scheme</li>
-</ul>
-<p>建议 -&gt; 对函数式编程和编程语言设计有兴趣的人，适合用来学习</p>
-<ul>
-<li>PHP</li>
-</ul>
-<p>建议 -&gt; 适合用来做与用户交互的web页面工作</p>
-<ul>
-<li>javascript</li>
-</ul>
-<p>建议 -&gt; 非前端工作者也建议学习一下， 语法简单，用途广泛</p>
-<h3 id="编程语言的江湖和流派"><a href="#编程语言的江湖和流派" class="headerlink" title="编程语言的江湖和流派"></a>编程语言的江湖和流派</h3><p>c/c++/Java这种就是传统的武林豪门少林/武当这种，或许这些门派不是最强的，但一定是不会太差，处于平均水准以上。</p>
-<p>虽然《九阴真经》,《北冥神功》这种级别的绝世武功也大多不是出于少林武当，但是,这种绝世武功不是适合所有人的，高收益往往伴随着高风险。所以还是建议大家多看,多学,增广见闻，见的多了,看得多了,了解的多了,最后根据自己的需要去选择,不要一开始就去选择拒绝</p>
-<blockquote>
-<p>当你拒绝一个事物,你就失去了向他学习的机会</p>
-</blockquote>
-<h2 id="一些建议"><a href="#一些建议" class="headerlink" title="一些建议"></a>一些建议</h2><p>首先建议大家初期尽量不要选择小众的冷门的编程语言。等以后有比较丰富的经验和认知以后在根据自己的需求去选择小众的语言。</p>
-<p>同时我自己是建议编程初学者最好学习两个语言， 一个编译型 + 一个脚本型。这样子可以兼具功能性和便捷性。</p>
-<p>初学者建议  go / java（编译型） + python / js（脚本型） 这样的搭配</p>
-<p>我个人大概是这样的学习路线:</p>
-<p>学校时期: C++, Java , PHP, JS, 都是学校时期学的, 当时就懂了个基本概念, 啥都没学会 。   刚工作时: C, js, PHP 早期工作需要 。<br>工作2年以后由因为工作关系接触到了Python， Go，Java，Scala。再后来希望对编程语言有更深入的认识，于是学习了Scheme和Rust。未来的花我可能会花更多时间在Rust和Scala上面</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -4706,7 +4707,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

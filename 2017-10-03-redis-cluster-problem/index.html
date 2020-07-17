@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="我们在使用Redis集群的使用过程中发现了很多问题 这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的 键分布导致的问题当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误 CROSSSLOT Keys in request don&amp;#39;t hash to the same slot 例如: hmg">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-05-09T02:39:51.189Z">
+<meta property="og:updated_time" content="2020-07-17T14:04:43.132Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2017-10-03-redis-cluster-problem/">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ba28ff;
+  background: #ffafff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;

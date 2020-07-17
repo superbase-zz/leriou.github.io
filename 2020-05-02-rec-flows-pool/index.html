@@ -27,7 +27,7 @@
 <meta property="og:description" content="这篇文章的目的是希望构建一套可行的，灵活的，能支持我们常见业务需求的流量池系统架构设计 内容流量池的目的我们希望通过流量池达到以下目标  解决内容推荐的马太效应  限制点击率比较低的内容的投放次数  帮助运营提升内容分发的效率，提供一个可以对播主赋能的手段   流量池的整体架构设计 流量池系统在整个推荐系统中主要起一个资源吃的作用，可推荐的内容资源以流量池中的内容流量的形式存在。同时为其他各种召回">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/sGhXxjwLYngEePB.jpg">
-<meta property="og:updated_time" content="2020-05-15T13:42:14.348Z">
+<meta property="og:updated_time" content="2020-07-17T14:04:43.133Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/sGhXxjwLYngEePB.jpg">
 
@@ -1268,7 +1268,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c309b5;
+  background: #5320cf;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2924,7 +2924,15 @@ ul.breadcrumb li + li:last-child {
 
 <h2 id="流量池的效果评估指标"><a href="#流量池的效果评估指标" class="headerlink" title="流量池的效果评估指标"></a>流量池的效果评估指标</h2><p>我们为了评估流量池的运行效果，我们需要制定一部分指标来对流量池进行监控并及时的调整参数</p>
 <p>主要用到的指标有</p>
-<h3 id="每日的新订单创建数量和不同类型的订单的创建数量"><a href="#每日的新订单创建数量和不同类型的订单的创建数量" class="headerlink" title="每日的新订单创建数量和不同类型的订单的创建数量"></a>每日的新订单创建数量和不同类型的订单的创建数量</h3><h3 id="当前流量池的可用流量分布和不同类型的订单的分布"><a href="#当前流量池的可用流量分布和不同类型的订单的分布" class="headerlink" title="当前流量池的可用流量分布和不同类型的订单的分布"></a>当前流量池的可用流量分布和不同类型的订单的分布</h3><h3 id="已消耗订单的点击率分布和不同类型的订单的点击率分布"><a href="#已消耗订单的点击率分布和不同类型的订单的点击率分布" class="headerlink" title="已消耗订单的点击率分布和不同类型的订单的点击率分布"></a>已消耗订单的点击率分布和不同类型的订单的点击率分布</h3><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>流量池系统其实是通过一种机制来控制内容的可曝光次数， 来对推荐结果的分布进行干预。<br>为了保证新内容的充分曝光，新内容会被给予一定次数的固定流量。表现好的内容将持续不断的获得推荐流量，表现不好的内容将在一定的推荐次数后不再推荐，空出来的推荐机会留给其他表现更好的内容。</p>
+<ul>
+<li><p>每日的新订单创建数量和不同类型的订单的创建数量</p>
+</li>
+<li><p>当前流量池的可用流量分布和不同类型的订单的分布</p>
+</li>
+<li><p>已消耗订单的点击率分布和不同类型的订单的点击率分布</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>流量池系统其实是通过一种机制来控制内容的可曝光次数， 来对推荐结果的分布进行干预。<br>为了保证新内容的充分曝光，新内容会被给予一定次数的固定流量。表现好的内容将持续不断的获得推荐流量，表现不好的内容将在一定的推荐次数后不再推荐，空出来的推荐机会留给其他表现更好的内容。</p>
 <p>同时为运营和个人播主提供了额外的手段用于满足部分推广需求。</p>
 
     </div>
@@ -2948,7 +2956,10 @@ ul.breadcrumb li + li:last-child {
     <a href="/2020-04-19-rec-abtest/" rel="prev" title="推荐系统AB实验平台">
       <i class="fa fa-chevron-left"></i> 推荐系统AB实验平台
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020-05-26-live-red-packet/" rel="next" title="超高并发场景下的直播红包发放业务的架构设计">
+      超高并发场景下的直播红包发放业务的架构设计 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -3008,7 +3019,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内容流量池的目的"><span class="nav-number">1.</span> <span class="nav-text">内容流量池的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量池的整体架构设计"><span class="nav-number">2.</span> <span class="nav-text">流量池的整体架构设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容流量池的概念"><span class="nav-number">3.</span> <span class="nav-text">内容流量池的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量的定义"><span class="nav-number">4.</span> <span class="nav-text">流量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量池的生成和使用规则"><span class="nav-number">5.</span> <span class="nav-text">流量池的生成和使用规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何限制点击率比较低的内容的投放次数"><span class="nav-number">5.1.</span> <span class="nav-text">如何限制点击率比较低的内容的投放次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何解决马太效应"><span class="nav-number">5.2.</span> <span class="nav-text">如何解决马太效应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何帮助运营人员提高内容分发效率"><span class="nav-number">5.3.</span> <span class="nav-text">如何帮助运营人员提高内容分发效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定向推荐-指定用户范围的推荐"><span class="nav-number">6.</span> <span class="nav-text">定向推荐: 指定用户范围的推荐</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">6.1.</span> <span class="nav-text">实现原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量池的效果评估指标"><span class="nav-number">7.</span> <span class="nav-text">流量池的效果评估指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#每日的新订单创建数量和不同类型的订单的创建数量"><span class="nav-number">7.1.</span> <span class="nav-text">每日的新订单创建数量和不同类型的订单的创建数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#当前流量池的可用流量分布和不同类型的订单的分布"><span class="nav-number">7.2.</span> <span class="nav-text">当前流量池的可用流量分布和不同类型的订单的分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#已消耗订单的点击率分布和不同类型的订单的点击率分布"><span class="nav-number">7.3.</span> <span class="nav-text">已消耗订单的点击率分布和不同类型的订单的点击率分布</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内容流量池的目的"><span class="nav-number">1.</span> <span class="nav-text">内容流量池的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量池的整体架构设计"><span class="nav-number">2.</span> <span class="nav-text">流量池的整体架构设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内容流量池的概念"><span class="nav-number">3.</span> <span class="nav-text">内容流量池的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量的定义"><span class="nav-number">4.</span> <span class="nav-text">流量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量池的生成和使用规则"><span class="nav-number">5.</span> <span class="nav-text">流量池的生成和使用规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何限制点击率比较低的内容的投放次数"><span class="nav-number">5.1.</span> <span class="nav-text">如何限制点击率比较低的内容的投放次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何解决马太效应"><span class="nav-number">5.2.</span> <span class="nav-text">如何解决马太效应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何帮助运营人员提高内容分发效率"><span class="nav-number">5.3.</span> <span class="nav-text">如何帮助运营人员提高内容分发效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定向推荐-指定用户范围的推荐"><span class="nav-number">6.</span> <span class="nav-text">定向推荐: 指定用户范围的推荐</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">6.1.</span> <span class="nav-text">实现原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流量池的效果评估指标"><span class="nav-number">7.</span> <span class="nav-text">流量池的效果评估指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -3022,7 +3033,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -3035,7 +3046,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

@@ -27,7 +27,7 @@
 <meta property="og:description" content="CamanJS图形处理库之前我曾想过自己做一个简单的图片处理库自己用,后来做了几个基本效果以后发现了成本太高 然后就放弃了,去找了个现成的图形库:CamanJS 发现用起来也不错,也就没有再做下去 简介CamanJS是一个图片处理类库,能十分方便的处理图片 本身已经提供了许多效果和操作 使用起来也十分方便 项目地址：https://github.com/meltingice/CamanJS">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/1LzfsPa7U6D3oWx.png">
-<meta property="og:updated_time" content="2020-05-09T01:28:48.962Z">
+<meta property="og:updated_time" content="2020-07-17T14:04:43.119Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/1LzfsPa7U6D3oWx.png">
 
@@ -1268,7 +1268,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c309b5;
+  background: #5320cf;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2882,7 +2882,6 @@ ul.breadcrumb li + li:last-child {
         this.render();
         })
     }
-
     function init() {
         var list = [{
             "name": "brightness",
@@ -2928,7 +2927,6 @@ ul.breadcrumb li + li:last-child {
             $(td1).attr("width","15%");
             $(td2).attr("width","20%");
             $(td3).attr("width","5%");
-
             $(td1).append(list[i].name);
             if (list[i].value > 0) {
                 $(td2).append("<input id=" + list[i].name + "_i value=0 type='range' min=0 max=" + list[i].value + " step=1 data-filter=" + list[i].name + ">")
@@ -2940,7 +2938,6 @@ ul.breadcrumb li + li:last-child {
             $(table).append(tr);
         }
         $(table).css("border", "1px solid #ccc");
-
         $("#stage").append(table);
     }
     init();
@@ -2958,7 +2955,6 @@ ul.breadcrumb li + li:last-child {
         var sharpen_v = $("#sharpen_i").val()
         var noise_v = $("#noise_i").val()
         $(this).parent().next().text($(this).val());
-
         Caman("#image", function() {
             this.revert();
             if (stackBlur_v > 0) this.stackBlur(stackBlur_v);
@@ -2975,7 +2971,6 @@ ul.breadcrumb li + li:last-child {
             if (noise_v > 0) this.noise(noise_v);
             this.render();
         })
-
         $("#reset").click(function(){
             Caman("#image",function(){
                 this.revert();
@@ -3084,7 +3079,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -3097,7 +3092,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

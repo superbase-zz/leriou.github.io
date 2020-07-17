@@ -18,18 +18,18 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务 借这个机会, 对我们用到的相关技术部分进行了整理 业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用 以及其中遇到的一些坑 业务1. 统一的产品池服务需求 统一产品数据池  由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通,">
+  <meta name="description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务 借这个机会, 对我们用到的相关技术部分进行了整理 业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建，以及其中遇到的一些坑 业务1. 统一的产品池服务需求统一产品数据池由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的">
 <meta name="keywords" content="数据处理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="初步探索实时数据处理系统">
 <meta property="og:url" content="https://leriou.github.io/2018-09-30-real-time-proccess/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务 借这个机会, 对我们用到的相关技术部分进行了整理 业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用 以及其中遇到的一些坑 业务1. 统一的产品池服务需求 统一产品数据池  由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通,">
+<meta property="og:description" content="背景因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务 借这个机会, 对我们用到的相关技术部分进行了整理 业务场景分析下面拿我自己经历的两个项目来探讨一下实时计算平台的构建，以及其中遇到的一些坑 业务1. 统一的产品池服务需求统一产品数据池由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/DOkCVIlZ7BKz16r.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/YlEnJMbQuqDXBNh.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/iVF5gAlwafOmSXv.png">
-<meta property="og:updated_time" content="2020-05-09T02:40:26.561Z">
+<meta property="og:updated_time" content="2020-07-17T14:04:43.133Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/DOkCVIlZ7BKz16r.png">
 
@@ -1270,7 +1270,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c309b5;
+  background: #5320cf;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2847,14 +2847,10 @@ ul.breadcrumb li + li:last-child {
       
         <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p>
 <p>借这个机会, 对我们用到的相关技术部分进行了整理</p>
-<h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建和使用</p>
-<p>以及其中遇到的一些坑</p>
-<h1 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h1><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul>
-<li>统一产品数据池</li>
-</ul>
-<p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL</p>
+<h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建，以及其中遇到的一些坑</p>
+<h1 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h1><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><h3 id="统一产品数据池"><a href="#统一产品数据池" class="headerlink" title="统一产品数据池"></a>统一产品数据池</h3><p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL</p>
 <p>我们组的业务由于含有统一的列表页和内容服务, 所有分类产品的相关信息都需要进行聚合展示, 所以原来我们使用产品都需要根据产品品类调用不同部门提供的接口进行数据查询</p>
-<p>考虑到接口性能和未来业务的增长，我们需要一个统一的产品池功能来帮助汇总所有的产品信息，向上曾业务提供一个统一的最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
+<p>考虑到接口性能和未来业务的增长，我们需要一个统一的产品池功能来帮助汇总所有的产品信息，向上层业务提供一个统一的最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
 <p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可，同时作为基础的数据服务还需要保证服务的性能和高可用性，于是有了产品池这个项目   </p>
 <h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>主要涉及的中间件和服务<code>redis</code>,<code>kafka</code>,<code>storm</code>,<code>elasticsearch</code>,<code>mysql</code></p>
 <h2 id="项目详情"><a href="#项目详情" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
@@ -2957,7 +2953,7 @@ ul.breadcrumb li + li:last-child {
 <p>在其中主要起作用的中间件主要是<code>kafka</code>和<code>storm</code></p>
 <p><code>kafka</code> 承担了系统几乎所有的数据流转需求, 做了一个数据总线的角色, 提供了<code>事件驱动</code>,<code>ETL</code>,<code>解耦</code>等功能   </p>
 <p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能  </p>
-<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的网关作用   </p>
+<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的数据桥接作用   </p>
 <p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力  </p>
 <p>希望以后可以多尝试, 并进行改进</p>
 
@@ -3045,7 +3041,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务场景分析"><span class="nav-number">2.</span> <span class="nav-text">业务场景分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务1-统一的产品池服务"><span class="nav-number">3.</span> <span class="nav-text">业务1. 统一的产品池服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求"><span class="nav-number">3.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件"><span class="nav-number">3.2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目详情"><span class="nav-number">3.3.</span> <span class="nav-text">项目详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整体结构"><span class="nav-number">3.4.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图"><span class="nav-number">3.5.</span> <span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前台api获取产品的流程"><span class="nav-number">3.5.1.</span> <span class="nav-text">前台api获取产品的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后台构建产品的流程"><span class="nav-number">3.5.2.</span> <span class="nav-text">后台构建产品的流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细步骤描述"><span class="nav-number">3.6.</span> <span class="nav-text">详细步骤描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#产品数据更新"><span class="nav-number">3.7.</span> <span class="nav-text">产品数据更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经验和总结"><span class="nav-number">3.8.</span> <span class="nav-text">经验和总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务2-用户画像之用户信息完善系统"><span class="nav-number">4.</span> <span class="nav-text">业务2. 用户画像之用户信息完善系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求-1"><span class="nav-number">4.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件-1"><span class="nav-number">4.2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目详情-1"><span class="nav-number">4.3.</span> <span class="nav-text">项目详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">4.4.</span> <span class="nav-text">流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务场景分析"><span class="nav-number">2.</span> <span class="nav-text">业务场景分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务1-统一的产品池服务"><span class="nav-number">3.</span> <span class="nav-text">业务1. 统一的产品池服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求"><span class="nav-number">3.1.</span> <span class="nav-text">需求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#统一产品数据池"><span class="nav-number">3.1.1.</span> <span class="nav-text">统一产品数据池</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件"><span class="nav-number">3.2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目详情"><span class="nav-number">3.3.</span> <span class="nav-text">项目详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整体结构"><span class="nav-number">3.4.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程图"><span class="nav-number">3.5.</span> <span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前台api获取产品的流程"><span class="nav-number">3.5.1.</span> <span class="nav-text">前台api获取产品的流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后台构建产品的流程"><span class="nav-number">3.5.2.</span> <span class="nav-text">后台构建产品的流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细步骤描述"><span class="nav-number">3.6.</span> <span class="nav-text">详细步骤描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#产品数据更新"><span class="nav-number">3.7.</span> <span class="nav-text">产品数据更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经验和总结"><span class="nav-number">3.8.</span> <span class="nav-text">经验和总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业务2-用户画像之用户信息完善系统"><span class="nav-number">4.</span> <span class="nav-text">业务2. 用户画像之用户信息完善系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求-1"><span class="nav-number">4.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件-1"><span class="nav-number">4.2.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目详情-1"><span class="nav-number">4.3.</span> <span class="nav-text">项目详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">4.4.</span> <span class="nav-text">流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -3059,7 +3055,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -3072,7 +3068,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

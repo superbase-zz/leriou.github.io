@@ -1265,7 +1265,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c309b5;
+  background: #5320cf;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2772,6 +2772,590 @@ ul.breadcrumb li + li:last-child {
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-11-01-kafka-share-in-group/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017-11-01-kafka-share-in-group/" class="post-title-link" itemprop="url">浅谈Kafka消息系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-11-01 11:07:31" itemprop="dateCreated datePublished" datetime="2017-11-01T11:07:31+08:00">2017-11-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">编程工具</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017-11-01-kafka-share-in-group/" class="post-meta-item leancloud_visitors" data-flag-title="浅谈Kafka消息系统" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2017-11-01-kafka-share-in-group/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017-11-01-kafka-share-in-group/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p>
+<p>在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p>
+<p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p>
+<p>后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)</p>
+<h2 id="消息传递在现代业务中的地位"><a href="#消息传递在现代业务中的地位" class="headerlink" title="消息传递在现代业务中的地位"></a>消息传递在现代业务中的地位</h2><p><strong>面向对象的程序 = 对象 + 消息传递</strong></p>
+<p>消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
+<p>我们通常会把许多实时性要求不那么高的任务处理通过消息系统进行解耦,以平衡数据处理的性能和功能</p>
+<p>例如: 用户下了一个订单,我们需要马上告诉用户下单成功, 但是之后的物流发货, 订单入账和商品信息更新等消息都可以通过一个消息系统进行拆分,这样不仅不会影响用户体验,也可以对之后触发的多个属于不同系统的业务进行并行处理,提升系统处理的性能</p>
+<h1 id="Kafka基础介绍"><a href="#Kafka基础介绍" class="headerlink" title="Kafka基础介绍"></a>Kafka基础介绍</h1><p>kafka作为一个消息平台, 其中有一些基础概念跟传统的消息队列服务对应</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">broker(instance)    承载服务的实例</span><br><span class="line">topic (queue)  		逻辑上的消息通道</span><br><span class="line">paitition(sharding) 一个消息通道进行存储的区域(物理上的,本质是对应着一个文件序列)</span><br><span class="line">consumer       		消费者 (通常指客户端的使用者)</span><br><span class="line">producer       		生产者 (也是客户端的使用者)</span><br><span class="line">consumer group   	消费者组 (虚拟概念, 消费者的逻辑分组)</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>broker</strong></p>
+<p>broker就相当于我们的kafka实例, 每个集群由多个broker组成, 每个broker具有完整的存储消息的功能, 多个broker可以组成broker集群, 但是这些实例不一定要分布在不同的机器上(虽然我们建议不要在同一个机器上部署多个broker)</p>
+<p>broker是链接<code>producer</code>和<code>consumer</code>的中间桥梁, 是消息真正的存储者, producer将消息发送给broker, broker对消息进行存储, 等待consumer消费和使用消息，kafka的性能, 很大程度上取决于broker参数配置</p>
+<p><strong>topic</strong></p>
+<p>topic就相当于其他消息队列中的queue, 我们发送消息需要指定topic, 读取消息也需要指定topic, 同一个topic可以有多个生产者和多个消费者</p>
+<p>topic是一个逻辑上的概念, 每个topic由至少一个或多个partition组成, 每个partition保存topic内的<code>一部分</code>消息。topic内的消息无法保证有序, 除非只有一个partition</p>
+<p><strong>partition</strong></p>
+<p>partition相当于是topic内部的一个分片 </p>
+<p>假如说我们有个topic其中有5个patition, 一个消息在每个topic中只会存储在一个patition中, 整个topic的消息等于该topic下所有partition的总和 </p>
+<p>每个partition至多只能有一个消费者, topic下的总消费者数量也受限于partition, 比如你topic有10个分片, 如果使用12个消费者就会有两个消费者永远获取不到数据  </p>
+<p>每个partition是一个文件集合, 集合内同一时刻只有一个文件可写入数据，单个partition里面的数据因为这个关系可以保持有序  </p>
+<p>partition还可以有自己的replication，replication只有一个功能, 就是提供数据冗余, 防止partition出问题时造成数据丢失 。不过同一个partition的多个replication中同一时间只能有一个primary replication(通过选举得出)，由这个primary  replication来执行整个partition的数据操作</p>
+<p><strong>consumer</strong></p>
+<p>每个消费者可以消费一个topic的一个partition, 可以同时消费多个topic</p>
+<p>consumer数量如果超过一个topic的分片数量, 会造成某些consumer永远消费不到数据</p>
+<p>消费者消费数据需要提交offset告诉broker自己已经消费过某条数据</p>
+<p>当topic新增一个consumer的时候会触发其他消费此topic的consumer group内consumer的<code>Rebalance</code>, 重新在consumer之间重新进行分区分配</p>
+<p><strong>consumer group</strong></p>
+<p>消费者组也是一个逻辑上的概念, 每个消费者组内的消费者只能消费同一个topic内的某一条消息一次, 除非进行手动offset调整重新消费</p>
+<p>如果某个topic中的数据希望同时给多个业务方使用, 每个业务方应该使用一个单独的consumer group</p>
+<p><strong>producer</strong></p>
+<p>每个生产者可以为一个或多个topic生产数据, producer只负责将数据发送给broker, 后续操作通通由broker来负责</p>
+<h1 id="kafka的主要应用何特点"><a href="#kafka的主要应用何特点" class="headerlink" title="kafka的主要应用何特点"></a>kafka的主要应用何特点</h1><p><strong>常见应用场景</strong></p>
+<ol>
+<li>消息队列：kafka通常被用作消息队列, 这也是kafka的主要用途之一, 因为他可以一定程度上保证消息的可靠和有序</li>
+<li>日志/消息存储：kafka由于基于文件存储, 所以很适合用来存储日志信息, 通知消息等有序且数据巨大的信息</li>
+<li>数据总线：kafka还适合在不同的存储系统和业务之间做数据总线, 这样可以方便的把一份数据传递给多方公用</li>
+</ol>
+<p><strong>优点</strong></p>
+<pre><code>1. 增加了partition层, 高度解耦, 支持分布式, 支持副本, 扩展方便
+2. 基于文件存储消息, 采用文件指针的读方式, 速度快, 且可重复读
+3. 保证多消费者情况下消息的有序性
+4. 在producer, broker, consumer三者做了大量性能优化,例如:`cache buff`和`sendfile()`等</code></pre><p>kafka的大部分分布式特性都得益于partition的设计,由于采用了文件集合来存储每一个partition,使得kafka在性能和有序性方面获得了巨大的优势</p>
+<p><strong>kafka作为消息队列的缺点</strong></p>
+<pre><code>1. 只有topic一个逻辑隔离级别
+2. 高并发依赖于partition数量限制, 扩展不是特别的方便
+3. 没有消息优先级机制
+4. 数据中心级别的数据同步不成熟
+5. 功能和数据存储系统没有隔离开</code></pre><p>同时也由于kafka的部分设计不可避免的有一些缺点</p>
+<p>由于partition的限制, 应对高并发场景, 如果需要加快一个topic的处理速度只能通过增加消费者的方式, 这个增加过程又不像其他内存式的消息队列来的方便</p>
+<p>相比于很多传统消息队列服务, kafka也没有消息优先级的机制</p>
+<p>kafka的竞争对手Apache Pulsar在后两点比kafka要更加优秀, 且在很多基础功能上提供了更多的选择性</p>
+<h1 id="kafka工作流程示意图"><a href="#kafka工作流程示意图" class="headerlink" title="kafka工作流程示意图"></a>kafka工作流程示意图</h1><p><img data-src="https://i.loli.net/2020/05/09/JaQFedmhsk175PS.png" alt="kafka1.png"></p>
+<p>kafka中的一个完整的消息流程如上图所示</p>
+<p>Producer将消息发给broker中的topic,存储到topic下的某一个partition</p>
+<p>Consumer从partition中消费数据,将该消费者在该topic中的数据偏移标记为最新</p>
+<h1 id="kafka为什么这么快"><a href="#kafka为什么这么快" class="headerlink" title="kafka为什么这么快"></a>kafka为什么这么快</h1><ol>
+<li>吞吐量和延迟</li>
+</ol>
+<p>吞吐量和延迟是一个kafka的平衡选择</p>
+<p>吞吐量大, 延迟就高, 延迟高, 吞吐量就小</p>
+<p>这个需要自己做抉择, kafka一定程度上选择了用牺牲延迟换吞吐量</p>
+<p>kafka在producer和broker中都使用了<code>cache buff</code>的方式来增加吞吐量</p>
+<ol start="2">
+<li>零拷贝</li>
+</ol>
+<p>kafka的broker发送数据时采用零拷贝技术, 减少了一次内部的从用户态到内核态的状态切换过程, 使用<code>sendfile</code>将文件直接通过内存地址发送给网卡</p>
+<ol start="3">
+<li>基于文件的追加方式</li>
+</ol>
+<p>kafka采用追加文件记录的形式来处理数据, 这种方式要比随机读写快上很多  </p>
+<ol start="4">
+<li>buff发送</li>
+</ol>
+<p>对发送的文件进行了了缓冲区处理, 缓冲区满了以后或者到了一定时间才会发送数据</p>
+<p>相当于对发送信息做了批处理</p>
+<h2 id="kafka和ZooKeeper"><a href="#kafka和ZooKeeper" class="headerlink" title="kafka和ZooKeeper"></a>kafka和ZooKeeper</h2><p>kafka 使用zk存储一些关键配置信息</p>
+<p>如: 某个topic的消息总量, 每个partition的消费数据等信息,消费者消费的记录offset等都存储于zk</p>
+<p>许多的kafka监控应用也都是通过读取zk中的kafka数据来进行监控的</p>
+<blockquote>
+<p>ps: kafka新版本中已经允许客户端提交offset到kafka的topic中</p>
+</blockquote>
+<p>具体保存消息的节点路径如下图: </p>
+<p><img data-src="https://i.loli.net/2020/05/09/8hymVr34eTK6ndq.jpg" alt="kafka_zk.jpeg"></p>
+<p><img data-src="https://i.loli.net/2020/05/09/md1eiYFCEnIVBst.jpg" alt="kafka_zk2.jpeg"></p>
+<h1 id="kafka数据存储"><a href="#kafka数据存储" class="headerlink" title="kafka数据存储"></a>kafka数据存储</h1><p>kafka的数据存储大致分为三层, broker, partition, segment</p>
+<p>kafka配置文件中的 server.properties中的以下属性指明了kafka的数据存储位置</p>
+<p><code>log.dirs=/usr/local/var/lib/kafka-logs</code></p>
+<p>具体如下图:</p>
+<p><img data-src="https://i.loli.net/2020/05/09/2gVbKren4BGyxQ1.jpg" alt="kafka_store.jpeg"></p>
+<p>一个broker中虽然可以随处多个topic数据, 但是真正的存储还是要落实到 segment上<br>topic和partition只能决定存放segment的上层文件夹的名字</p>
+<h2 id="segment内的存储细节"><a href="#segment内的存储细节" class="headerlink" title="segment内的存储细节"></a>segment内的存储细节</h2><p><img data-src="https://i.loli.net/2020/05/09/AO3746RkVfgZiL2.jpg" alt="kafka_segment.jpeg"></p>
+<p>一个topic的一个partition拥有多个segment file, 每个segment file拥有多个部分 </p>
+<p>一般由以下四个类型文件组成</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xxx.index  						//segment的索引文件</span><br><span class="line">xxx.log    						//segment的数据文件</span><br><span class="line">xxx.timeindex            		//segment的时间索引</span><br><span class="line">leader-epoch-checkpoint   		//检查点文件</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="使用kafka遇到的问题"><a href="#使用kafka遇到的问题" class="headerlink" title="使用kafka遇到的问题"></a>使用kafka遇到的问题</h1><p><strong>1.kafka的topic不消费</strong><br>原因：<br>topic中的消息容量是有限制的,假如短时间内某topic中进入了大量的消息<br>消费者来不及消费可能导致消费者的消费offset小于当前topic的最小消息偏移</p>
+<p>举例:<br>假如我们topic最大可以存储200万消息,消费者每分钟消费30万的消息<br>现在有个入消息的接口每分钟入100万的消息,那topic, consumer就会产生如下问题</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">	<span class="string">"topic"</span>:{</span><br><span class="line">		<span class="string">"start"</span>: <span class="number">211450</span>, <span class="comment">// 当前topic消息最小值</span></span><br><span class="line">		<span class="string">"end"</span>: <span class="number">2211450</span>, <span class="comment">// 当前topic的消息最大值</span></span><br><span class="line">	},</span><br><span class="line">	<span class="string">"consumer"</span>:{</span><br><span class="line">		<span class="string">"topic1"</span>: <span class="number">311450</span>, <span class="comment">// 消费者在topic中的消费位置</span></span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"><span class="comment">// 然后等了一分钟</span></span><br><span class="line">{</span><br><span class="line">	<span class="string">"topic"</span>:{</span><br><span class="line">		<span class="string">"start"</span>:<span class="number">2211450</span>,<span class="comment">// 当前最小的消息值</span></span><br><span class="line">		<span class="string">"end"</span>:<span class="number">4211450</span>,<span class="comment">// 当前最大的消息值</span></span><br><span class="line">	},</span><br><span class="line">	<span class="string">"consumer"</span>:{</span><br><span class="line">		<span class="string">"topic1"</span>: <span class="number">461450</span>, <span class="comment">// 消费者当前的消费消息位置</span></span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>也就是说消费者的消费值在内存中的topic中找不到了.因为消息入得太快,消费者跟不上,当前消费消息,被”顶”出去了</p>
+<p>解决方案:</p>
+<ol>
+<li>可以手动设置消费者的消费位置,将其置为 当前topic中可以找到的消息偏移位置</li>
+<li>可以重新设置消费方式,这种方式也是变相将该消费者在该topic的消费位置重置</li>
+</ol>
+<p><strong>2.kafka的topic不能直接删除</strong></p>
+<p>原因: 因为要删除一个topic必须符合两个条件</p>
+<ol>
+<li>无消费者消费  </li>
+<li>文件中无消息记录,普通的删除只能删除文件中的消息记录,无法删除消费者得消费信息</li>
+</ol>
+<p>方案: 将该topic的所有消费者消费偏移置为0 ,然后执行删除，或者使用kafka tool工具可以直接删除</p>
+<p><strong>3.kafka的分片数据分布不均匀</strong></p>
+<p>原因: kafka早期的算法会根据key的hash值来对消息进行分配<br>如果没有key可能会被分配至随机的一个固定的partition中<br>这样会导致topic中的消息分布不均匀,</p>
+<p>方案: 1. 可以更改分配算法 2. 使用时间戳作为key的结尾 </p>
+<p><strong>4.kafka的消费者分组的使用</strong></p>
+<p>描述: 由于每个消费者分组中的topic只能被消费一次<br>kafka可以通过消费者分组来对某一topic中的数据进行重复消费<br>我们可以通过给不同部门设置消费者分组来实现类似订阅的机制</p>
+<p>举例: 我们有一个订单消息队列, topic为 <code>order-topic</code><br>我们可以通过给 订单部门和 物流部门 分配不同的消费者分组<br>来对同一个topic中的消息进行重复消费</p>
+<h1 id="Kafka的高级特性和流处理"><a href="#Kafka的高级特性和流处理" class="headerlink" title="Kafka的高级特性和流处理"></a>Kafka的高级特性和流处理</h1><ul>
+<li>kafka事务</li>
+</ul>
+<p>kafka现在已经支持事务, 这个是kafka一致性保证的重大进步</p>
+<p>kafka的事务目前还有一定的限制, 实现方式是使用 事务ID和客户端id做幂等处理</p>
+<p>kafka事务流程：</p>
+<ol>
+<li><p>生产者发起事务请求</p>
+</li>
+<li><p>发送消息</p>
+</li>
+<li><p>服务器接受数据,进行追加写入</p>
+</li>
+<li><p>生产者结束事务</p>
+</li>
+</ol>
+<p>如果客户端没有结束事务, kafka虽然将数据写入到了broker,但是不会让其他消费者客户端读到这部分数据</p>
+<p>这部分数据在kafka上会被标记为abort掉的数据</p>
+<ul>
+<li>kafka多版本混布</li>
+</ul>
+<p>kafka现在支持多个kafka版本混合部署, 可以同时使用1.0 和2.0 版本组建一个kafka集群</p>
+<ul>
+<li>流处理</li>
+</ul>
+<p>什么是流? 流一个无限持续的数据集，比如 用户的行为数据</p>
+<p>流处理的目的是尽可能的保证业务处理的实时性，就是事件一旦发生我们就希望立刻处理</p>
+<p>目前常见的流处理框架有 spark, storm, flink等，kafka streaming与他们相比显得更为轻量和易用</p>
+<p>流处理更像业务逻辑的一部分, 而不是业务的分拆, 是一个独立的微服务, 而不是MapReduce任务</p>
+<ul>
+<li>流处理的常用方法</li>
+</ul>
+<p>流处理常用的方法有 <code>filter /map /join /aggregate</code></p>
+<p>其中 <code>map/filter</code> 属于对单个数据进行的无状态操作</p>
+<p><code>join/aggregate</code> 属于数据统计需求, 有一定的状态要求</p>
+<p>此外还有<code>window函数</code>等</p>
+<p>kafka stream作为一个库的形式像我们提供了以上各种方法, 使得我们使用起来非常容易</p>
+<ul>
+<li>使用kafka streaming的一个场景</li>
+</ul>
+<p>例如在产品池项目中, 我们用 kafka stream 从canal的事件消息topic中接收数据  </p>
+<p>从中根据不同的消息内容将事件按照<code>库和表</code>发送给不同的后续topic, 达到了消息路由的功能  </p>
+<p>kafka stream将三个不同来源的topic中的待更新产品信息融合到同一个 待更新的产品信息Topic中  </p>
+<ul>
+<li>Kstream和Ktable</li>
+</ul>
+<p>kafka向我们提供了以下两个概念方便我们进行流处理</p>
+<ol>
+<li>KStream</li>
+</ol>
+<p>一个纯粹的流就是所有的更新都被解释成INSERT语句(因为没有记录会替换已有的记录)的表。</p>
+<p>在一个流中(KStream)，每个key-value是一个独立的信息片断，比如，用户购买流是：alice-&gt;黄油，bob-&gt;面包，alice-&gt;奶酪面包，我们知道alice既买了黄油，又买了奶酪面包。</p>
+<blockquote>
+<p>ps: 表中每条记录的变动就是一个流</p>
+</blockquote>
+<ol start="2">
+<li>KTable(changelog流)</li>
+</ol>
+<p>KTable 一张表就是一个所有的改变都被解释成UPDATE的流(因为所有使用同样的key的已存在的行都会被覆盖)。</p>
+<p>对于一个表table( KTable)，是代表一个变化日志，如果表包含两对同样key的key-value值，后者会覆盖前面的记录，因为key值一样的，比如用户地址表：alice -&gt; 纽约, bob -&gt; 旧金山, alice -&gt; 芝加哥，意味着Alice从纽约迁移到芝加哥，而不是同时居住在两个地方。</p>
+<blockquote>
+<p>ps: 对某一时刻的流数据进行切面,按时间对数据进行覆盖,那个切面数据就是表</p>
+</blockquote>
+<p>这两个概念之间有一个二元性，一个流能被看成表，而一个表也可以看成流。</p>
+<p>我们一般用KStream来支持流式处理功能，同时使用KTable支持批处理功能作为补充，两者互相结合可以满足大部分的业务处理场景</p>
+<p>同时KTable 还提供了通过key查找数据值的功能，该查找功能可以用在Join等功能上。</p>
+<p>总的来说kafka streaming做为流式处理系统跟老牌的spark streaming/flink还有一定的差距，但是很适合轻量级的数据处理场景</p>
+<p>还是拥有一定的市场空间</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-10-29-redis-share-in-group/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017-10-29-redis-share-in-group/" class="post-title-link" itemprop="url">给团队成员的Redis分享总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-10-29 11:07:00" itemprop="dateCreated datePublished" datetime="2017-10-29T11:07:00+08:00">2017-10-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">编程工具</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2017-10-29-redis-share-in-group/" class="post-meta-item leancloud_visitors" data-flag-title="给团队成员的Redis分享总结" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2017-10-29-redis-share-in-group/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2017-10-29-redis-share-in-group/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="redis分享"><a href="#redis分享" class="headerlink" title="redis分享"></a>redis分享</h1><p>Author:   leriou lee       2017.10.12<br>本篇内容主要是针对团队成员的redis中间件分享</p>
+<p>目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解<br>已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案</p>
+<h1 id="redis基础"><a href="#redis基础" class="headerlink" title="redis基础"></a>redis基础</h1><ol>
+<li>redis是什么</li>
+</ol>
+<p><code>redis</code>是一个使用c语言开发的k-v存储系统,其实不仅仅作为缓存,由于<code>redis</code>内部的底层数据结构设计的非常完善</p>
+<p>我们也可以把<code>redis</code>作为一个现成的数据结构实现集合,只要了解<code>redis</code>内部的基础数据结构和实现,我们就能利用它做很多事情</p>
+<p>比如我们想利用某种数据结构的特性(例如:跳跃表),又不想自己实现,就可以在<code>redis</code>的基础之上构建业务</p>
+<p>redis目前支持5种数据对象, 基本可以满足大多数的业务场景</p>
+<blockquote>
+<p>ps: 现在5.0发布已经有6种了</p>
+</blockquote>
+<ol start="2">
+<li><p>redis的大致工作流程</p>
+<ol>
+<li>启用redis-server,使用socket服务监听端口(redis服务端)</li>
+<li>客户端启用socket连接到服务器,通过认证,服务器维护client的信息(使用链表持有)</li>
+<li>客户端发送命令, 服务器接收到命令根据命令表进行执行和查找等,返回结果(将结果保存到client的输出缓冲区)</li>
+<li>客户端解析服务器返回的结果</li>
+</ol>
+</li>
+<li><p>redis能做什么</p>
+</li>
+</ol>
+<p>redis作为一个缓存中间件, 可以帮助我们解决很多业务中遇到的问题,由于redis内部功能机制比较丰富,其实不仅仅可以作为简单的缓存中间件使用</p>
+<p>redis可以作为高速的k-v存储，非常适合存储一些直接针对用户的应用数据，或者进行用户行为统计。 比如：对用户进行限流，统计用户访问量</p>
+<ol start="4">
+<li>基于redis可以解决的一些常见问题</li>
+</ol>
+<p>redis可以帮助我们解决很多业务中的问题,下面简单列举一下</p>
+<ul>
+<li><p>作为服务间的共享空间或临时存储，解决数据共享问题 例如: 计数器,注册器/协调器,在分布式应用中做桥接</p>
+<p>  由于redis是一个独立的服务,不依赖任何其他的服务,同时又具有高效的存储功能<br>  我们可以用redis在不同的应用和系统服务之间进行简单的数据传递,或者存放部分中间数据<br>  相当于多个服务之间的共享内存,我们可以”使用共享内存来通信”</p>
+</li>
+</ul>
+<p>*为高读写要求的场景提供数据存储，解决性能问题  例如: 热点数据缓存/流量控制(漏桶和令牌桶)</p>
+<pre><code>redis由于是一个内存数据库,读写速度执行非常的快
+在一个最低配的的阿里云机器上可以达到8w/s的ops,非常适合用来处理一些对读写性能要求极高的场景
+比如:部分热点商品数据,秒杀活动,流量控制等</code></pre><p>*其他可以利用redis特性的场景，解决业务问题    例如: 搜索/bitmap/数据匹配/消息队列/发布订阅</p>
+<pre><code>redis内部还有很多的特殊机制实现了比较丰富的功能, 如:发布订阅.
+我们也可以利用redis的一写数据结构特性来构建倒排索引,以实现简单的搜索功能 
+也可以利用list的数据结构的特性实现简单的消息队列</code></pre><h1 id="Redis的读写流程"><a href="#Redis的读写流程" class="headerlink" title="Redis的读写流程"></a>Redis的读写流程</h1><ul>
+<li>通信协议RESP</li>
+</ul>
+<p>RESP协议在Redis 1.2中引入，但它成为与Redis 2.0中的Redis服务器通信的标准方式。 这是每一个Redis客户端中应该实现的协议。</p>
+<p>RESP实际上是一个支持以下数据类型的序列化协议：单行字符串，错误信息，整型，多行字符串和数组。<br>RESP在Redis中用作请求 - 响应协议的方式如下：</p>
+<p>客户端将命令作为字符串数组发送到Redis服务器。<br>服务器根据命令实现回复一种RESP类型数据。<br>在 RESP 中, 一些数据的类型通过它的第一个字节进行判断：</p>
+<p>单行回复：回复的第一个字节是 “+”</p>
+<p>错误信息：回复的第一个字节是 “-“</p>
+<p>整形数字：回复的第一个字节是 “:”</p>
+<p>多行字符串：回复的第一个字节是 “$”</p>
+<p>数组：回复的第一个字节是 “*”</p>
+<p>此外，RESP能够使用稍后指定的Bulk Strings或Array的特殊变体来表示Null值。<br>在RESP中，协议的不同部分始终以“\ r \ n”（CRLF）结束。</p>
+<ul>
+<li>读写过程</li>
+</ul>
+<p>Redis的读过程可以简化为:</p>
+<ol>
+<li>client客户端通过socket发请求</li>
+<li>server端监听服务端口, 收到请求, 解析协议, 查找命令表</li>
+<li>server端进行数据操作, 更新数据状态</li>
+<li>server端返回数据或信息, client端接受并解析</li>
+</ol>
+<p>其中细节颇多, 值得注意的就是 server端内部会进行很多检查工作</p>
+<p>比如: 检查键的订阅者, 是否有监听者(monitor), hash负载因子如何, 是否需要rehash, 主从同步等信息 </p>
+<p>Redis在集群模式下, 会把<code>key</code>根据hash映射到 <code>16384</code>个槽其中的一个, 再根据槽所在的节点对客户端操作进行应答</p>
+<p>如果该<code>key</code>所在槽不归本节点维护, 服务器会返回<code>moved</code>错误</p>
+<p>而且cluster模式下不能使用Redis的pipeline功能, 除非你能保证pipeline操作的所有key都在同一节点上</p>
+<h1 id="Redis的特色功能"><a href="#Redis的特色功能" class="headerlink" title="Redis的特色功能"></a>Redis的特色功能</h1><ol>
+<li>Redis的持久化</li>
+</ol>
+<p>redis有别于memcache的一个区别就是redis支持数据持久化,redis可以通过采用一定的策略将内存中的数据持久化到本地磁盘上面</p>
+<p>这么做不仅有利于数据的完整性和可用性, 同时也可以在服务器重启或者迁移过程中实现方便的数据恢复,一般来说如果设置了合理的持久化策略,就算是服务进程出了问题只要重启服务,并不会丢失太多的数据</p>
+<p>redis的持久化相关的主要有以下几点:</p>
+<ol>
+<li>RDB: 基于内存状态的持久化操作</li>
+<li>AOF: 基于命令操作的持久化操作</li>
+<li>AOF重写: 基于内存的持久化(命令格式)</li>
+</ol>
+<p><strong>RDB</strong></p>
+<p>RDB:持久化相当于对当前的数据库状态进行一次快照备份, 是将当前的内存数据库中的数据进行序列化保存到本地的操作, 如果数据库使用量比较大,在持久化的时候可能会对性能造成比较大的影响,可以使用命令 <code>save</code>(在主进程执行持久化,会造成主进程阻塞) 或 <code>bgsave</code>(创建一个子进程来执行持久化,不会阻塞主进程,但是执行时会消耗大量的内存)来执行RDB持久化</p>
+<p><strong>AOF</strong></p>
+<p>AOF(append only file): AOF持久化是对redis的命令进行记录,恢复时按照命令重新执行一遍,以恢复数据库状态的持久化形式,有点类似于GFS里面的基于日志的恢复机制. AOF持久化对性能影响没有RDB那么大,每当redis执行一个命令,redis会根据AOF持久化的设置规则判断是否进行持久化,AOF可以根据命令执行时间和频率来执行持久化策略,比如: 3s执行100个命令则进行持久化,每个命令都持久化等</p>
+<p><strong>Rewrite AOF</strong></p>
+<p>AOF重写: 但是AOF也有一些缺点,有可能造成AOF文件非常的大,举个例子: 我先设置键a为10(set a 10),然后设置键a为5(set a 5),重新设置键a为10(set a 10), 这三条命令执行以后最终的数据状态中的表现结果是a=10,但是在AOF文件中会有3条命令.如果某个键的变动频率非常的高,就会消耗还多的数据命令来记录数据的变化,比如计数器. </p>
+<p>redis提供了AOF重写功能来解决这种情况, AOF重写是对当前的内存数据库状态进行命令反向解析,比如,上面的例子,在进行AOF重写的时候,redis看到数据库中的键a的值是10 ,会反向生成一条命令 set a 10,将该命令写到重写文件中,这样就能有效的减小AOF文件的体积</p>
+<ol>
+<li><p>事务</p>
+<pre><code>redis中的事务基于链表实现,跟普通的数据库事务不同的是,redis的事务不支持回滚数据,执行失败了也不会进行通知
+redis在的事务其实相当于使用一个pipeline 将一系列的操作一起打包发给redisServer来执行</code></pre></li>
+<li><p>发布订阅</p>
+<pre><code>redis的发布订阅也是基于链表实现,redis的订阅相当于将某个客户端加入到订阅该模式的链表中,redis在执行发布消息的时候会沿着链表去检查所有订阅了符合该模式的所有客户端,将消息发送给他们.</code></pre></li>
+<li><p>监控(monitor)</p>
+<pre><code>监控功能也是基于链表实现,redis的监视器是一种特殊的redis客户端,服务器会在执行命令时候,将命令同时发送给所有监视器列表上面的客户端</code></pre></li>
+<li><p>哨兵(sentinal)</p>
+<pre><code>redis哨兵是官方的集群方案出来之前的一种分布式解决方案,哨兵可以监控服务器,并在服务器出问题时候采用选举策略将从服务器省纪委主服务器保证服务稳定</code></pre></li>
+<li><p>排序(内部实现)</p>
+<pre><code>redis的内部排序主要对set,sort set,list这三个数据结构起作用,旨在让用户可以用过自定义的方式对内部数据进行排序</code></pre></li>
+</ol>
+<h1 id="redis-Representation"><a href="#redis-Representation" class="headerlink" title="redis Representation"></a>redis Representation</h1><p>这里做了一个简单的redis的脑图, 着重描述了一下内部的基本数据结构的关系</p>
+<p><img data-src="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png" alt="redis.png"></p>
+<p>百度脑图地址:<br><a href="http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037" target="_blank" rel="noopener">http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037</a></p>
+<h1 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h1><p>redis的常见高可用部署方案</p>
+<ul>
+<li>keepalived(基于VRRP协议)</li>
+<li>哨兵(sentinal)</li>
+<li>集群(cluster): redis3.0之后提供，同时也是个人比较建议的方案</li>
+<li>其他第三方方案</li>
+</ul>
+<p>其中各种方案各有优点, 我们使用的是redis的官方cluster方案</p>
+<p><strong>集群使用中的一些坑</strong></p>
+<ol>
+<li>主从切换,故障转移</li>
+</ol>
+<p>redis的主服务器出问题以后,从服务器会顶替主服务器对外提供副服务,但是如果客户端没有对集群中的主节点配置进行更新, 会导致客户端和服务器主节点配置对应不上,从而导致redis操作失败,部分redis客户端支持集群模式,可以自动判断当前集群的主节点,从而自动进行配置调整</p>
+<ol start="2">
+<li>分片导致的数据分布问题</li>
+</ol>
+<p>redis内部采用16384个槽来对存储的数据进行分配,数据分配到槽上面,槽分配到节点机器上面.但是这样也而导致在进行部分数据操作的时候会出现问题</p>
+<p><strong>故障转移</strong></p>
+<p>主节点挂掉之后,怎么自动修改配置,使服务正常?</p>
+<p>3个思路:</p>
+<ol>
+<li>后台定时检查,修改配置或将配置放入zk等,实例化客户端的时候从zk中实时获取配置信息</li>
+<li>客户端程序执行redis命令失败时,进行消息通知,检查当前的节点配置,修改配置 </li>
+<li>每次redis对象实例化之后检查集群状态,程序中动态修改配置 </li>
+</ol>
+<p>以上思路都需要使用<code>cluster node</code>命令从集群中获取当前节点信息,解析出来当前的集群主节点,区别就是修改配置的方式和时间点不同</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cluster info <span class="comment">// 检查集群状态</span></span><br><span class="line">cluster info返回信息如下(redis3<span class="number">.2</span>):</span><br><span class="line"></span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:<span class="number">16384</span></span><br><span class="line">cluster_slots_ok:<span class="number">16384</span></span><br><span class="line">cluster_slots_pfail:<span class="number">0</span></span><br><span class="line">cluster_slots_fail:<span class="number">0</span></span><br><span class="line">cluster_known_nodes:<span class="number">6</span></span><br><span class="line">cluster_size:<span class="number">3</span></span><br><span class="line">cluster_current_epoch:<span class="number">9</span></span><br><span class="line">cluster_my_epoch:<span class="number">8</span></span><br><span class="line">cluster_stats_messages_sent:<span class="number">8625814</span></span><br><span class="line">cluster_stats_messages_received:<span class="number">8601220</span></span><br><span class="line"></span><br><span class="line">cluster nodes <span class="comment">// 检查集群节点的状态</span></span><br><span class="line">cluster nodes返回信息如下:</span><br><span class="line"></span><br><span class="line"><span class="number">634</span>f54bcec482a1a048f2604793c06acd47c93c6 <span class="number">10.113</span><span class="number">.1</span><span class="number">.231</span>:<span class="number">7001</span> slave c1eecd493eee0644a76bb9e691b6d13a31b25628 <span class="number">0</span> <span class="number">1510321448626</span> <span class="number">6</span> connected</span><br><span class="line"><span class="number">1</span>ed54647073d60118a35df253e9b04459cc30e49 <span class="number">10.113</span><span class="number">.2</span><span class="number">.82</span>:<span class="number">7001</span> slave c464639a33800da984875866391a549647af4a5a <span class="number">0</span> <span class="number">1510321447623</span> <span class="number">3</span> connected</span><br><span class="line"><span class="number">01334</span>b7a5802032461966cc382b2f97f004ab027 <span class="number">10.113</span><span class="number">.2</span><span class="number">.82</span>:<span class="number">7000</span> myself,master - <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> connected <span class="number">0</span><span class="number">-5460</span></span><br><span class="line">c1eecd493eee0644a76bb9e691b6d13a31b25628 <span class="number">10.113</span><span class="number">.1</span><span class="number">.231</span>:<span class="number">7000</span> master - <span class="number">0</span> <span class="number">1510321446623</span> <span class="number">5</span> connected <span class="number">10923</span><span class="number">-16383</span></span><br><span class="line">c464639a33800da984875866391a549647af4a5a <span class="number">10.113</span><span class="number">.1</span><span class="number">.42</span>:<span class="number">7000</span> master - <span class="number">0</span> <span class="number">1510321445622</span> <span class="number">3</span> connected <span class="number">5461</span><span class="number">-10922</span></span><br><span class="line"><span class="number">98</span>b58ef327f872dec466761cabae23bad74622db <span class="number">10.113</span><span class="number">.1</span><span class="number">.42</span>:<span class="number">7001</span> slave <span class="number">01334</span>b7a5802032461966cc382b2f97f004ab027 <span class="number">0</span> <span class="number">1510321450631</span> <span class="number">4</span> connected</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其他问题:</p>
+<pre><code>1. 多主节点的槽分配导致的无法对复杂数据结构(例如hash)进行重命名操作
+2. pipeline的使用受节点限制</code></pre><h1 id="数据对象和底层数据结构"><a href="#数据对象和底层数据结构" class="headerlink" title="数据对象和底层数据结构"></a>数据对象和底层数据结构</h1><p><strong>redis基本数据对象在我们自己项目中的使用</strong></p>
+<p>redis提供了多种基本的数据对象,已经能满足我们的大部分业务需求</p>
+<p>以下是各种数据结构在我们业务中的使用示例</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">str:  适用于简单存储(临时标记,计数器等)          </span><br><span class="line">list: 适用于线性存储和类似场景(简单线性容器,vector,简单的消息队列)</span><br><span class="line">hash: 适用于对象存储(产品池,产品信息)</span><br><span class="line"><span class="keyword">set</span>:  适用于需要进行集合运算的场景(行政区服务,A和B都喜欢的产品,倒排索引等)</span><br><span class="line">zset: 适用于有排序需求的场景(360凤舞系统,消息系统中的优先级实现)</span><br><span class="line">stream:  流式对象, 类似于kafka中的topic  (5.0新增)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其他一些不建议的数据对象使用方法:</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1.</span> 使用str存储json对象</span><br><span class="line"></span><br><span class="line">	如: a:{<span class="string">"name"</span>:<span class="string">"xiaohua"</span>,<span class="string">"age"</span>:<span class="number">8</span>},像这种可以使用hash来存储</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 过度使用有序集合</span><br><span class="line"></span><br><span class="line">	集合和有序集合和list在部分特性上面比较类似,很多人时候问题都可以使用list替代而不必要使用集合,因为有序集合底层使用的跳跃表,性能方面比简单的列表稍微差点,但是集合和有序集合都可以方便的使用集合操作,交/并/差集等</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>redis中的数据库键空间</strong></p>
+<p><img data-src="https://i.loli.net/2020/05/09/deSBNkvgwpaE2tK.jpg" alt="IMG_0255.jpeg"></p>
+<p><strong>数据对象和底层实现的数据结构对应关系</strong></p>
+<p>数据对象的实现之所以有这种情况,其实是适应2个不同场景, 省内存和常规使用</p>
+<table>
+<thead>
+<tr>
+<th align="left">对象</th>
+<th align="left">省内存</th>
+<th align="left">常规</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">str</td>
+<td align="left">int/embstr</td>
+<td align="left">row</td>
+</tr>
+<tr>
+<td align="left">list</td>
+<td align="left">ziplist(quicklist)</td>
+<td align="left">linkedlist(quicklist)</td>
+</tr>
+<tr>
+<td align="left">hash</td>
+<td align="left">ziplist</td>
+<td align="left">hashtable</td>
+</tr>
+<tr>
+<td align="left">set</td>
+<td align="left">intset</td>
+<td align="left">hashtable</td>
+</tr>
+<tr>
+<td align="left">zset</td>
+<td align="left">ziplist</td>
+<td align="left">skiplist</td>
+</tr>
+</tbody></table>
+<p>redis在3.2之后使用quicklist替代了linkedlist作为列表对象的底层实现</p>
+<blockquote>
+<p>ps: 我还另外写过两篇稍微详细点的关于redis数据结构(<a href="https://leriou.github.io/post-redis-data-structure/">https://leriou.github.io/post-redis-data-structure/</a>)和数据对象的文章(<a href="https://leriou.github.io/post-redis-object/">https://leriou.github.io/post-redis-object/</a>)</p>
+</blockquote>
+<h1 id="生产问题实例"><a href="#生产问题实例" class="headerlink" title="生产问题实例"></a>生产问题实例</h1><ol>
+<li>使用redis注册器起到类似分布式锁的作用</li>
+</ol>
+<p>一个曾经的小问题,一段伪代码</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flag = get(redis_key)?redis_key:<span class="number">0</span></span><br><span class="line">res = DB.op(select * from table where id &gt; flag)</span><br><span class="line"><span class="keyword">while</span>(res) {</span><br><span class="line">	foreach(a in res) {</span><br><span class="line">		<span class="keyword">do</span>(a)</span><br><span class="line">	}</span><br><span class="line">	write(redis_key,flag)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>潜在的问题: 不支持多线程并发, 任务不能多线程同时进行</p>
+<p>解决方案:   借用redis作为注册器,实现类似乐观锁的机制</p>
+<p>具体方案:  </p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">redis中存储正在进行的处理进程:</span><br><span class="line">[<span class="number">2000</span>:<span class="number">1505290677</span>,<span class="number">3000</span>:<span class="number">1505287997</span>,<span class="number">5000</span>:<span class="number">1505287993</span>,<span class="number">6000</span>:<span class="number">1505287892</span>,<span class="number">8000</span>:<span class="number">1505287844</span>]</span><br><span class="line">流程:</span><br><span class="line"><span class="number">1.</span> 从注册器根据过期时间和处理范围获取当前应该处理的flag的值</span><br><span class="line"><span class="number">2.</span> 将自己的当前处理进度存入注册器列表,处理数据</span><br><span class="line"><span class="number">3.</span> 处理结束移除注册器中自己注册的进度和范围</span><br></pre></td></tr></tbody></table></figure>
+<p>以上这个程序的核心思想可以用以下流程来描述:</p>
+<ol>
+<li><p>第一步: 正常的数据处理流程   </p>
+<p>第一个进程来到向注册器索要自己处理的数据起始值,注册器发现当前没有进程在进行,<br>并且没有flag标记(程序处理到哪里了),给出起始值0,<br>并在注册器记录里面记录0:1505287993,意思是有程序正在执行从0开始的数据,<br>进程取1000条数据,将待处理的最大的数据的id设为flag = 1006,<br>处理完毕将删除注册器中的0:1505287993记录;</p>
+</li>
+<li><p>第二步: 有其他进程在执行时候的情况   </p>
+<p>然后第二个程序来执行的时候向注册器索要可以执行的起始值,<br>注册器查看记录发现0:1505287997并且时间没有过期,<br>说明0其实的数据已经有人在处理,并且没有过期的注册信息,<br>于是发放当前的flag给第二个程序,并想注册期记录1006:1505287997,<br>第二个程序取数据1000条,假设ID范围为1006-2390,将处理标记标记为flag = 2390,<br>处理完毕删除注册其中的自己的处理进度记录1006:1505287997;</p>
+</li>
+<li><p>第三步: 针对有部分进程断掉的情况   </p>
+<p> 如果第一个程序中间断掉,<br> 则不能删除自己的处理进度记录0:1505287993,<br> 此时新的程序向注册器索要起始值时,<br> 注册器会发送当前过期的(过期表示处理该记录的程序处理中断了)的程序起始值0,<br> 并标记当前处理的程序是二次处理,<br> 二次处理的程序不会更新flag,<br> 处理完毕删除自己的处理记录</p>
+</li>
+</ol>
+<blockquote>
+<p>ps: 整个流程有点类似于常见的”锁”的概念</p>
+</blockquote>
+<p><strong>缺点</strong></p>
+<p>这个处理方案有个缺点, 要求数据的处理操作是<code>幂等</code>的,也就是无论操作多少次,操作结果都是一样的,或者不具有累加效应</p>
+<p>查询操作就是最常见的<code>幂等操作</code></p>
+<p><strong>流程图</strong></p>
+<p>具体流程图:</p>
+<p><img data-src="https://i.loli.net/2020/05/09/xpNhU9XPYFn4OcA.png" alt="flow1.png"></p>
+<ol start="2">
+<li>使用redis解决超高并发</li>
+</ol>
+<p><strong>使用redis的bitmap，hyperloglog等数据结构</strong></p>
+<p>redis的Bitmap非常适合用来做一些数据量大，id分布紧凑，且值类型为bool型的数据的存储， 比如用户标签</p>
+<p>hyperloglog也适合用来进行用户访问量统计，视频播放统计等大数据量的统计工作</p>
+<p><strong>其他应用</strong></p>
+<p>我们也可以使用redis的集合来构建倒排索引以实现搜索功能</p>
+<p>也能使用redis的发布订阅来实现简单的消息通知系统(不过redis的发布订阅缺点很明显，不建议使用)</p>
+<p>或者使用redis的有序集合统计同时在线用户数</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-10-03-redis-cluster-problem/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -4240,7 +4824,7 @@ ul.breadcrumb li + li:last-child {
 <h1 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h1><h2 id="数据结构-3"><a href="#数据结构-3" class="headerlink" title="数据结构"></a>数据结构</h2><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> {</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="keyword">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">} dict;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* This is our hash table structure. Every dictionary has two of this as we</span></span><br><span class="line"><span class="comment"> * implement incremental rehashing, for the old to the new table. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> {</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> size;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</span><br><span class="line">} dictht;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> {</span></span><br><span class="line">    <span class="keyword">void</span> *key;</span><br><span class="line">    <span class="keyword">union</span> {</span><br><span class="line">        <span class="keyword">void</span> *val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">int64_t</span> s64;</span><br><span class="line">        <span class="keyword">double</span> d;</span><br><span class="line">    } v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">} dictEntry;</span><br></pre></td></tr></tbody></table></figure>
 
 <p>hash 使用json格式表示大概如下</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    dict: {</span><br><span class="line">        type: hash,</span><br><span class="line">        privadata: null,</span><br><span class="line">        ht: [{</span><br><span class="line">                size: <span class="number">100</span>,</span><br><span class="line">                used: <span class="number">80</span>,</span><br><span class="line">                sizemask: <span class="string">"0xff778"</span>,</span><br><span class="line">                hash: {</span><br><span class="line">                    key: <span class="string">"test1"</span>,</span><br><span class="line">                    value: <span class="number">22</span>,</span><br><span class="line">                    next: <span class="number">34</span></span><br><span class="line">                }</span><br><span class="line">            },</span><br><span class="line">            {}  <span class="comment">// rehash时候使用</span></span><br><span class="line">        ],</span><br><span class="line">        rehashidx: <span class="number">-1</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    dict: {</span><br><span class="line">        type: hash,</span><br><span class="line">        privadata: null,</span><br><span class="line">        ht: [{</span><br><span class="line">                size: 100,</span><br><span class="line">                used: 80,</span><br><span class="line">                sizemask: "0xff778",</span><br><span class="line">                hash: {</span><br><span class="line">                    key: "test1",</span><br><span class="line">                    value: 22,</span><br><span class="line">                    next: 34</span><br><span class="line">                }</span><br><span class="line">            },</span><br><span class="line">            {}  // rehash时候使用</span><br><span class="line">        ],</span><br><span class="line">        rehashidx: -1</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>字典是数据库的底层实现</p>
 <p>整体数据结构由dict持有2个dictht，</p>
 <p>其中一个dictht[1]在rehash时候使用，dictht[0]中用来存储数据</p>
@@ -4346,302 +4930,10 @@ ul.breadcrumb li + li:last-child {
   
   
 
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-01-01-comic-book-2017/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017-01-01-comic-book-2017/" class="post-title-link" itemprop="url">2017-追番-看书记录</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2017-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-01-01T00:00:00+08:00">2017-01-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">生活记录</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2017-01-01-comic-book-2017/" class="post-meta-item leancloud_visitors" data-flag-title="2017-追番-看书记录" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2017-01-01-comic-book-2017/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2017-01-01-comic-book-2017/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Record"><a href="#Record" class="headerlink" title="Record"></a>Record</h1><p>想法来自 <a href="http://blog.sollrei.me" target="_blank" rel="noopener">@Sollrei</a></p>
-<h2 id="2017"><a href="#2017" class="headerlink" title="2017"></a>2017</h2><h3 id="2月"><a href="#2月" class="headerlink" title="2月"></a>2月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 东皇战影</li>
-</ul>
-<p>图书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 三体3:死神永生</li>
-<li><input checked="" disabled="" type="checkbox"> 魔鬼搭讪学</li>
-<li><input checked="" disabled="" type="checkbox"> 魔鬼约会学</li>
-<li><input checked="" disabled="" type="checkbox"> 谁动了我的奶酪</li>
-</ul>
-<p>电影:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 假如爱有天意</li>
-</ul>
-<h3 id="3月"><a href="#3月" class="headerlink" title="3月"></a>3月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 人渣的本愿</li>
-<li><input checked="" disabled="" type="checkbox"> 从前有座灵剑山</li>
-<li><input checked="" disabled="" type="checkbox"> 斗破苍穹</li>
-<li><input checked="" disabled="" type="checkbox"> 小林家的龙女仆</li>
-</ul>
-<p>图书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 解忧杂货铺</li>
-<li><input checked="" disabled="" type="checkbox"> 嫌疑人X的献身</li>
-<li><input checked="" disabled="" type="checkbox"> 图解博弈论</li>
-<li><input checked="" disabled="" type="checkbox"> 菊与刀</li>
-<li><input checked="" disabled="" type="checkbox"> 极简生活:简而美的活着</li>
-</ul>
-<h3 id="4月"><a href="#4月" class="headerlink" title="4月"></a>4月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 画江湖之不良人</li>
-</ul>
-<p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 人类简史</li>
-<li><input checked="" disabled="" type="checkbox"> 人民的名义</li>
-<li><input checked="" disabled="" type="checkbox"> 好好说话</li>
-</ul>
-<p>其他:</p>
-<ul>
-<li><input disabled="" type="checkbox"> nice chord</li>
-</ul>
-<h3 id="5月"><a href="#5月" class="headerlink" title="5月"></a>5月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 龙的牙医</li>
-<li><input checked="" disabled="" type="checkbox"> 少年锦衣卫</li>
-</ul>
-<p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 走进搜索引擎</li>
-<li><input checked="" disabled="" type="checkbox"> 万历十五年</li>
-<li><input checked="" disabled="" type="checkbox"> 秘密</li>
-<li><input checked="" disabled="" type="checkbox"> 精进:如何做一个厉害的人</li>
-<li><input checked="" disabled="" type="checkbox"> Go Web编程</li>
-</ul>
-<h3 id="6月"><a href="#6月" class="headerlink" title="6月"></a>6月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 进击的巨人第二季</li>
-</ul>
-<p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> redis设计与实现</li>
-</ul>
-<h3 id="7月"><a href="#7月" class="headerlink" title="7月"></a>7月</h3><p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 枪炮,病菌与钢铁</li>
-</ul>
-<h3 id="8月"><a href="#8月" class="headerlink" title="8月"></a>8月</h3><p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 时间的形状</li>
-<li><input checked="" disabled="" type="checkbox"> C++面向对象程序设计</li>
-<li><input checked="" disabled="" type="checkbox"> 恶意</li>
-<li><input checked="" disabled="" type="checkbox"> HTTP权威指南</li>
-</ul>
-<h3 id="9月"><a href="#9月" class="headerlink" title="9月"></a>9月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> FATE/Apocrypha</li>
-<li><input checked="" disabled="" type="checkbox"> 画江湖之杯莫停</li>
-</ul>
-<p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 人生的智慧</li>
-</ul>
-<h3 id="10月"><a href="#10月" class="headerlink" title="10月"></a>10月</h3><p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 红楼梦(前80回原版,后四十回不符原意,不看了)</li>
-<li><input checked="" disabled="" type="checkbox"> 请停止无效努力:如何用正确的方法快速进阶</li>
-</ul>
-<h3 id="11月"><a href="#11月" class="headerlink" title="11月"></a>11月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 魆妖纪</li>
-</ul>
-<p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> Go语言编程</li>
-<li><input checked="" disabled="" type="checkbox"> 好好说话</li>
-<li><input checked="" disabled="" type="checkbox"> redis实战</li>
-</ul>
-<h3 id="12月"><a href="#12月" class="headerlink" title="12月"></a>12月</h3><p>番剧:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 宝石之国</li>
-</ul>
-<p>书:</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 你要做的,只不过是发现生活的美</li>
-<li><input checked="" disabled="" type="checkbox"> Java从初学到精通</li>
-<li><input checked="" disabled="" type="checkbox"> 数据结构与算法</li>
-<li><input checked="" disabled="" type="checkbox"> 乌合之众:大众心理研究</li>
-<li><input checked="" disabled="" type="checkbox"> 精灵宝钻</li>
-</ul>
-<p>合计:</p>
-<p>图书: 33本<br>番剧: 13部</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2016-07-07-poem-jianyingfogu/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016-07-07-poem-jianyingfogu/" class="post-title-link" itemprop="url">谏迎佛骨表--韩愈</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-07-07 00:00:00" itemprop="dateCreated datePublished" datetime="2016-07-07T00:00:00+08:00">2016-07-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%96%87%E5%8C%96%E8%89%BA%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">文化艺术</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2016-07-07-poem-jianyingfogu/" class="post-meta-item leancloud_visitors" data-flag-title="谏迎佛骨表--韩愈" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2016-07-07-poem-jianyingfogu/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2016-07-07-poem-jianyingfogu/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          唐代的一次佛儒冲突事件,看当今绿化大势有感
-          <!--noindex-->
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -4707,7 +4999,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -4720,7 +5012,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

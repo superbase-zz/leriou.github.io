@@ -1265,7 +1265,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c309b5;
+  background: #5320cf;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2772,6 +2772,217 @@ ul.breadcrumb li + li:last-child {
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-06-04-kafka-delay-message/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020-06-04-kafka-delay-message/" class="post-title-link" itemprop="url">基于kafka的延迟队列和优先队列的实现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-04T00:00:00+08:00">2020-06-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020-06-04-kafka-delay-message/" class="post-meta-item leancloud_visitors" data-flag-title="基于kafka的延迟队列和优先队列的实现" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020-06-04-kafka-delay-message/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020-06-04-kafka-delay-message/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>业务中有时候会用到延迟队列活着优先级队列之类的需求。</p>
+<p>延迟队列和优先队列本质上是一个需求，延迟队列可以看成一个使用时间作为优先级的队列。Kafka这种基于日志的消息队列并没有自带延迟队列的功能。我现在可以想到的实现方法有两种</p>
+<ol start="2">
+<li>外存排序</li>
+<li>消息分级</li>
+</ol>
+<h2 id="消息分级"><a href="#消息分级" class="headerlink" title="消息分级"></a>消息分级</h2><p>先说简单的消息分级机制，假如我们遇到需要根据用户会员等级对给不同等级的用户消息按照不同的优先级进行处理的需求。</p>
+<p>最直观的办法就是我们制作多个等级的消息队列，每个队列对应一个用户等级的消息。或者在一个队列中使用多个不同分区，每个分区对应不同等级的消息。</p>
+<p>这种方法本质上就是把不同优先级的消息内容分开存储。在消息被消费的时候按照多路归并的方式进行处理。</p>
+<p>开源的rocketmq的延迟消息就是这种实现机制，其中的延迟消息队列内置了18个不同延迟时间级别的消息队列，客户端消费消息是从这18个队列中按同时获取的。</p>
+<p>这种方法的缺点很明显，就是等级区分受队列个数限制。</p>
+<h2 id="外存排序"><a href="#外存排序" class="headerlink" title="外存排序"></a>外存排序</h2><p>外存排序是真正的按照某种优先级字段对内容进行重新排序，然后再进行消费的手段。</p>
+<p>我们可以先获取队列中的消息内容， 然后按照一定的优先级字段进行排序。最后按照排序后的结果进行消费即可。这种方法的技术难点在于如何利用小内存对大两次盘内容进行排序。因为通常消息队列中的内容都是T级别的，内存空间往往是G级别的。</p>
+<h2 id="针对延迟队列的时间轮机制"><a href="#针对延迟队列的时间轮机制" class="headerlink" title="针对延迟队列的时间轮机制"></a>针对延迟队列的时间轮机制</h2><p>我们可以利用Kafka中的时间轮机制，将任务添加到对应的每一个时间分片中， 随着时间轮的驱动， 顺序处理其中的消息</p>
+<p>具体实现可以采用 时间轮数组+消息链表的形式实现，但是这种实现方式比较复杂一定程度上还会损害到吞吐量</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-05-26-live-red-packet/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020-05-26-live-red-packet/" class="post-title-link" itemprop="url">超高并发场景下的直播红包发放业务的架构设计</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-26T00:00:00+08:00">2020-05-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020-05-26-live-red-packet/" class="post-meta-item leancloud_visitors" data-flag-title="超高并发场景下的直播红包发放业务的架构设计" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020-05-26-live-red-packet/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020-05-26-live-red-packet/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="业务背景和需求简介"><a href="#业务背景和需求简介" class="headerlink" title="业务背景和需求简介"></a>业务背景和需求简介</h2><p>业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现</p>
+<h2 id="业务流程"><a href="#业务流程" class="headerlink" title="业务流程"></a>业务流程</h2><p>主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。</p>
+<p>用户可以去抢那些个红包</p>
+<h2 id="关键问题"><a href="#关键问题" class="headerlink" title="关键问题"></a>关键问题</h2><h3 id="生成红包的算法"><a href="#生成红包的算法" class="headerlink" title="生成红包的算法"></a>生成红包的算法</h3><p>其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到红包的分割算法。</p>
+<p>在随机金额的红包中为了保证用户体验，通常会允许给每份红包设定一个区间范围，保证用户得到的红包不至于太小。</p>
+<p>也就是说我们需要实现如下函数, 根据红包总金额，红包个数，红包的最小值，生成一个具有n个红包具体金额的数组</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_red_package</span><span class="params">(amount, num, min_size, max_size)</span> -&gt; List[float]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里可以采用一种线性分段的方法</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_red_package</span><span class="params">(amount, num, min_size, max_size)</span> -&gt; List[float]:</span></span><br><span class="line">    amount *= <span class="number">100</span></span><br><span class="line">    lines = [<span class="number">0</span>, amount]</span><br><span class="line">    <span class="comment"># 生成num-1个符合要求的随机的点</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, num - <span class="number">1</span>):</span><br><span class="line">        loop = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">while</span> loop:</span><br><span class="line">            r = random.Random().randint(<span class="number">0</span>, amount)</span><br><span class="line">            loop = <span class="keyword">not</span> is_valid(lines, r, min_size * <span class="number">100</span>, max_size * <span class="number">100</span>)</span><br><span class="line">    <span class="comment"># 生成红包        </span></span><br><span class="line">    paks = []</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, len(lines) - <span class="number">1</span>):</span><br><span class="line">        paks.append((lines[j+<span class="number">1</span>] - lines[j])/<span class="number">100</span>)</span><br><span class="line">    <span class="keyword">return</span> paks</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(arr, value, min_size, max_size)</span> -&gt; bool:</span></span><br><span class="line">    <span class="keyword">if</span> arr.__contains__(value):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    arr.append(value)</span><br><span class="line">    arr.sort()</span><br><span class="line">    curr = arr.index(value)</span><br><span class="line">    l = arr[max(<span class="number">0</span>, curr - <span class="number">1</span>)]</span><br><span class="line">    r = arr[min(curr + <span class="number">1</span>, len(arr) - <span class="number">1</span>)]</span><br><span class="line">    dl = value - l</span><br><span class="line">    dr = r - value</span><br><span class="line">    <span class="keyword">if</span> dl &gt;= min_size <span class="keyword">and</span> dr &gt;= min_size <span class="keyword">and</span> dl &lt;= max_size <span class="keyword">and</span> dr &lt;= max_size :</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    arr.remove(value)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">print(gen_red_package(<span class="number">100</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">90</span>))</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="如何处理超高并发场景下红包的分发"><a href="#如何处理超高并发场景下红包的分发" class="headerlink" title="如何处理超高并发场景下红包的分发"></a>如何处理超高并发场景下红包的分发</h3><ul>
+<li>方案1：采用消息队列</li>
+</ul>
+<p>我们可以将生成的50个红包放到redis的list中，每个用户到来，就去队列中请求弹出一个红包数据，队列数据消耗完毕， 即待分配的红包消耗完毕</p>
+<p>这种方法实现简单， 但是会遇到并发的问题，用户去获取list的数据的时候， 由于用户的所有红包都在一个redis节点上， 所以用户的所redis请求都会被动的落到某一个redis节点，哪怕使用集群也无法解决这种热点问题</p>
+<p>所以在用户数据量较大的时候还是建议第二种方案</p>
+<ul>
+<li>方案2: 采用数据分流</li>
+</ul>
+<p>数据分流 + 用户分流：我们生成的50个红包可以分成10份，存储到不同的key上, 使用key_000-key_009存储数据会均匀的分配到redis的各个节点上。</p>
+<p>我们在使用redis的时候，随机请求其中的一份红包数据，这样用户的请求可以有效打散到各个redis节点上， 同时能处理的请求数据可以随节点数量扩展， 但是这种方法的缺点也很明显， 一个是实现复杂，一个是会对用户造成一定程度上不公平的体验。解决数据分布可以使用本地缓存采用节点的方式来减轻这种不公平现象。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2020-05-02-rec-flows-pool/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2921,7 +3132,15 @@ ul.breadcrumb li + li:last-child {
 
 <h2 id="流量池的效果评估指标"><a href="#流量池的效果评估指标" class="headerlink" title="流量池的效果评估指标"></a>流量池的效果评估指标</h2><p>我们为了评估流量池的运行效果，我们需要制定一部分指标来对流量池进行监控并及时的调整参数</p>
 <p>主要用到的指标有</p>
-<h3 id="每日的新订单创建数量和不同类型的订单的创建数量"><a href="#每日的新订单创建数量和不同类型的订单的创建数量" class="headerlink" title="每日的新订单创建数量和不同类型的订单的创建数量"></a>每日的新订单创建数量和不同类型的订单的创建数量</h3><h3 id="当前流量池的可用流量分布和不同类型的订单的分布"><a href="#当前流量池的可用流量分布和不同类型的订单的分布" class="headerlink" title="当前流量池的可用流量分布和不同类型的订单的分布"></a>当前流量池的可用流量分布和不同类型的订单的分布</h3><h3 id="已消耗订单的点击率分布和不同类型的订单的点击率分布"><a href="#已消耗订单的点击率分布和不同类型的订单的点击率分布" class="headerlink" title="已消耗订单的点击率分布和不同类型的订单的点击率分布"></a>已消耗订单的点击率分布和不同类型的订单的点击率分布</h3><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>流量池系统其实是通过一种机制来控制内容的可曝光次数， 来对推荐结果的分布进行干预。<br>为了保证新内容的充分曝光，新内容会被给予一定次数的固定流量。表现好的内容将持续不断的获得推荐流量，表现不好的内容将在一定的推荐次数后不再推荐，空出来的推荐机会留给其他表现更好的内容。</p>
+<ul>
+<li><p>每日的新订单创建数量和不同类型的订单的创建数量</p>
+</li>
+<li><p>当前流量池的可用流量分布和不同类型的订单的分布</p>
+</li>
+<li><p>已消耗订单的点击率分布和不同类型的订单的点击率分布</p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>流量池系统其实是通过一种机制来控制内容的可曝光次数， 来对推荐结果的分布进行干预。<br>为了保证新内容的充分曝光，新内容会被给予一定次数的固定流量。表现好的内容将持续不断的获得推荐流量，表现不好的内容将在一定的推荐次数后不再推荐，空出来的推荐机会留给其他表现更好的内容。</p>
 <p>同时为运营和个人播主提供了额外的手段用于满足部分推广需求。</p>
 
       
@@ -4010,7 +4229,7 @@ ul.breadcrumb li + li:last-child {
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%BB%8F%E9%AA%8C/" itemprop="url" rel="index"><span itemprop="name">工程经验</span></a>
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">计算机编程</span></a>
                 </span>
             </span>
 
@@ -4062,14 +4281,15 @@ ul.breadcrumb li + li:last-child {
 
 <p>这种情况下， i的值的更新都变成了原子操作，即便乱序执行，结果也是一致的</p>
 <h3 id="原子类的局限"><a href="#原子类的局限" class="headerlink" title="原子类的局限"></a>原子类的局限</h3><p>如果我们要锁定的不是一个变量的变化， 而是一系列的代码操作，这个时候原子类就无用武之地了</p>
-<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><h3 id="使用csp机制"><a href="#使用csp机制" class="headerlink" title="使用csp机制"></a>使用csp机制</h3><p>go语言中有一个csp并发模型，我们可以把要更新的值放到channel中， 使用的时候取出来更新完在放回去， 由于channel的阻塞性，自然就实现了一致性保证。</p>
-<p>我们用go来写个代码测试一下</p>
+<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><p>使用csp机制来控制并发。csp是基于消息的常用并发模型的一种（另一种是ActorModel）。</p>
+<h3 id="csp传递值变量"><a href="#csp传递值变量" class="headerlink" title="csp传递值变量"></a>csp传递值变量</h3><p>go语言中有一个csp并发模型，我们可以把要更新的值放到channel中， 使用的时候取出来更新完在放回去， 由于channel的阻塞性，自然就实现了一致性保证。我们用go来写个代码测试一下</p>
 <figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">a := <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">func</span><span class="params">()</span></span> {</span><br><span class="line">		i := <span class="number">0</span></span><br><span class="line">		ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">1</span>)</span><br><span class="line">		ch &lt;- i</span><br><span class="line">		<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">			t := &lt;-ch</span><br><span class="line">			t++</span><br><span class="line">			fmt.Printf(<span class="string">" i %d, j %d\n"</span>, t, j)</span><br><span class="line">			ch &lt;- t</span><br><span class="line">		}</span><br><span class="line">	}()</span><br></pre></td></tr></tbody></table></figure>
 
-<p>或者更激进一点， 把整个函数指针放到channel中， 这样就能对整个闭包函数中的代码加锁了</p>
+<h3 id="channel传递函数指针"><a href="#channel传递函数指针" class="headerlink" title="channel传递函数指针"></a>channel传递函数指针</h3><p>或者更激进一点， 把整个函数指针放到channel中， 这样就能对整个闭包函数中的代码加锁了</p>
 <figure class="highlight go"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">a := <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">func</span><span class="params">()</span></span> {</span><br><span class="line">  i := <span class="number">0</span></span><br><span class="line">  j := <span class="number">0</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> {</span><br><span class="line">    i++</span><br><span class="line">    j++</span><br><span class="line">    fmt.Println(<span class="string">"i -&gt;"</span>, i, <span class="string">" j -&gt;"</span>, j)</span><br><span class="line">  }</span><br><span class="line">}()</span><br><span class="line"></span><br><span class="line">fc := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="function"><span class="keyword">func</span><span class="params">()</span>, 1)</span></span><br><span class="line"><span class="function">	<span class="title">fc</span> &lt;- <span class="title">a</span> // 先预置一个用于启动</span></span><br><span class="line"><span class="function">	<span class="title">for</span> <span class="title">p</span> := 0; <span class="title">p</span> &lt; <span class="title">j</span>; <span class="title">p</span>++</span> {</span><br><span class="line">		t := &lt;-fc</span><br><span class="line">		t()</span><br><span class="line">		fc &lt;- a</span><br><span class="line">	}</span><br><span class="line">	m := &lt;-fc <span class="comment">// 检查最终的结果</span></span><br><span class="line">	m()</span><br></pre></td></tr></tbody></table></figure>
 
-
+<h3 id="rust的channel实现"><a href="#rust的channel实现" class="headerlink" title="rust的channel实现"></a>rust的channel实现</h3><p>rust里面也可以跟go一样使用channel 传递函数指针来实现闭包函数的并发控制</p>
+<figure class="highlight rust"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::mpsc::channel;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">c</span></span>() -&gt; <span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> <span class="built_in">FnMut</span>() -&gt; <span class="built_in">i32</span>&gt; {</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">Box</span>::new(<span class="keyword">move</span> || {</span><br><span class="line">        a += <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">"a -&gt; {}"</span>, a);</span><br><span class="line">        a</span><br><span class="line">    })</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() {</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> t = c();</span><br><span class="line">    t();</span><br><span class="line">    t();</span><br><span class="line">    <span class="keyword">let</span> (s, r) = channel::&lt;<span class="built_in">Box</span>&lt;<span class="keyword">dyn</span> <span class="built_in">FnMut</span>() -&gt; <span class="built_in">i32</span>&gt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> (<span class="literal">Ok</span>(_), <span class="literal">Ok</span>(<span class="keyword">mut</span> n)) = (s.send(t), r.recv()) {</span><br><span class="line">        n();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 
       
@@ -4158,486 +4378,82 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="为啥需要排行榜"><a href="#为啥需要排行榜" class="headerlink" title="为啥需要排行榜"></a>为啥需要排行榜</h1><p>推荐系统有一个避不开的问题就是冷启动问题</p>
-<p>也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息， 无法根据用户行为进行推荐， 用户基础信息的推荐也极有可能没有构建完成</p>
-<p>此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” </p>
-          <!--noindex-->
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2019-04-01-recommended-system-filter-module-md/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019-04-01-recommended-system-filter-module-md/" class="post-title-link" itemprop="url">如何设计一个海量数据过滤模块</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-04-01 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-01T00:00:00+08:00">2019-04-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">系统设计</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2019-04-01-recommended-system-filter-module-md/" class="post-meta-item leancloud_visitors" data-flag-title="如何设计一个海量数据过滤模块" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2019-04-01-recommended-system-filter-module-md/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019-04-01-recommended-system-filter-module-md/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>所有的推荐系统都有一个基本的要求：<code>不给用户推荐重复的信息</code></p>
-<p>这里的重复的信息有两层含义  </p>
+          <h1 id="为啥需要排行榜"><a href="#为啥需要排行榜" class="headerlink" title="为啥需要排行榜"></a>为啥需要排行榜</h1><p>推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。</p>
+<p>此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题</p>
 <ol>
-<li><p>这个信息是id完全相同的一条信息<br> 这个很好理解，就是一模一样的两条信息，从数据库的角度将就是信息记录的主键id都相同<br> 如果用户已经接受过一次id为10086的信息的推荐，那这个10086就不能出现在后续的同类推荐中</p>
-</li>
-<li><p>这两个个信息相似度很高，但是id不同<br> 这种情况出现于两条信息内容相似，比如有两篇文章10001，10002都在说特朗普要在美国边境造墙的事情<br> 那如果用户观看过10001，此时再给用户推荐10002，就可能会让用户觉得推荐的东西已经看到过了，毫无意义</p>
-</li>
+<li>最新内容：平台的最近发布的比较新鲜的资源</li>
+<li>热门内容：平台上最近一段时间发布的比较热门的资源</li>
+<li>实时基于用户属性进行分群，基于用户群进行推荐（比如，上海地区用户，女性用户，30-40岁用户）</li>
 </ol>
-<h1 id="处理相同id的过滤"><a href="#处理相同id的过滤" class="headerlink" title="处理相同id的过滤"></a>处理相同id的过滤</h1><p>我们的目的是给定一个id, 和一个已推荐集合，判断id是否在给定的集合以内</p>
-<h2 id="HashMap的方案"><a href="#HashMap的方案" class="headerlink" title="HashMap的方案"></a>HashMap的方案</h2><p>如果集合数据量比较少的情况下，我们可以使用Java中的<code>HashSet</code>存储集合， 使用contains来直接判断id是否在给定集合中，其他编程语言中也都有类似<code>HashSet</code>的数据结构</p>
-<p>由于<code>HashSet</code>的底层原理是使用的<code>HashMap</code>， 所以我直接使用 <code>HashMap</code>来进行原理的说明</p>
-<p>这种做法的原理其实是先将我们要查找的数据进行hash散列，映射到一个固定长度的地址空间<br>然后使用数组存储，如果有多个id经过hash映射到相同的地址空间那就做一个链表，存储相同hashcode对应的值   </p>
-<p>具体结构如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|</span><br><span class="line">    ↓           ↓ </span><br><span class="line">    107         87</span><br><span class="line">    ↓            </span><br><span class="line">    16</span><br></pre></td></tr></tbody></table></figure>
+<p>其中的热门内容就需要排行榜系统的支持</p>
+<h1 id="排行榜系统"><a href="#排行榜系统" class="headerlink" title="排行榜系统"></a>排行榜系统</h1><p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
+<h2 id="固定时间范围的排行榜"><a href="#固定时间范围的排行榜" class="headerlink" title="固定时间范围的排行榜"></a>固定时间范围的排行榜</h2><p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
+<p>针对“本月最火歌曲”这种需求的排行榜，处理起来相对简单</p>
+<p>只要统计从本月从1号到现在的所有歌曲的播放数据就可以了，如果数据量不大且要求不高，可以定时每一段时间计算一次， 计算方法如下</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">id</span>) <span class="keyword">from</span> play_record <span class="keyword">where</span> play_time &gt; <span class="string">"2019-05-01"</span> <span class="keyword">group</span> <span class="keyword">by</span> itemid;</span><br></pre></td></tr></tbody></table></figure>
 
-<p>当我们查找id时， 也是先将要查找的id进行hash, 然后去对应的hashcode位置沿着链表/红黑树寻找是否有要查找的数字</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>使用简单，比较通用</li>
-<li>容易理解</li>
-<li>无误判</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>空间利用率太低</li>
-</ol>
-<h2 id="Bitmap"><a href="#Bitmap" class="headerlink" title="Bitmap"></a>Bitmap</h2><p>考虑到<code>HashMap</code>的空间利用率太低，不适合海量数据的存储</p>
-<p>我们可以利用计算机存储的一些特性，用另外一种方式来</p>
-<p>我们都知道计算机底层是用bit来存储信息的，每个bit能存储一个0或者1的信息</p>
-<p>如果我们使用二进制bit的位置信息来表示数字，对应位的bit值是1来代表这个数字存在，我们就可以在极小的空间存储大量的信息</p>
-<p>使用时只需使用位运算，查看对应位置的bit值即可</p>
-<p>Java中的bitset，redis中的bit操作都提供了这种bitmap的实现</p>
-<p>bitmap的详情可以查看 <a href="https://leriou.github.io/2017-12-29-user-tag-sys-on-bitmap/">使用bitmap构建用户标签</a></p>
-<p>如下表示 【6，4，3】的集合 </p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bit值     0 1 0 1 1 0 0 0</span><br><span class="line">位        7 6 5 4 3 2 1 0</span><br></pre></td></tr></tbody></table></figure>
+<p>如果实时性要求较高， 也可以使用基于事件的实时增量统计的方式，同时每天处理一次批量统计，做数据矫正。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add-score video_10086_play_times 1</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>空间利用率高</li>
-<li>性能好</li>
-<li>无误判</li>
-</ol>
-<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>不够通用，要求数据的类型必须是数字且元素范围跨度不能太大</li>
-</ol>
-<h2 id="BloomFilter"><a href="#BloomFilter" class="headerlink" title="BloomFilter"></a>BloomFilter</h2><p>bloomfilter跟bitmap具有相似的原理， 都是使用位来存储信息，区别在于</p>
-<p>bitmap使用元素自身数字对应的位置信息来存储数据，如果要存储的元素是个字符串或者其他类型的数据就无法使用这种方式了，或者你要存储的数字范围特别的大，比如你要存储一个100亿的数字， 那样即使只有一个数字你也需要一个前面的位置都是0的100亿bit来表示，对空间的利用率还是不高 (现在有一些空间压缩的bitmap实现能一定程度解决数据范围分布过大和分布稀疏的问题)</p>
-<p>BloomFilter就是针对这些做了优化，如果我们把要处理的数字进行hash, 映射到一个固定长度的地址空间</p>
-<p>这样就同时解决了以上两个问题， 即缩减了映射的空间范围，又可以存储更通用的对象</p>
-<p>但是由于hash函数本身会有冲突，就会出现两个不同元素因为同样的hashcode而产生误判的情况</p>
-<p>处理这种情况的方法就是增加hash函数的数量， 假设两个元素使用一个函数冲突的概率是 0.01， 那如果我们使用3个不同的函数，每个函数足够均匀且误判率相同，对这两个元素进行hash, 那两个元素经过三个函数依然冲突的概率就是 0.000001， 但是基于概率的问题，误判率依然存在</p>
-<p>所以这种方法适合于允许一定误判率，并拥有海量数据要过滤的场景</p>
-<h3 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>通用</li>
-<li>空间效率高</li>
-<li>灵活，可以在性能和误判率之间做取舍</li>
-</ol>
-<h3 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>有误判</li>
-<li>性能不如</li>
-</ol>
-<h1 id="处理相似文本的重复"><a href="#处理相似文本的重复" class="headerlink" title="处理相似文本的重复"></a>处理相似文本的重复</h1><p>能处理相同的id造成的重复之后，如果我们可以找出一个文章的相似内容， 只要把相似的内容id也添加到需要过滤的集合， 就可以完成对相似内容的过滤</p>
-<h2 id="simhash"><a href="#simhash" class="headerlink" title="simhash"></a>simhash</h2><p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>
-<p>所以我们使用<code>simhash</code>来处理内容相似度的问题</p>
-<p>simhash的核心思想是先提取文章的最重要核心特征， 如果两篇文章的核心特征重复度较高，那就是相似文章</p>
-<p>步骤如下</p>
-<ol>
-<li>我们先对文本进行分词，并计算每个词的权重</li>
-<li>对每个词进行hash，并把hash结果的对应二进制位的 0 变为 -1</li>
-<li>把每个文章的每个词的处理过的hash值 * 权重，得到加权向量，并把每个加权向量相加得到最终向量</li>
-<li>把这个最终向量中的负数变为0，正数变为1</li>
-</ol>
-<p>然后通过汉明距离比较二进制位不同的个数，其实就是计算两个指纹的异或结果，结果中如果包含较少的1， 比如小于3个， 那就说明内容相同</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2019-01-09-mongodb-compareto-elasticsearch/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019-01-09-mongodb-compareto-elasticsearch/" class="post-title-link" itemprop="url">MongoDB和Elasticsearch的对比</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-01-09 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-09T00:00:00+08:00">2019-01-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">编程工具</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2019-01-09-mongodb-compareto-elasticsearch/" class="post-meta-item leancloud_visitors" data-flag-title="MongoDB和Elasticsearch的对比" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2019-01-09-mongodb-compareto-elasticsearch/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019-01-09-mongodb-compareto-elasticsearch/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="MongoDB-vs-Elasticsearch"><a href="#MongoDB-vs-Elasticsearch" class="headerlink" title="MongoDB  vs Elasticsearch"></a>MongoDB  vs Elasticsearch</h1><table>
-<thead>
-<tr>
-<th align="center"></th>
-<th align="center">MongoDB</th>
-<th align="center">ElasticSearch</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">定位</td>
-<td align="center">(文档型)数据库</td>
-<td align="center">(文档型)搜索引擎</td>
-<td>一个管理数据,一个检索数据</td>
-</tr>
-<tr>
-<td align="center">资源占用</td>
-<td align="center">一般</td>
-<td align="center">高</td>
-<td>mongo使用c++, es使用Java开发</td>
-</tr>
-<tr>
-<td align="center">写入延迟</td>
-<td align="center">低</td>
-<td align="center">高</td>
-<td>es的写入延迟默认1s, 可配置, 但是要牺牲一些东西</td>
-</tr>
-<tr>
-<td align="center">全文索引支持度</td>
-<td align="center">一般</td>
-<td align="center">非常好</td>
-<td>es本来就是搜索引擎, 这个没啥可比性</td>
-</tr>
-<tr>
-<td align="center">有无Schema</td>
-<td align="center">无</td>
-<td align="center">无</td>
-<td>两者都是无Schema</td>
-</tr>
-<tr>
-<td align="center">支持的数据量</td>
-<td align="center">PB+</td>
-<td align="center">TB+  ~ PB</td>
-<td>两者支持的量并不好说的太死, 都支持分片和横向扩展, 但是相对来说MongoDB的数据量支持要更大一点</td>
-</tr>
-<tr>
-<td align="center">性能</td>
-<td align="center">非常好</td>
-<td align="center">好</td>
-<td>MongoDB在大部分场景性能比es强的多得多</td>
-</tr>
-<tr>
-<td align="center">索引结构</td>
-<td align="center">B树</td>
-<td align="center">LSM树</td>
-<td>es追求写入吞吐量, MongoDB读写比较均衡</td>
-</tr>
-<tr>
-<td align="center">操作接口</td>
-<td align="center">TCP</td>
-<td align="center">Restful(Http)</td>
-<td></td>
-</tr>
-<tr>
-<td align="center">是否支持分片</td>
-<td align="center">是</td>
-<td align="center">是</td>
-<td></td>
-</tr>
-<tr>
-<td align="center">是否支持副本</td>
-<td align="center">是</td>
-<td align="center">是</td>
-<td></td>
-</tr>
-<tr>
-<td align="center">选主算法</td>
-<td align="center">Bully(霸凌)</td>
-<td align="center">Bully(霸凌)</td>
-<td>相比于Paxos和Raft算法实现更简单并有一定可靠性上的妥协，但是选举速度比较快</td>
-</tr>
-<tr>
-<td align="center">扩展难度</td>
-<td align="center">容易</td>
-<td align="center">非常容易</td>
-<td>es真的是我用过的扩展最方便的存储系统之一</td>
-</tr>
-<tr>
-<td align="center">配置难度</td>
-<td align="center">难</td>
-<td align="center">非常容易</td>
-<td></td>
-</tr>
-<tr>
-<td align="center">地理位置</td>
-<td align="center">支持</td>
-<td align="center">支持</td>
-<td></td>
-</tr>
-<tr>
-<td align="center">运维工具</td>
-<td align="center">丰富</td>
-<td align="center">一般</td>
-<td></td>
-</tr>
-<tr>
-<td align="center">插件和引擎</td>
-<td align="center">有多个存储引擎供选择</td>
-<td align="center">有大量插件可以使用</td>
-<td>-</td>
-</tr>
-</tbody></table>
-<h1 id="两者的定位"><a href="#两者的定位" class="headerlink" title="两者的定位"></a>两者的定位</h1><p><code>MongoDB</code>和<code>Elasticsearch</code>都属于NoSQL大家族, 且都属于文档型数据存储</p>
-<p>所以这两者的很多功能和特性高度重合, 但其实两者定位完全不同     </p>
-<p>MongoDB 是 <strong>文档型数据库</strong>,  提供 <strong>数据存储和管理服务</strong><br>Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服务</strong></p>
-<p>两者的很大区别在于源数据的存储和管理</p>
-<ul>
-<li>MongoDB作为一个数据库产品, 是拥有源数据管理能力的     </li>
-<li>Elasticsearch作为一个搜索引擎, 定位是<strong>提供数据检索服务</strong>, 也就是说我只管查, 不管写 ^_^, Elasticsearch的Mapping不可变也是为此服务的, 带来的代价就是<code>es不适合作为数据管理者</code>, es可以从其他数据源同步数据过来提供查询, 但是不适合自己对数据进行存储和管理 </li>
-</ul>
-<p>es更侧重数据的查询, 各种复杂的花式查询支持的很好, 相比来说 MongoDB的查询能力就显得比较平庸了</p>
-<p>由此可见, 对于个人, 如果你有一批数据要看, 但是不经常进行修改, 这个时候毫无疑问可以用es, 但是如果你还打算继续修改数据, 最好就是使用MongoDB，但其实对大多数人公司来讲，这两者的数据管理能力并没有多大的影响</p>
-<blockquote>
-<p>ps: es修改Mapping的代价非常高, 所以我们一般都是把新数据重新写入一份新索引，然后直接切换读取的别名到新的索引</p>
-</blockquote>
-<h1 id="两者读写数据的异同"><a href="#两者读写数据的异同" class="headerlink" title="两者读写数据的异同"></a>两者读写数据的异同</h1><p><code>MongoDB</code>和<code>ElasticSearch</code>都支持全文索引, 虽然MongoDB的全文索引效果完全无法跟es相比(es毕竟是专业的搜索引擎产品, 着重提供数据的检所支持, 这方面吊打MongoDB也是可以理解的)</p>
-<p>MongoDB虽然在支持的部分查询功能上稍微弱于es, 但是在大部分场景下性能方面完爆es, 不管是读性能, 还是写性能</p>
-<p>es的写入延迟默认为1s, 这个虽然是写入延迟的范畴, 但是毫无疑问是一大缺点, 虽然可以配置为更短的时间, 但是这样就要牺牲一定的数据吞吐量, 会造成更频繁的磁盘刷新操作</p>
-<p>es底层使用<code>Lucene</code>作为核心引擎, 很多es的设计就是为了匹配Lucene中的概念, 其实es可以看成一个lucene的proxy层包装,将lucene的原生接口封装的更好用, 同时还实现了很多管理和监控等辅助功能, 但是整体来说es上层的模块和lucene的隔阂还是挺明显的, 耦合度上有一定的欠缺</p>
-<p>MongoDB则是完整的一个单体数据库产品, 虽然内部的存储引擎也是可插拔式的, 整体而言还是更加的浑然一体</p>
-<blockquote>
-<p>MongoDB支持多种存储引擎, 本文所有涉及mongo存储引擎的只谈默认的WiredTiger引擎, 其实还有某些方面更优秀的其他引擎,例如: MongoRocks等</p>
-</blockquote>
-<h1 id="部署和资源占用"><a href="#部署和资源占用" class="headerlink" title="部署和资源占用"></a>部署和资源占用</h1><p>单机部署的话其实MongoDB和Elasticsearch都十分的方便, 不过es相对来说资源占用更多一点, 性能也比MongoDB要弱一点</p>
-<p>集群化的部署, 我们一般都会选择分片+副本的部署方式, 这种方式下, es部署起来比MongoDB方便太多, MongoDB要部署一套完整的分片 + 副本模式还是比较麻烦的, 没有经验的人部署起来需要一定的学习成本    </p>
-<p>资源占用方面, MongoDB可以支持存储文件类型的数据, 作为数据库也有数据压缩能力, es则因为大量的索引存在需要占用大量的磁盘和内存空间</p>
-<h1 id="可用性和容错"><a href="#可用性和容错" class="headerlink" title="可用性和容错"></a>可用性和容错</h1><p>MongoDB和ElasticSearch作为天生分布式的代表产品都支持数据分片和副本   </p>
-<p>两者都通过分片支持水平扩展, 同时都通过副本来支持高可用(HA) </p>
-<p>分片就是一个数据集的数据分为多份, 同时分布在多个节点上存储和管理, 主流分片方式有两种: hash分片和range分片, 两种分片方式各有优势, 适合不同的场景</p>
-<p>副本就是一份数据集同时有一个或者多个复制品(有些地方叫主从), 每份复制品都一模一样, 但是为了保证数据的一致性, 往往多个副本中只有一个作为Primary副本(通过选主算法从多个副本中选出Primary), 提供写服务, 其他副本只提供读, 或者只提供备份服务</p>
-<blockquote>
-<p>ps:es和MongoDB都可以通过副本增强读能力, 这与kafka很不一样(kafka的副本只有备份功能)</p>
-</blockquote>
-<h2 id="两者分布式方案的一些不同"><a href="#两者分布式方案的一些不同" class="headerlink" title="两者分布式方案的一些不同"></a>两者分布式方案的一些不同</h2><p>MongoDB和Elasticsearch虽然都是分布式服务, 但是还是有一些不同方案的选择的</p>
-<ul>
-<li>分片和副本单位的划分</li>
-</ul>
-<p>MongoDB是以节点为单位划分角色, 一旦一个节点被指定为副本, 其上面的数据都是副本</p>
-<p>Elasticsearch是以分片为单位划分角色, 一个节点上即可以拥有某分片的主分片和可以同时拥有另一个分片的副本分片, 同时es还支持自动的副本负载均衡, 如果一个新节点上面什么数据都没有, 系统会自动分配分片数据过来 </p>
-<ul>
-<li>架构模式</li>
-</ul>
-<p>MongoDB的副本和分片是两种不同的模式, 虽然可以同时使用但是依然有各自的架构设计, 用户可以任意选择选型进行搭配, 每个节点的职责更加专一, 方便据此调整机器配置和进行优化</p>
-<p>Elasticsearch中的分片 + 副本是一套统一的架构设计, 每个节点具有接近同等的地位, 配置使用起来更加简单, 但是如果要针对节点所负责的功能对机器进一步做定制就不如MongoDB灵活</p>
-<h1 id="文档型数据库的特点和问题"><a href="#文档型数据库的特点和问题" class="headerlink" title="文档型数据库的特点和问题"></a>文档型数据库的特点和问题</h1><h2 id="无schema"><a href="#无schema" class="headerlink" title="无schema"></a>无schema</h2><p>文档型数据存储既能享受无schema限制带来的灵活, 又能享受索引查询的快速和类SQL查询的便捷</p>
-<p>使他们用起来不像传统的RDBMS那么麻烦, 又不像 Redis,Hbase这种数据库查询功能不够强大, 处在一个传统RDBMS和经典K-V存储之间的比较均衡的位置</p>
-<p>我个人很喜欢这个特性, 没有schema的限制, 存储数据更方便也更灵活了, 但是有得有失, 很多固定schema的好处就无法享受到了, 比如: 对数据的高效压缩</p>
-<h2 id="鸡肋的Collection-和-Type"><a href="#鸡肋的Collection-和-Type" class="headerlink" title="鸡肋的Collection 和 Type"></a>鸡肋的Collection 和 Type</h2><p>早期为了跟传统rdbms数据库保持概念一致 ，mongodb和elasticsearch都设计了跟传统数据库里面的<code>库-&gt;表-&gt;记录行</code>对应的概念，具体如下</p>
+<p>具体就是每天计算一个排行榜之后， 使用流处理系统，当有新的播放事件，在榜单现有基础上做incr操作即可</p>
+<p>这种排行榜相对来说实现比较简单， 缺点也很明显</p>
+<p>比如今天如果是本月的1号， 那你的排行榜数据就由于样本数据有限，误差较大，无法起到排行榜真正的作用</p>
+<p>处理这种问题就需要“最近30天最火的歌曲”这种滚动排行榜</p>
+<h2 id="滚动排行榜"><a href="#滚动排行榜" class="headerlink" title="滚动排行榜"></a>滚动排行榜</h2><p>滚动排行榜是指基于最近一段时间范围的数据获得的排行榜统计结果  </p>
+<p>拿最近3天排行榜为例， 假设现在是是10号的10点钟， 那滚动排行榜覆盖的区间就是前推3天的数据  </p>
+<p><code>7号从10点以后的数据 + 8，9号全天数据 + 10号截至目前的数据 的统计结果</code></p>
+<p>滚动排行榜相对来说难度增加了很多</p>
+<p>如果数据量不大，对实时性要求不高的话， 也可以采用每一段时间计算一次最近3天的播放量的批量的方式</p>
+<p>但是如果数据量较大或者对实时性有要求较高，那就需要设计一个实时的滚动排行榜</p>
+<h3 id="实时的滚动排行榜"><a href="#实时的滚动排行榜" class="headerlink" title="实时的滚动排行榜"></a>实时的滚动排行榜</h3><p>假如我要做3天的滚动歌曲榜单， 我就需要获取最近72小时的播放记录进行统计</p>
+<p>拿数据举例来说</p>
+<p>假设有如下的播放记录, 当前日期是 2019-04-04 13:00， 排行榜统计区间应该是 <code>04-01 13:00 ～ 04-04 13:00</code>  </p>
 <table>
 <thead>
 <tr>
-<th>RDBMS</th>
-<th>MongoDB</th>
-<th>Elasticsearch</th>
+<th>歌曲id</th>
+<th>播放时间</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>库</td>
-<td>库</td>
-<td>索引</td>
+<td>1009</td>
+<td>2019-04-01  9:00</td>
 </tr>
 <tr>
-<td>表</td>
-<td>集合</td>
-<td>类型</td>
+<td>1010</td>
+<td>2019-04-01 14:00</td>
 </tr>
 <tr>
-<td>记录</td>
-<td>文档</td>
-<td>文档</td>
+<td>1020</td>
+<td>2019-04-02  8:00</td>
+</tr>
+<tr>
+<td>1089</td>
+<td>2019-04-03 10:00</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>2019-04-04  9:00</td>
+</tr>
+<tr>
+<td>1023</td>
+<td>2019-04-04 12:00</td>
 </tr>
 </tbody></table>
-<p>其实对于nosql数据库来讲, 集合/类型的意义其实不大, Nosql数据库几乎都是k-v类型的存储结构，完全可以通过key进行业务隔离和区分，真的没有必要为了跟传统数据库对应强行搞出来一个中间概念 ^_^</p>
-<p>Elasticsearch从<code>6.x</code>版本开始强制只允许一个索引使用一个type, 其实就是意识到这个这个设计的失误, 不想让你用这个type类型, 因为type和传统数据库里面的表概念其实是不一样的，这种概念类比给人造成了误解，到了es的7.x版本会默认取消type类型, 就说明这个type字段真的是鸡肋的不行</p>
-<h2 id="弱事务"><a href="#弱事务" class="headerlink" title="弱事务"></a>弱事务</h2><p>MongoDB以前只是支持同一文档内的原子更新, 以此来实现伪事务功能, 不过Mongo4.0支持Replica Set事务, 大大加强了事务方面的能力 </p>
-<p>es在这方面倒没有什么进展，因为从应用场景上es对事务的需求不高，不过用户其实也可以使用同文档更新或者通过程序自己来实现事务机制</p>
-<h2 id="无join支持"><a href="#无join支持" class="headerlink" title="无join支持"></a>无join支持</h2><p>文档型数据库大多数都不支持join(也有少量支持的), 但是我一般也用不上多表join的功能, 即便真的需要使用join也可以通过应用层或者通过耦合数据来实现（不过据说未来Mongo4.2版本会带来对join的支持）</p>
-<p>不支持join带来的问题就是我们需要自己对数据进行连接, 但是这在擅长使用分布式计算的大数据领域不算什么问题, 相应的缺少join功能可能对善于使用SQL的数据分析师就不大友好</p>
-<h2 id="Bully的选主算法的缺陷"><a href="#Bully的选主算法的缺陷" class="headerlink" title="Bully的选主算法的缺陷"></a>Bully的选主算法的缺陷</h2><p>elasticsearch和MongoDB选择的选主算法实现很简单, 但是代价就是有几率出现脑裂的情况, 当然, 具体情况跟配置也有关系(比如:你有三个es节点但是设置的最小主节点数为1, 将最小主节点数设置为2可以避免脑裂情况)</p>
-<p>不过脑裂问题一方面发生概率较低，另一方面即使出现了脑裂的情况, 使用<code>重启大法</code>一般就能解决 ^_^</p>
-<p>总体来说, 这方面不如使用Paxos和Raft算法或者使用zk做协调器的其他分布式系统靠谱</p>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
-<li>运维工具</li>
-</ul>
-<p>两者背后都有商业公司的支持</p>
-<p>MongoDB的很多客户端和运维工具更丰富, 但是MongoDB作为一个数据库产品, 相对应的对运维人员的要求也要更高一点</p>
-<p>Elasticsearch则有整套的数据分析和收集工具提供, 配套的kibana就是一个很不错的管控es的工具</p>
-<ul>
-<li>操作接口</li>
-</ul>
-<p>es使用Restful来提供统一的操作接口, 屏蔽了各种语言之间的障碍, 但是同样带来了表达能力和性能的损失</p>
-<p>MongoDB则使用TCP, 降低了序列化和网络这一层的性能损耗, 并最大程度保留了接口的内容表达能力, 但是相对的使用起来就不如http那么的方便</p>
-<h1 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h1><p>两者其实在很多使用场景上有重合之处, 是可以互相替代, 比如日志收集</p>
-<p>但是某些方面两者又各有特色，比如： 如果打算使用一个文档型的业务数据库， 那最好还是选mongodb, 如果你有要求复杂查询又并发性能要求高的场景，类似搜索服务，那最好的选择是elasticsearch</p>
-<p>除此之外：</p>
-<p>MongoDB有多个存储引擎可以选择, 而且MongoDB不仅看重数据的分析, 对数据的管理同样看重, 总的来说MongoDB更倾向于数据的存储和管理, 可以作为数据源对外提供， 未来说不定还会有支持join和支持倒排索引的mongo引擎出现</p>
-<p>Elasticsearch则有很多插件可以使用, 相对来讲Elasticsearch更倾向于数据的查询, 一般情况下elasticsearch仅作为数据检索服务和数据分析平台, 不直接作为源数据管理者</p>
-<ul>
-<li>MongoDB适合</li>
-</ul>
+<p>那我们获取到的3天榜单应该是这样(1009的播放记录已经过期)</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//  歌曲id:播放次数</span><br><span class="line">{</span><br><span class="line">     1023:1,</span><br><span class="line">     1010:2，</span><br><span class="line">     1089:1，</span><br><span class="line">     1020:1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>排行榜处理过程最关键的有两点</p>
 <ol>
-<li>对服务可用性和一致性有高要求</li>
-<li>无schema的数据存储 + 需要索引数据</li>
-<li>高读写性能要求, 数据使用场景简单的海量数据场景</li>
-<li>有热点数据, 有数据分片需求的数据存储</li>
-<li>日志, html, 爬虫数据等半结构化或图片，视频等非结构化数据的存储</li>
-<li>有js使用经验的人员(MongoDB内置操作语言为js)</li>
+<li><p>对一个元素加分时，加当日周期榜、滚动榜；<br>还需根据其在今日滚动榜中的分数s、及n-1天日榜中的分数r，计算出其在明日滚动榜中的初始分数s-r写入明日滚动榜中；<br>即3个写操作；</p>
+</li>
+<li><p>如果一个元素在当日没有任何加分操作，那么不会触发写入初始分数操作，所以还需要一个离线工具补齐。<br>该离线工具可提前一天运行，即当日运行离线工具补齐次日的滚动榜数据即可。</p>
+</li>
 </ol>
-<ul>
-<li>Elasticsearch适合</li>
-</ul>
-<ol>
-<li>已经有其他系统负责数据管理</li>
-<li>对复杂场景下的查询需求，对查询性能有要求, 对写入及时性要求不高的场景</li>
-<li>监控信息/日志信息检索</li>
-<li>小团队但是有多语言服务，es拥有restful接口，用起来最方便</li>
-</ol>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>MongoDB和Elasticsearch都是我比较喜欢的存储产品</p>
-<p>两者的功能特性也存在很多重合的地方, 其实现在很多数据库产品都在互相借(chao)鉴(xi), 功能和特性都在逐渐变得相似, 这也是未来很多存储产品的发展趋势, 大家都希望自己能覆盖尽量多的场景和用户群体</p>
-<p>很多产品总是在不断的从<code>没有</code>-&gt;<code>有</code>-&gt;<code>功能丰富</code>,但是功能丰富一定是做了很多的妥协, 于是又有了 <code>功能众多的单体服务</code>-&gt;<code>多个功能单一的子服务</code> 方向的转变,就像三国里面说的 “天下大势, 分久必合合久必分”. </p>
-<p>现在NoSQL数据库产品就在这个路上, NoSQL归根到底都是 RDBMS的某个方面的妥协, 现在各种NoSQL 也都在加入对经典SQL和传统RDBMS的 join, 事务的支持, 但是我相信等到两者区别足够小的时候, 一定会有放弃了大而全, 而专注于某一场景的新的存储产品出现，到时候搞不好又是一波新的Nosql潮流 </p>
+<p>R：每日的统计数据  S： 每日的滚动排行榜数据</p>
+<p>s-r &gt; 0 才进行写入操作</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">以3天滚动榜为例，次日滚动榜初始态为当日滚动榜减去n-2天的日榜数据。</span><br><span class="line">     +-------------------------------------------+</span><br><span class="line">     |                                           |</span><br><span class="line">+----+---+   +--------+   +--------+             |</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |             |</span><br><span class="line">+----+---+   +----+---+   +---+----+             |</span><br><span class="line">     |            |           |                  |</span><br><span class="line">     |            |           v+                 v-</span><br><span class="line">     |            |</span><br><span class="line">     |            |    +  +--------+        +--------+</span><br><span class="line">     |            +-----&gt; |        |     +  |        |</span><br><span class="line">     |                 +  |  S(i)  | +---+&gt; | S(i+1) |</span><br><span class="line">     +-----------------+&gt; |        |        |        |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line"></span><br><span class="line">分数变化</span><br><span class="line">                                +--------------+</span><br><span class="line">                                |   AddScore   |</span><br><span class="line">                                +-+----+-----+-+</span><br><span class="line">                                  |+   |     |</span><br><span class="line">                                  v    |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |+</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |   |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |</span><br><span class="line">                                       |     v</span><br><span class="line">                          +--------+   |    +--------+</span><br><span class="line">                          |  S(i)  |&lt;--+    | S(i+1) |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line">                                                 ^</span><br><span class="line">                                                 |+</span><br><span class="line">                                          +------------+</span><br><span class="line">                                          |    Tool    |</span><br><span class="line">                                          +------------+</span><br></pre></td></tr></tbody></table></figure>
+
 
       
     </div>
@@ -4656,7 +4472,7 @@ ul.breadcrumb li + li:last-child {
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">…</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">…</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -4722,7 +4538,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -4735,7 +4551,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

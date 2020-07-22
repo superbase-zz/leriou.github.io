@@ -2,7 +2,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.0.0">
+<meta name="generator" content="Hexo 4.2.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -19,17 +19,20 @@
   </script>
 
   <meta name="description" content="redis分享Author:   leriou lee       2017.10.12本篇内容主要是针对团队成员的redis中间件分享 目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案 redis基础 redis是什么  redis是一个使用c语言开发的k-v存储系统,其实不仅仅">
-<meta name="keywords" content="redis,NoSQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="给团队成员的Redis分享总结">
 <meta property="og:url" content="https://leriou.github.io/2017-10-29-redis-share-in-group/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
 <meta property="og:description" content="redis分享Author:   leriou lee       2017.10.12本篇内容主要是针对团队成员的redis中间件分享 目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案 redis基础 redis是什么  redis是一个使用c语言开发的k-v存储系统,其实不仅仅">
-<meta property="og:locale" content="en">
+<meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/deSBNkvgwpaE2tK.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/xpNhU9XPYFn4OcA.png">
-<meta property="og:updated_time" content="2020-07-17T14:04:43.124Z">
+<meta property="article:published_time" content="2017-10-29T03:07:00.000Z">
+<meta property="article:modified_time" content="2020-07-22T15:13:57.978Z">
+<meta property="article:author" content="哎呀是太阳嘛">
+<meta property="article:tag" content="redis">
+<meta property="article:tag" content="NoSQL">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png">
 
@@ -1270,7 +1273,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #e7d51d;
+  background: #559c83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2639,6 +2642,204 @@ ul.breadcrumb li + li:last-child {
 .links-of-blogroll-item {
   padding: 0;
 }
+.post-body .link-grid {
+  display: grid;
+  grid-gap: 1.5rem 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  padding: 1.5rem;
+  user-select: none;
+}
+@media (max-width: 767px) {
+  .post-body .link-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.post-body .link-grid div {
+  border: solid #ddd;
+  box-shadow: 1rem 1rem 0.5rem #808080;
+  height: 5rem;
+  transition: background 0.3s;
+  padding: 0.5rem;
+  position: relative;
+}
+.post-body .link-grid div:hover {
+  animation: shake 0.5s;
+  background: rgba(230,244,250,0.5);
+}
+.post-body .link-grid div:active {
+  box-shadow: 0.5rem 0.5rem 0.25rem #808080;
+  transform: translate(0.2rem, 0.2rem);
+}
+.post-body .link-grid div img {
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: 5rem;
+  left: 0.5rem;
+  padding: 3px;
+  position: absolute;
+  top: 0.5rem;
+  width: 5rem;
+}
+.post-body .link-grid div p {
+  margin: 0 1rem 0 6rem;
+}
+.post-body .link-grid div p:first-of-type {
+  font-size: 1.2em;
+}
+.post-body .link-grid div p:last-of-type {
+  font-size: 0.8em;
+  line-height: 1.3rem;
+  opacity: 0.7;
+}
+.post-body .link-grid div a {
+  border: none;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+@-moz-keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
+@-webkit-keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
+@-o-keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
+@keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
 </style><noscript>
   <style>
   .use-motion .brand,
@@ -3251,12 +3452,22 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 
 
 
-  
+
+
+
+
 
 
 
 
   
+
+
+
+
+  
+
+
 
 
 

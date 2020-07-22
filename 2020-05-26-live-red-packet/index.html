@@ -2,7 +2,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.0.0">
+<meta name="generator" content="Hexo 4.2.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -18,15 +18,17 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="业务背景和需求简介业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现 业务流程主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。 用户可以去抢那些个红包 关键问题生成红包的算法其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到">
-<meta name="keywords" content="架构设计">
+  <meta name="description" content="业务背景和需求简介业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现 业务流程主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。用户可以去抢那些个红包。 关键问题生成红包的算法其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到">
 <meta property="og:type" content="article">
 <meta property="og:title" content="超高并发场景下的直播红包发放业务的架构设计">
 <meta property="og:url" content="https://leriou.github.io/2020-05-26-live-red-packet/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="业务背景和需求简介业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现 业务流程主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。 用户可以去抢那些个红包 关键问题生成红包的算法其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-07-17T14:04:43.121Z">
+<meta property="og:description" content="业务背景和需求简介业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现 业务流程主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。用户可以去抢那些个红包。 关键问题生成红包的算法其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-22T15:13:57.974Z">
+<meta property="article:author" content="哎呀是太阳嘛">
+<meta property="article:tag" content="架构设计">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://leriou.github.io/2020-05-26-live-red-packet/">
@@ -1266,7 +1268,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #e7d51d;
+  background: #559c83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2635,6 +2637,204 @@ ul.breadcrumb li + li:last-child {
 .links-of-blogroll-item {
   padding: 0;
 }
+.post-body .link-grid {
+  display: grid;
+  grid-gap: 1.5rem 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  padding: 1.5rem;
+  user-select: none;
+}
+@media (max-width: 767px) {
+  .post-body .link-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.post-body .link-grid div {
+  border: solid #ddd;
+  box-shadow: 1rem 1rem 0.5rem #808080;
+  height: 5rem;
+  transition: background 0.3s;
+  padding: 0.5rem;
+  position: relative;
+}
+.post-body .link-grid div:hover {
+  animation: shake 0.5s;
+  background: rgba(230,244,250,0.5);
+}
+.post-body .link-grid div:active {
+  box-shadow: 0.5rem 0.5rem 0.25rem #808080;
+  transform: translate(0.2rem, 0.2rem);
+}
+.post-body .link-grid div img {
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: 5rem;
+  left: 0.5rem;
+  padding: 3px;
+  position: absolute;
+  top: 0.5rem;
+  width: 5rem;
+}
+.post-body .link-grid div p {
+  margin: 0 1rem 0 6rem;
+}
+.post-body .link-grid div p:first-of-type {
+  font-size: 1.2em;
+}
+.post-body .link-grid div p:last-of-type {
+  font-size: 0.8em;
+  line-height: 1.3rem;
+  opacity: 0.7;
+}
+.post-body .link-grid div a {
+  border: none;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+@-moz-keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
+@-webkit-keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
+@-o-keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
+@keyframes shake {
+  0% {
+    transform: translate(1pt, 1pt) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1pt, -2pt) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3pt, 0pt) rotate(1deg);
+  }
+  30% {
+    transform: translate(3pt, 2pt) rotate(0deg);
+  }
+  40% {
+    transform: translate(1pt, -1pt) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1pt, 2pt) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3pt, 1pt) rotate(0deg);
+  }
+  70% {
+    transform: translate(3pt, 1pt) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1pt, -1pt) rotate(1deg);
+  }
+  90% {
+    transform: translate(1pt, 2pt) rotate(0deg);
+  }
+  100% {
+    transform: translate(1pt, -2pt) rotate(-1deg);
+  }
+}
 </style><noscript>
   <style>
   .use-motion .brand,
@@ -2842,14 +3042,13 @@ ul.breadcrumb li + li:last-child {
 
       
         <h2 id="业务背景和需求简介"><a href="#业务背景和需求简介" class="headerlink" title="业务背景和需求简介"></a>业务背景和需求简介</h2><p>业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现</p>
-<h2 id="业务流程"><a href="#业务流程" class="headerlink" title="业务流程"></a>业务流程</h2><p>主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。</p>
-<p>用户可以去抢那些个红包</p>
+<h2 id="业务流程"><a href="#业务流程" class="headerlink" title="业务流程"></a>业务流程</h2><p>主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。用户可以去抢那些个红包。</p>
 <h2 id="关键问题"><a href="#关键问题" class="headerlink" title="关键问题"></a>关键问题</h2><h3 id="生成红包的算法"><a href="#生成红包的算法" class="headerlink" title="生成红包的算法"></a>生成红包的算法</h3><p>其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到红包的分割算法。</p>
-<p>在随机金额的红包中为了保证用户体验，通常会允许给每份红包设定一个区间范围，保证用户得到的红包不至于太小。</p>
+<p>在随机金额的红包中为了保证用户体验，通常会允许给每份红包设定一个区间范围，保证用户得到的红包不至于太小也不至于太大。</p>
 <p>也就是说我们需要实现如下函数, 根据红包总金额，红包个数，红包的最小值，生成一个具有n个红包具体金额的数组</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_red_package</span><span class="params">(amount, num, min_size, max_size)</span> -&gt; List[float]</span></span><br></pre></td></tr></tbody></table></figure>
 
-<p>这里可以采用一种线性分段的方法</p>
+<p>这里可以采用一种线性分段的方法来实现均匀的红包分割</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_red_package</span><span class="params">(amount, num, min_size, max_size)</span> -&gt; List[float]:</span></span><br><span class="line">    amount *= <span class="number">100</span></span><br><span class="line">    lines = [<span class="number">0</span>, amount]</span><br><span class="line">    <span class="comment"># 生成num-1个符合要求的随机的点</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, num - <span class="number">1</span>):</span><br><span class="line">        loop = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">while</span> loop:</span><br><span class="line">            r = random.Random().randint(<span class="number">0</span>, amount)</span><br><span class="line">            loop = <span class="keyword">not</span> is_valid(lines, r, min_size * <span class="number">100</span>, max_size * <span class="number">100</span>)</span><br><span class="line">    <span class="comment"># 生成红包        </span></span><br><span class="line">    paks = []</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, len(lines) - <span class="number">1</span>):</span><br><span class="line">        paks.append((lines[j+<span class="number">1</span>] - lines[j])/<span class="number">100</span>)</span><br><span class="line">    <span class="keyword">return</span> paks</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(arr, value, min_size, max_size)</span> -&gt; bool:</span></span><br><span class="line">    <span class="keyword">if</span> arr.__contains__(value):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    arr.append(value)</span><br><span class="line">    arr.sort()</span><br><span class="line">    curr = arr.index(value)</span><br><span class="line">    l = arr[max(<span class="number">0</span>, curr - <span class="number">1</span>)]</span><br><span class="line">    r = arr[min(curr + <span class="number">1</span>, len(arr) - <span class="number">1</span>)]</span><br><span class="line">    dl = value - l</span><br><span class="line">    dr = r - value</span><br><span class="line">    <span class="keyword">if</span> dl &gt;= min_size <span class="keyword">and</span> dr &gt;= min_size <span class="keyword">and</span> dl &lt;= max_size <span class="keyword">and</span> dr &lt;= max_size :</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    arr.remove(value)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">print(gen_red_package(<span class="number">100</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">90</span>))</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="如何处理超高并发场景下红包的分发"><a href="#如何处理超高并发场景下红包的分发" class="headerlink" title="如何处理超高并发场景下红包的分发"></a>如何处理超高并发场景下红包的分发</h3><ul>
@@ -2861,8 +3060,8 @@ ul.breadcrumb li + li:last-child {
 <ul>
 <li>方案2: 采用数据分流</li>
 </ul>
-<p>数据分流 + 用户分流：我们生成的50个红包可以分成10份，存储到不同的key上, 使用key_000-key_009存储数据会均匀的分配到redis的各个节点上。</p>
-<p>我们在使用redis的时候，随机请求其中的一份红包数据，这样用户的请求可以有效打散到各个redis节点上， 同时能处理的请求数据可以随节点数量扩展， 但是这种方法的缺点也很明显， 一个是实现复杂，一个是会对用户造成一定程度上不公平的体验。解决数据分布可以使用本地缓存采用节点的方式来减轻这种不公平现象。</p>
+<p>数据分流 + 用户分流：我们生成的50个红包可以分成N份，存储到不同的key上, 使用key_0-key_N存储数据会均匀的分配到redis的各个节点上。</p>
+<p>用户在获取红包时，随机请求其中的一份红包数据，这样用户的请求可以有效打散到各个redis节点上， 同时能处理的请求数据可以随节点数量扩展， 但是这种方法的缺点也很明显， 一个是实现复杂，一个是会对用户造成一定程度上不公平的体验。解决数据分布可以使用本地缓存采用节点的方式来减轻这种不公平现象。</p>
 
     </div>
 
@@ -3046,12 +3245,22 @@ ul.breadcrumb li + li:last-child {
 
 
 
-  
+
+
+
+
 
 
 
 
   
+
+
+
+
+  
+
+
 
 
 

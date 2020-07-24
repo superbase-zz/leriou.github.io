@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #df5cff;
+  background: #ec2bff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3652,7 +3652,8 @@ ul.breadcrumb li + li:last-child {
 </tbody></table>
 <p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
 <h2 id="行为数据-用户特征-用户相似度-内容推荐"><a href="#行为数据-用户特征-用户相似度-内容推荐" class="headerlink" title="行为数据/用户特征-用户相似度-内容推荐"></a>行为数据/用户特征-用户相似度-内容推荐</h2><p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
-<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><ul>
+<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><p>我们使用Jaccard系数来表征用户的相似度</p>
+<ul>
 <li>使用用户行为计算相似度</li>
 </ul>
 <p>我们可以使用用户行为信息如此计算两个用户的相似度<br>$$ Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2) $$<br>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
@@ -4013,7 +4014,8 @@ ul.breadcrumb li + li:last-child {
 <p>地址： <a href="https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml`" target="_blank" rel="noopener">https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml`</a></p>
 <p>可以直接使用迅雷啥的下载，也可以使用以下命令直接下载</p>
 <p>打开 Terminal，粘贴命令：</p>
-<pre><code>$ wget https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml</code></pre><p>并回车，等待下载文件</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://raw.githubusercontent.com/leriou/docker-env/master/wordpress/docker-compose.yml</span><br><span class="line">`</span><br></pre></td></tr></tbody></table></figure>
+<p>并回车，等待下载文件</p>
 <hr>
 <p>到此，我们的准备工作就结束了</p>
 <p>总结一下，我们需要一个docker软件和一个告诉docker我们要搭建一个网站的文件docker-compose.yml</p>
@@ -4778,7 +4780,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

@@ -27,9 +27,10 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png">
 <meta property="article:published_time" content="2020-04-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-22T15:13:57.998Z">
+<meta property="article:modified_time" content="2020-07-24T13:23:13.472Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
+<meta property="article:tag" content="jaccard系数">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png">
 
@@ -1270,7 +1271,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #df5cff;
+  background: #ec2bff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3140,7 +3141,8 @@ ul.breadcrumb li + li:last-child {
 </tbody></table>
 <p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
 <h2 id="行为数据-用户特征-用户相似度-内容推荐"><a href="#行为数据-用户特征-用户相似度-内容推荐" class="headerlink" title="行为数据/用户特征-用户相似度-内容推荐"></a>行为数据/用户特征-用户相似度-内容推荐</h2><p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
-<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><ul>
+<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><p>我们使用Jaccard系数来表征用户的相似度</p>
+<ul>
 <li>使用用户行为计算相似度</li>
 </ul>
 <p>我们可以使用用户行为信息如此计算两个用户的相似度<br>$$ Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2) $$<br>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
@@ -3185,6 +3187,7 @@ ul.breadcrumb li + li:last-child {
           
           <div class="post-tags">
               <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag"><i class="fa fa-tag"></i> 推荐系统</a>
+              <a href="/tags/jaccard%E7%B3%BB%E6%95%B0/" rel="tag"><i class="fa fa-tag"></i> jaccard系数</a>
           </div>
 
         
@@ -3286,7 +3289,7 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

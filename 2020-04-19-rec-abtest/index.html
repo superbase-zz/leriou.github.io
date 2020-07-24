@@ -18,16 +18,16 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="A/B实验平台的目的提供一个实验平台，可以方便的使用控制变量的手段同时进行多种功能改进的效果对比实验 对比一个功能上线后的效果如何需要做用户对比实验， 在此过程中需要严格的控制变量。但是有时候我们可能希望同时实验多种不同维度的功能改进的效果，这个时候就需要一个能提供多功能对比实验的A/B实验平台。 举例假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种支付方式。">
+  <meta name="description" content="A/B实验平台的目的提供一个实验平台，可以方便的使用控制变量的手段同时进行多种功能改进的效果对比实验 对比一个功能上线后的效果如何需要做用户对比实验， 在此过程中需要严格的控制变量。但是有时候我们可能希望同时实验多种不同维度的功能改进的效果，这个时候就需要一个能提供多功能对比实验的A/B实验平台。 a/b实验举例假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种">
 <meta property="og:type" content="article">
 <meta property="og:title" content="推荐系统AB实验平台">
 <meta property="og:url" content="https://leriou.github.io/2020-04-19-rec-abtest/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="A/B实验平台的目的提供一个实验平台，可以方便的使用控制变量的手段同时进行多种功能改进的效果对比实验 对比一个功能上线后的效果如何需要做用户对比实验， 在此过程中需要严格的控制变量。但是有时候我们可能希望同时实验多种不同维度的功能改进的效果，这个时候就需要一个能提供多功能对比实验的A/B实验平台。 举例假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种支付方式。">
+<meta property="og:description" content="A/B实验平台的目的提供一个实验平台，可以方便的使用控制变量的手段同时进行多种功能改进的效果对比实验 对比一个功能上线后的效果如何需要做用户对比实验， 在此过程中需要严格的控制变量。但是有时候我们可能希望同时实验多种不同维度的功能改进的效果，这个时候就需要一个能提供多功能对比实验的A/B实验平台。 a/b实验举例假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/Eh862JtjNPmkVCS.png">
 <meta property="article:published_time" content="2020-04-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-22T15:13:57.980Z">
+<meta property="article:modified_time" content="2020-07-24T13:21:49.157Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
 <meta name="twitter:card" content="summary">
@@ -1270,7 +1270,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ee7e6f;
+  background: #df5cff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3045,8 +3045,10 @@ ul.breadcrumb li + li:last-child {
       
         <h2 id="A-B实验平台的目的"><a href="#A-B实验平台的目的" class="headerlink" title="A/B实验平台的目的"></a>A/B实验平台的目的</h2><p><strong>提供一个实验平台，可以方便的使用控制变量的手段同时进行多种功能改进的效果对比实验</strong></p>
 <p>对比一个功能上线后的效果如何需要做用户对比实验， 在此过程中需要严格的控制变量。但是有时候我们可能希望同时实验多种不同维度的功能改进的效果，这个时候就需要一个能提供多功能对比实验的A/B实验平台。</p>
-<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种支付方式。我们想通过实验看看哪种颜色的付款按钮付款率更高，还想看看这哪种付款方式的付款率更高。</p>
-<p>此时我们就构成了2个实验，实验1: 针对付款按钮颜色的实验。实验2:针对付款方式的实验。其中的红按钮，蓝按钮就是实验策略。针对颜色的实验和针对付款方式的实验就是实验层。最终所有用户会分不到四个实验结果中。【红按钮信用卡，红按钮支付宝，蓝按钮信用卡，蓝按钮支付宝】。其中的 “红按钮信用卡”就是实验号。</p>
+<h2 id="a-b实验举例"><a href="#a-b实验举例" class="headerlink" title="a/b实验举例"></a>a/b实验举例</h2><p>假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种支付方式。我们想通过实验看看哪种颜色的付款按钮付款率更高，还想看看这哪种付款方式的付款率更高。</p>
+<p>此时我们就构成了2个实验，实验1: 针对付款按钮颜色的实验。实验2:针对付款方式的实验。</p>
+<p>其中的红按钮，蓝按钮就是实验策略。针对颜色的实验和针对付款方式的实验就是实验层。最终所有用户会分不到四个实验结果中。分别是【红按钮信用卡，红按钮支付宝，蓝按钮信用卡，蓝按钮支付宝】。其中的 “红按钮信用卡”就是某一种实验号。</p>
+<p>将来我们验证不同版本实验的效果， 就需要通过实验号流量进行统计。</p>
 <h2 id="实验平台的架构设计"><a href="#实验平台的架构设计" class="headerlink" title="实验平台的架构设计"></a>实验平台的架构设计</h2><p><img data-src="https://i.loli.net/2020/05/09/Eh862JtjNPmkVCS.png" alt="abtest.png"></p>
 <h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>实验：实验是指对某一个具体功能的一整套对比方案。对于一般的功能只有两个可选项，就是开启功能，关闭功能。部分功能可能具有多种不同的状态。</p>
 <p>实验策略：用于表示实验中的某一个具体的选择。同一层实验策略之间互斥。</p>
@@ -3055,7 +3057,7 @@ ul.breadcrumb li + li:last-child {
 <h2 id="用户实验"><a href="#用户实验" class="headerlink" title="用户实验"></a>用户实验</h2><p>我们会根据当前需要进行的实验进行实验分层和隔离，层数和每层的正在执行的实验组会为每个用户分配一个实验号。实验需要有版本设计，每个版本的实验，同一个用户只能获得一个实验号，实验版本更新，用户的实验号随之重新分配。</p>
 <p><strong>实验号的本质是获取一个多维的当前实验配置集合</strong></p>
 <p>用户根据获取到的配置在流程中执行不同的召回，排序和显示策略。</p>
-<h2 id="多实验部署"><a href="#多实验部署" class="headerlink" title="多实验部署"></a>多实验部署</h2><p>当我们想进行一个新的实验时，只需在对应的实验层增加一种配置。同时发布更新实验版本即可。系统会自动对所有用户进行重新的实验号分配，分配完成后，用户在下次情况即可应用新的实验配置。</p>
+<h2 id="多实验部署"><a href="#多实验部署" class="headerlink" title="多实验部署"></a>多实验部署</h2><p>当我们想进行一个新的实验时，只需在对应的实验层增加一种配置。同时发布更新实验版本即可。系统会自动对所有用户进行重新的实验号分配，分配完成后，用户的下次请求即可应用新的实验配置。</p>
 <h2 id="多实验效果回收和评估"><a href="#多实验效果回收和评估" class="headerlink" title="多实验效果回收和评估"></a>多实验效果回收和评估</h2><p>用户使用的实验号和版本信息会随着请求返回客户端，由客户端进行收集埋点。</p>
 <p>如果需要对比某实验的结果，我们只需要根据用户的实验号，做控制变量的反馈效果对比即可。<br>比如上图中我们像对比策略层的实验效果，就需要对比所有xx-xx-C1和xx-xx-C2两类实验号中的数据效果。 为了防止其他变量的影响我们可以更详细的对比A2-B1-C1和 A2-B2-C2这两个实验号中的用户的实验结果</p>
 <p>再如例子中，我们想对比不同颜色按钮的效果就可以拿 所有红色按钮的实验号结果集 和所有的蓝色实验号结果集进行对比</p>
@@ -3145,7 +3147,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-B实验平台的目的"><span class="nav-number">1.</span> <span class="nav-text">A/B实验平台的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#举例"><span class="nav-number">2.</span> <span class="nav-text">举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验平台的架构设计"><span class="nav-number">3.</span> <span class="nav-text">实验平台的架构设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">4.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户实验"><span class="nav-number">5.</span> <span class="nav-text">用户实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多实验部署"><span class="nav-number">6.</span> <span class="nav-text">多实验部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多实验效果回收和评估"><span class="nav-number">7.</span> <span class="nav-text">多实验效果回收和评估</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-B实验平台的目的"><span class="nav-number">1.</span> <span class="nav-text">A/B实验平台的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-b实验举例"><span class="nav-number">2.</span> <span class="nav-text">a/b实验举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验平台的架构设计"><span class="nav-number">3.</span> <span class="nav-text">实验平台的架构设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">4.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户实验"><span class="nav-number">5.</span> <span class="nav-text">用户实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多实验部署"><span class="nav-number">6.</span> <span class="nav-text">多实验部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多实验效果回收和评估"><span class="nav-number">7.</span> <span class="nav-text">多实验效果回收和评估</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

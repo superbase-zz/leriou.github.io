@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ee7e6f;
+  background: #df5cff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3052,50 +3052,54 @@ ul.breadcrumb li + li:last-child {
 <p>由于<code>HashSet</code>的底层原理是使用的<code>HashMap</code>， 所以我直接使用 <code>HashMap</code>来进行原理的说明</p>
 <p>这种做法的原理其实是先将我们要查找的数据进行hash散列，映射到一个固定长度的地址空间<br>然后使用数组存储，如果有多个id经过hash映射到相同的地址空间那就做一个链表，存储相同hashcode对应的值   </p>
 <p>具体结构如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|</span><br><span class="line">    ↓           ↓ </span><br><span class="line">    107         87</span><br><span class="line">    ↓            </span><br><span class="line">    16</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|          // hash数组槽</span><br><span class="line">    ↓           ↓     </span><br><span class="line">   107          87            // 槽内的指针对应的数据</span><br><span class="line">    ↓            </span><br><span class="line">    16</span><br></pre></td></tr></tbody></table></figure>
 
 <p>当我们查找id时， 也是先将要查找的id进行hash, 然后去对应的hashcode位置沿着链表/红黑树寻找是否有要查找的数字</p>
 <h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>使用简单，比较通用</li>
-<li>容易理解</li>
-<li>无误判</li>
+<li>使用简单，性能好，比较通用</li>
+<li>容易理解，无误判</li>
 </ol>
 <h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
 <li>空间利用率太低</li>
 </ol>
-<h2 id="Bitmap"><a href="#Bitmap" class="headerlink" title="Bitmap"></a>Bitmap</h2><p>考虑到<code>HashMap</code>的空间利用率太低，不适合海量数据的存储</p>
-<p>我们可以利用计算机存储的一些特性，用另外一种方式来</p>
-<p>我们都知道计算机底层是用bit来存储信息的，每个bit能存储一个0或者1的信息</p>
-<p>如果我们使用二进制bit的位置信息来表示数字，对应位的bit值是1来代表这个数字存在，我们就可以在极小的空间存储大量的信息</p>
-<p>使用时只需使用位运算，查看对应位置的bit值即可</p>
-<p>Java中的bitset，redis中的bit操作都提供了这种bitmap的实现</p>
-<p>bitmap的详情可以查看 <a href="https://leriou.github.io/2017-12-29-user-tag-sys-on-bitmap/">使用bitmap构建用户标签</a></p>
-<p>如下表示 【6，4，3】的集合 </p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bit值     0 1 0 1 1 0 0 0</span><br><span class="line">位        7 6 5 4 3 2 1 0</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Bitmap"><a href="#Bitmap" class="headerlink" title="Bitmap"></a>Bitmap</h2><p>考虑到<code>HashMap</code>的空间利用率太低，不适合海量数据的存储，我们可以利用计算机存储的一些特性，用另外一种方式来。</p>
+<p>我们都知道计算机底层是用bit来存储信息的，每个bit能存储一个0或者1的信息，如果我们使用二进制bit的位置信息来表示数字，对应位的bit值是1来代表这个数字存在，我们就可以在极小的空间存储大量的信息，使用时只需使用位运算，查看对应位置的bit值即可。</p>
+<p>Java中的bitset，redis中的bit操作都提供了这种bitmap的实现，bitmap的详情可以查看 <a href="https://leriou.github.io/2017-12-29-user-tag-sys-on-bitmap/">使用bitmap构建用户标签</a></p>
+<p>如下表示 【6，4，3】的集合，第6，4，3位为1，其他位为0</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bit值     0 1 0 1 1 0 0 0        // 0x01011000</span><br><span class="line">bit位     7 6 5 4 3 2 1 0</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>空间利用率高</li>
-<li>性能好</li>
-<li>无误判</li>
+<li>空间利用率高，性能好，无误判</li>
 </ol>
 <h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ol>
 <li>不够通用，要求数据的类型必须是数字且元素范围跨度不能太大</li>
 </ol>
 <h2 id="BloomFilter"><a href="#BloomFilter" class="headerlink" title="BloomFilter"></a>BloomFilter</h2><p>bloomfilter跟bitmap具有相似的原理， 都是使用位来存储信息，区别在于</p>
 <p>bitmap使用元素自身数字对应的位置信息来存储数据，如果要存储的元素是个字符串或者其他类型的数据就无法使用这种方式了，或者你要存储的数字范围特别的大，比如你要存储一个100亿的数字， 那样即使只有一个数字你也需要一个前面的位置都是0的100亿bit来表示，对空间的利用率还是不高 (现在有一些空间压缩的bitmap实现能一定程度解决数据范围分布过大和分布稀疏的问题)</p>
-<p>BloomFilter就是针对这些做了优化，如果我们把要处理的数字进行hash, 映射到一个固定长度的地址空间</p>
-<p>这样就同时解决了以上两个问题， 即缩减了映射的空间范围，又可以存储更通用的对象</p>
-<p>但是由于hash函数本身会有冲突，就会出现两个不同元素因为同样的hashcode而产生误判的情况</p>
-<p>处理这种情况的方法就是增加hash函数的数量， 假设两个元素使用一个函数冲突的概率是 0.01， 那如果我们使用3个不同的函数，每个函数足够均匀且误判率相同，对这两个元素进行hash, 那两个元素经过三个函数依然冲突的概率就是 0.000001， 但是基于概率的问题，误判率依然存在</p>
-<p>所以这种方法适合于允许一定误判率，并拥有海量数据要过滤的场景</p>
+<p>BloomFilter就是针对这些做了优化，如果我们把要处理的数字进行hash, 映射到一个固定长度的地址空间，这样就同时解决了以上两个问题， 即缩减了映射的空间范围，又可以存储更通用的对象。但是由于hash函数本身会有冲突，就会出现两个不同元素因为同样的hashcode而产生误判的情况。</p>
+<p><strong>既如果判定结果是不存在(False)，则一定不存在；但是如果判定结果是存在(True)，则实际情况其实是可能存在，而不是一定存在，即假阳性。</strong></p>
+<h3 id="误判率的计算"><a href="#误判率的计算" class="headerlink" title="误判率的计算"></a>误判率的计算</h3><p>我们假设</p>
+<ul>
+<li>欲插入Bloom Filter中的元素数目: n</li>
+<li>Bloom Filter误判率: P(true)</li>
+<li>BitArray数组的大小: m</li>
+<li>Hash Function的数目: k</li>
+</ul>
+<p>则有误判率：<br><img data-src="https://www.zhihu.com/equation?tex=P%28true%29+%3D+%28P_1%5En%29%5Ek+%3D+%5B1+-+%28+1-+%5Cfrac%7B1%7D%7Bm%7D+%29%5E%7Bkn%7D%5D%5Ek+%5C%5C" alt="[公式]">)<img data-src="https://www.zhihu.com/equation?tex=P%28true%29+%5Capprox+%281+-+e%5E%7B-%5Cfrac%7Bnk%7D%7Bm%7D%7D+%29%5Ek+%5C%5C" alt="[公式]"></p>
+<p>也就是说当BitArray数组的大小m增大 或 欲插入Bloom Filter中的元素数目n 减小时，均可以使得误判率P(true)下降</p>
+<h3 id="至于hash-function的数目k"><a href="#至于hash-function的数目k" class="headerlink" title="至于hash function的数目k"></a>至于hash function的数目k</h3><p><img data-src="https://www.zhihu.com/equation?tex=f%28k%29+%3D+%281+-+e%5E%7B-%5Cfrac%7Bnk%7D%7Bm%7D%7D+%29%5Ek+%5C%5C" alt="[公式]"></p>
+<p>令 <img data-src="https://www.zhihu.com/equation?tex=a+%3D+e%5E%7B%5Cfrac%7Bn%7D%7Bm%7D%7D" alt="[公式]"> ，则有：</p>
+<p><img data-src="https://www.zhihu.com/equation?tex=f%28k%29+%3D+%281+-+a%5E%7B-k%7D+%29%5Ek+%5C%5C" alt="[公式]"></p>
+<p>分别对上式两边，先取对数，再对k求一次导，可有：</p>
+<p><img data-src="https://www.zhihu.com/equation?tex=%5Cfrac%7B1%7D%7Bf%28k%29%7D+f%28k%29%5E%5Cprime+%3D+%5Cln%28+1-a%5E%7B-k%7D+%29+%2B+%5Cfrac%7B+k+a%5E%7B-k%7D+%5Cln+a+%7D%7B+1-a%5E%7B-k%7D+%7D+%5C%5C" alt="[公式]"></p>
+<p>易知，当k取极值点时，有 <img data-src="https://www.zhihu.com/equation?tex=f%28k%29%5E%5Cprime+%3D+0" alt="[公式]"> ，故将其带入上式即可求出k</p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-be7c83bcd595891c278e8e1c9171b24a_1440w.jpg" alt="img"></p>
+<p>所以我们通过调整k的值也能一定程度上降低误判率， 但是基于概率的问题，误判率依然存在。所以这种方法适合于允许一定误判率，并拥有海量数据要过滤的场景</p>
 <h3 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a>优点</h3><ol>
-<li>通用</li>
-<li>空间效率高</li>
-<li>灵活，可以在性能和误判率之间做取舍</li>
+<li>通用，空间效率高，灵活，可以在性能和误判率之间做取舍</li>
 </ol>
 <h3 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a>缺点</h3><ol>
-<li>有误判</li>
-<li>性能不如</li>
+<li>有误判，性能不如bitmap</li>
 </ol>
 <h1 id="处理相似文本的重复"><a href="#处理相似文本的重复" class="headerlink" title="处理相似文本的重复"></a>处理相似文本的重复</h1><p>能处理相同的id造成的重复之后，如果我们可以找出一个文章的相似内容， 只要把相似的内容id也添加到需要过滤的集合， 就可以完成对相似内容的过滤</p>
 <h2 id="simhash"><a href="#simhash" class="headerlink" title="simhash"></a>simhash</h2><p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>

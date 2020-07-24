@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ee7e6f;
+  background: #df5cff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3042,20 +3042,32 @@ ul.breadcrumb li + li:last-child {
           <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>业务中有时候会用到<strong>延迟队列</strong>或者<strong>优先级队列</strong>之类的需求。</p>
 <p>延迟队列和优先队列本质上是一个需求，延迟队列可以看成一个使用时间作为优先级的队列。Kafka这种基于日志的消息队列并没有自带延迟队列的功能。所以如果想在Kafka的基础上实现此类功能，需要我们自己动手处理。我现在可以想到的实现方法有两种</p>
 <ol>
-<li><p>外存排序</p>
-</li>
-<li><p>消息分级</p>
-</li>
+<li>外存排序</li>
+<li>消息分级</li>
+<li>时间轮</li>
 </ol>
 <h2 id="消息分级"><a href="#消息分级" class="headerlink" title="消息分级"></a>消息分级</h2><p>先说简单的消息分级机制，假如我们遇到需要根据用户会员等级对给不同等级的用户消息按照不同的优先级进行处理的需求。</p>
 <p>最直观的办法就是我们制作多个等级的消息队列，每个队列对应一个用户等级的消息。或者在一个队列中使用多个不同分区，每个分区对应不同等级的消息。</p>
 <p>这种方法本质上就是把不同优先级的消息内容分开存储。在消息被消费的时候按照多路归并的方式进行处理。</p>
 <p>开源的rocketmq的延迟消息就是这种实现机制，其中的延迟消息队列内置了18个不同延迟时间级别的消息队列，客户端消费消息是从这18个队列中按同时获取的。</p>
-<p>这种方法的缺点很明显，就是等级区分受队列个数限制。如果我们想实现毫秒级的基于时间的延迟队列，那就要每个1ms区间都要构建一个队列出来，这种场景下明显不合理，所以rocketmq仅仅实现了18个时间尺度的优先级队列。</p>
+<p>这种方法的缺点很明显，就是等级区分受队列个数限制，只适用于优先级层级比较少的情况。如果我们想实现毫秒级的基于时间的延迟队列，那就要每个1ms区间都要构建一个队列出来，这种场景下明显不合理，所以rocketmq仅仅实现了18个时间尺度的优先级队列。</p>
 <h2 id="外存排序"><a href="#外存排序" class="headerlink" title="外存排序"></a>外存排序</h2><p>外存排序是真正的按照某种优先级字段对内容进行重新排序，然后再进行消费的手段。</p>
-<p>我们可以先获取队列中的消息内容， 然后按照一定的优先级字段进行排序。最后按照排序后的结果进行消费即可。这种方法的技术难点在于如何利用小内存对大两次盘内容进行排序。因为通常消息队列中的内容都是T级别的，内存空间往往是G级别的。</p>
+<p>我们可以先获取队列中的消息内容， 然后按照一定的优先级字段进行排序。最后按照排序后的结果进行消费即可。这种方法的技术难点在于如何利用小内存对大容量的磁盘内容进行排序。因为通常消息队列中的内容都是T级别的，内存空间往往是G级别的。</p>
+<hr>
+<h3 id="如何在2G内存的机器上对100G文件进行排序"><a href="#如何在2G内存的机器上对100G文件进行排序" class="headerlink" title="如何在2G内存的机器上对100G文件进行排序"></a>如何在2G内存的机器上对100G文件进行排序</h3><p>假设我们要对100G的内容在2G内存的机器上进行排序， 我们可以执行如下操作</p>
+<ol>
+<li>使用split命令把100G文件分割成50个2G的小文件，并对每个分割后的文件使用sort排序</li>
+<li>使用split取50个小文件的前40m数据，读取到内存进行排序，排序后的数据的前40M就是全局最小的40M内容</li>
+<li>将内存排序后的前40M内容输出到磁盘上，内存中剩余的1960M内容放回到磁盘，此时磁盘有51个1960M的有序文件</li>
+<li>仿照上面的方法， 从51个文件每个读取35M内容进行排序，找出全局最小的35M内容</li>
+<li>循环2-4步骤，直至所有内容都被排序成功</li>
+</ol>
+<blockquote>
+<p>ps: sort，split 均为linux自带的命令可以对文件进行排序和分割</p>
+</blockquote>
+<hr>
 <p>如果我们可以在Kafka的broker中实现实时的基于某字段的内容排序， 我们就可以实现这种优先级功能。不过这种实现方法缺点也很明显。首先是延迟时间受受到严重制约，其次也会丧失Kafka的基于日志的复制优势，吞吐量会受到严重影响。</p>
-<h2 id="针对延迟队列的时间轮机制"><a href="#针对延迟队列的时间轮机制" class="headerlink" title="针对延迟队列的时间轮机制"></a>针对延迟队列的时间轮机制</h2><p>我们可以利用Kafka中的时间轮机制，将任务添加到对应的每一个时间分片中， 随着时间轮的驱动， 顺序处理其中的消息</p>
+<h2 id="针对延迟队列的时间轮机制"><a href="#针对延迟队列的时间轮机制" class="headerlink" title="针对延迟队列的时间轮机制"></a>针对延迟队列的时间轮机制</h2><p>我们可以利用Kafka中的时间轮机制，将任务添加到对应的每一个时间分片中， 随着时间轮的驱动， 顺序处理每个时间分片其中的消息</p>
 <p>具体实现可以采用 时间轮数组+消息链表的形式实现，但是这种实现方式比较复杂一定程度上还会损害到吞吐量。</p>
 <p>不过在基于时间的延迟消息机制中已经是最好的解决方案了。但是这种方法不像上一种外存排序那么通用， 可以根据各种自定义的优先级字段进行排序。</p>
 
@@ -3145,14 +3157,14 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="业务背景和需求简介"><a href="#业务背景和需求简介" class="headerlink" title="业务背景和需求简介"></a>业务背景和需求简介</h2><p>业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现</p>
+          <h2 id="业务背景和需求简介"><a href="#业务背景和需求简介" class="headerlink" title="业务背景和需求简介"></a>业务背景和需求简介</h2><p>业务中经常有直播期间播主给用户发红包的操作，由于直播场景的高实时，高并发场景。这个简单的业务中还是有不少的问题出现，这里给出一种经过验证的可以横向扩展支持超高并发量的实现手段</p>
 <h2 id="业务流程"><a href="#业务流程" class="headerlink" title="业务流程"></a>业务流程</h2><p>主播在直播过程中向用户发送红包，主播会设定金额，红包个数，红包类型（随机红包，等额红包）。用户可以去抢那些个红包。</p>
 <h2 id="关键问题"><a href="#关键问题" class="headerlink" title="关键问题"></a>关键问题</h2><h3 id="生成红包的算法"><a href="#生成红包的算法" class="headerlink" title="生成红包的算法"></a>生成红包的算法</h3><p>其实跟发微信红包类似，播主可以发两种不同的红包。一种是等额红包，一种是随机红包。等额红包没什么技术难度，随机红包会涉及到红包的分割算法。</p>
 <p>在随机金额的红包中为了保证用户体验，通常会允许给每份红包设定一个区间范围，保证用户得到的红包不至于太小也不至于太大。</p>
 <p>也就是说我们需要实现如下函数, 根据红包总金额，红包个数，红包的最小值，生成一个具有n个红包具体金额的数组</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_red_package</span><span class="params">(amount, num, min_size, max_size)</span> -&gt; List[float]</span></span><br></pre></td></tr></tbody></table></figure>
 
-<p>这里可以采用一种线性分段的方法来实现均匀的红包分割</p>
+<p>实现简单的红包生成算法并不难，难得是设计一个每个红包生成金额概率均等的足够公平的红包生成算法。这里可以采用一种线性分段的方法来实现均匀的红包分割</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_red_package</span><span class="params">(amount, num, min_size, max_size)</span> -&gt; List[float]:</span></span><br><span class="line">    amount *= <span class="number">100</span></span><br><span class="line">    lines = [<span class="number">0</span>, amount]</span><br><span class="line">    <span class="comment"># 生成num-1个符合要求的随机的点</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, num - <span class="number">1</span>):</span><br><span class="line">        loop = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">while</span> loop:</span><br><span class="line">            r = random.Random().randint(<span class="number">0</span>, amount)</span><br><span class="line">            loop = <span class="keyword">not</span> is_valid(lines, r, min_size * <span class="number">100</span>, max_size * <span class="number">100</span>)</span><br><span class="line">    <span class="comment"># 生成红包        </span></span><br><span class="line">    paks = []</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, len(lines) - <span class="number">1</span>):</span><br><span class="line">        paks.append((lines[j+<span class="number">1</span>] - lines[j])/<span class="number">100</span>)</span><br><span class="line">    <span class="keyword">return</span> paks</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_valid</span><span class="params">(arr, value, min_size, max_size)</span> -&gt; bool:</span></span><br><span class="line">    <span class="keyword">if</span> arr.__contains__(value):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    arr.append(value)</span><br><span class="line">    arr.sort()</span><br><span class="line">    curr = arr.index(value)</span><br><span class="line">    l = arr[max(<span class="number">0</span>, curr - <span class="number">1</span>)]</span><br><span class="line">    r = arr[min(curr + <span class="number">1</span>, len(arr) - <span class="number">1</span>)]</span><br><span class="line">    dl = value - l</span><br><span class="line">    dr = r - value</span><br><span class="line">    <span class="keyword">if</span> dl &gt;= min_size <span class="keyword">and</span> dr &gt;= min_size <span class="keyword">and</span> dl &lt;= max_size <span class="keyword">and</span> dr &lt;= max_size :</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    arr.remove(value)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">print(gen_red_package(<span class="number">100</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">90</span>))</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="如何处理超高并发场景下红包的分发"><a href="#如何处理超高并发场景下红包的分发" class="headerlink" title="如何处理超高并发场景下红包的分发"></a>如何处理超高并发场景下红包的分发</h3><ul>
@@ -3166,6 +3178,12 @@ ul.breadcrumb li + li:last-child {
 </ul>
 <p>数据分流 + 用户分流：我们生成的50个红包可以分成N份，存储到不同的key上, 使用key_0-key_N存储数据会均匀的分配到redis的各个节点上。</p>
 <p>用户在获取红包时，随机请求其中的一份红包数据，这样用户的请求可以有效打散到各个redis节点上， 同时能处理的请求数据可以随节点数量扩展， 但是这种方法的缺点也很明显， 一个是实现复杂，一个是会对用户造成一定程度上不公平的体验。解决数据分布可以使用本地缓存采用节点的方式来减轻这种不公平现象。</p>
+<hr>
+<p>具体流程如下</p>
+<p>播主端红包生成和分发：</p>
+<p>播主发红包 -&gt; 红包生成算法 -&gt; 在线人数检测 -&gt; 红包分流 -&gt; 标记红包分流key -&gt; web服务感知到有热点key进行同步 </p>
+<p>用户端抢红包：</p>
+<p>用户可以抢红包 -&gt;检查红包是否 jvm内部的热点key-&gt; 用户计算自己备份到的红包子key  -&gt; 根据key到redis集群请求红包</p>
 
       
     </div>
@@ -3433,8 +3451,10 @@ ul.breadcrumb li + li:last-child {
       
           <h2 id="A-B实验平台的目的"><a href="#A-B实验平台的目的" class="headerlink" title="A/B实验平台的目的"></a>A/B实验平台的目的</h2><p><strong>提供一个实验平台，可以方便的使用控制变量的手段同时进行多种功能改进的效果对比实验</strong></p>
 <p>对比一个功能上线后的效果如何需要做用户对比实验， 在此过程中需要严格的控制变量。但是有时候我们可能希望同时实验多种不同维度的功能改进的效果，这个时候就需要一个能提供多功能对比实验的A/B实验平台。</p>
-<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种支付方式。我们想通过实验看看哪种颜色的付款按钮付款率更高，还想看看这哪种付款方式的付款率更高。</p>
-<p>此时我们就构成了2个实验，实验1: 针对付款按钮颜色的实验。实验2:针对付款方式的实验。其中的红按钮，蓝按钮就是实验策略。针对颜色的实验和针对付款方式的实验就是实验层。最终所有用户会分不到四个实验结果中。【红按钮信用卡，红按钮支付宝，蓝按钮信用卡，蓝按钮支付宝】。其中的 “红按钮信用卡”就是实验号。</p>
+<h2 id="a-b实验举例"><a href="#a-b实验举例" class="headerlink" title="a/b实验举例"></a>a/b实验举例</h2><p>假设我们现在有一个支付服务， 我们设计了红/蓝两种付款按钮，并且支持信用卡和支付宝两种支付方式。我们想通过实验看看哪种颜色的付款按钮付款率更高，还想看看这哪种付款方式的付款率更高。</p>
+<p>此时我们就构成了2个实验，实验1: 针对付款按钮颜色的实验。实验2:针对付款方式的实验。</p>
+<p>其中的红按钮，蓝按钮就是实验策略。针对颜色的实验和针对付款方式的实验就是实验层。最终所有用户会分不到四个实验结果中。分别是【红按钮信用卡，红按钮支付宝，蓝按钮信用卡，蓝按钮支付宝】。其中的 “红按钮信用卡”就是某一种实验号。</p>
+<p>将来我们验证不同版本实验的效果， 就需要通过实验号流量进行统计。</p>
 <h2 id="实验平台的架构设计"><a href="#实验平台的架构设计" class="headerlink" title="实验平台的架构设计"></a>实验平台的架构设计</h2><p><img data-src="https://i.loli.net/2020/05/09/Eh862JtjNPmkVCS.png" alt="abtest.png"></p>
 <h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>实验：实验是指对某一个具体功能的一整套对比方案。对于一般的功能只有两个可选项，就是开启功能，关闭功能。部分功能可能具有多种不同的状态。</p>
 <p>实验策略：用于表示实验中的某一个具体的选择。同一层实验策略之间互斥。</p>
@@ -3443,7 +3463,7 @@ ul.breadcrumb li + li:last-child {
 <h2 id="用户实验"><a href="#用户实验" class="headerlink" title="用户实验"></a>用户实验</h2><p>我们会根据当前需要进行的实验进行实验分层和隔离，层数和每层的正在执行的实验组会为每个用户分配一个实验号。实验需要有版本设计，每个版本的实验，同一个用户只能获得一个实验号，实验版本更新，用户的实验号随之重新分配。</p>
 <p><strong>实验号的本质是获取一个多维的当前实验配置集合</strong></p>
 <p>用户根据获取到的配置在流程中执行不同的召回，排序和显示策略。</p>
-<h2 id="多实验部署"><a href="#多实验部署" class="headerlink" title="多实验部署"></a>多实验部署</h2><p>当我们想进行一个新的实验时，只需在对应的实验层增加一种配置。同时发布更新实验版本即可。系统会自动对所有用户进行重新的实验号分配，分配完成后，用户在下次情况即可应用新的实验配置。</p>
+<h2 id="多实验部署"><a href="#多实验部署" class="headerlink" title="多实验部署"></a>多实验部署</h2><p>当我们想进行一个新的实验时，只需在对应的实验层增加一种配置。同时发布更新实验版本即可。系统会自动对所有用户进行重新的实验号分配，分配完成后，用户的下次请求即可应用新的实验配置。</p>
 <h2 id="多实验效果回收和评估"><a href="#多实验效果回收和评估" class="headerlink" title="多实验效果回收和评估"></a>多实验效果回收和评估</h2><p>用户使用的实验号和版本信息会随着请求返回客户端，由客户端进行收集埋点。</p>
 <p>如果需要对比某实验的结果，我们只需要根据用户的实验号，做控制变量的反馈效果对比即可。<br>比如上图中我们像对比策略层的实验效果，就需要对比所有xx-xx-C1和xx-xx-C2两类实验号中的数据效果。 为了防止其他变量的影响我们可以更详细的对比A2-B1-C1和 A2-B2-C2这两个实验号中的用户的实验结果</p>
 <p>再如例子中，我们想对比不同颜色按钮的效果就可以拿 所有红色按钮的实验号结果集 和所有的蓝色实验号结果集进行对比</p>

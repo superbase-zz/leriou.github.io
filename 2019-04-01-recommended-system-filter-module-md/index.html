@@ -26,7 +26,7 @@
 <meta property="og:description" content="背景 所有的推荐系统都有一个基本的要求：不给用户推荐重复的信息 这里的重复的信息有两层含义   这个信息是id完全相同的一条信息 这个很好理解，就是一模一样的两条信息，从数据库的角度将就是信息记录的主键id都相同 如果用户已经接受过一次id为10086的信息的推荐，那这个10086就不能出现在后续的同类推荐中   这两个个信息相似度很高，但是id不同 这种情况出现于两条信息内容相似，比如有两篇文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-03-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-24T15:32:20.232Z">
+<meta property="article:modified_time" content="2020-07-24T16:00:34.901Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
 <meta name="twitter:card" content="summary">
@@ -1268,7 +1268,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #88a1ff;
+  background: #d1ffe3;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3141,12 +3141,11 @@ ul.breadcrumb li + li:last-child {
 <h2 id="simhash"><a class="markdownIt-Anchor" href="#simhash"></a> simhash</h2>
 <p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>
 <p>所以我们使用<code>simhash</code>来处理内容相似度的问题</p>
-<p>simhash的核心思想是先提取文章的最重要核心特征， 如果两篇文章的核心特征重复度较高，那就是相似文章</p>
-<p>步骤如下</p>
+<p>simhash的核心思想是先提取文章的最重要核心特征， 如果两篇文章的核心特征重复度较高，那就有可能是相似文章，具体步骤如下</p>
 <ol>
 <li>我们先对文本进行分词，并计算每个词的权重</li>
 <li>对每个词进行hash，并把hash结果的对应二进制位的 0 变为 -1</li>
-<li>把每个文章的每个词的处理过的hash值 * 权重，得到加权向量，并把每个加权向量相加得到最终向量</li>
+<li>把每个文章的每个词的处理过的 hash值 x 权重，得到加权向量，并把每个加权向量相加得到最终向量</li>
 <li>把这个最终向量中的负数变为0，正数变为1</li>
 </ol>
 <p>然后通过汉明距离比较二进制位不同的个数，其实就是计算两个指纹的异或结果，结果中如果包含较少的1， 比如小于3个， 那就说明内容相同</p>

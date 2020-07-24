@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #88a1ff;
+  background: #d1ffe3;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3139,12 +3139,11 @@ ul.breadcrumb li + li:last-child {
 <h2 id="simhash"><a class="markdownIt-Anchor" href="#simhash"></a> simhash</h2>
 <p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>
 <p>所以我们使用<code>simhash</code>来处理内容相似度的问题</p>
-<p>simhash的核心思想是先提取文章的最重要核心特征， 如果两篇文章的核心特征重复度较高，那就是相似文章</p>
-<p>步骤如下</p>
+<p>simhash的核心思想是先提取文章的最重要核心特征， 如果两篇文章的核心特征重复度较高，那就有可能是相似文章，具体步骤如下</p>
 <ol>
 <li>我们先对文本进行分词，并计算每个词的权重</li>
 <li>对每个词进行hash，并把hash结果的对应二进制位的 0 变为 -1</li>
-<li>把每个文章的每个词的处理过的hash值 * 权重，得到加权向量，并把每个加权向量相加得到最终向量</li>
+<li>把每个文章的每个词的处理过的 hash值 x 权重，得到加权向量，并把每个加权向量相加得到最终向量</li>
 <li>把这个最终向量中的负数变为0，正数变为1</li>
 </ol>
 <p>然后通过汉明距离比较二进制位不同的个数，其实就是计算两个指纹的异或结果，结果中如果包含较少的1， 比如小于3个， 那就说明内容相同</p>
@@ -4454,79 +4453,94 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 
       
           <p>GFS是谷歌的底层文件系统</p>
-<h1 id="GFS简介"><a href="#GFS简介" class="headerlink" title="GFS简介"></a>GFS简介</h1><p>GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务</p>
-<p>GFS服务的是上层的<code>Bigtable</code>, <code>Megastore</code>等上层数据库应用，所以GFS的读写基本都是其他应用的大文件批量数据读写</p>
-<p>Google于2003年放出了GFS的设计论文</p>
+<p>本文试图解释如下问题</p>
+<ol>
+<li>GFS是什么，做什么用的，要解决什么问题</li>
+<li>GFS是怎么解决这些问题的</li>
+<li>GFS的设计有什么优点和缺点</li>
+</ol>
+<h1 id="gfs简介"><a class="markdownIt-Anchor" href="#gfs简介"></a> GFS简介</h1>
+<p>GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务。</p>
+<p>GFS服务的是上层的<code>Bigtable</code>, <code>Megastore</code>等上层数据库应用，所以GFS的读写基本都是其他应用的大文件批量数据读写，Google于2003年放出了GFS的设计论文。</p>
 <p>论文地址 <a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/gfs-sosp2003.pdf" target="_blank" rel="noopener">The Google File System</a></p>
-<h1 id="GFS的特点"><a href="#GFS的特点" class="headerlink" title="GFS的特点"></a>GFS的特点</h1><ol>
-<li>仅支持文件追加操作 (适用于谷歌的爬虫数据存储需求)</li>
-<li>文件块大小为64M (优点很多, 减少元数据量, 减低master服务器压力, 缺点也有)</li>
+<h1 id="gfs的特点"><a class="markdownIt-Anchor" href="#gfs的特点"></a> GFS的特点</h1>
+<ol>
+<li>仅支持文件追加操作 (适用于谷歌的爬虫数据存储需求)，文件块大小为64M (优点很多, 减少元数据量, 减低master服务器压力)</li>
 <li>采用中心化的master节点管理元数据 (可能造成单点故障和性能存储瓶颈)</li>
 <li>基于廉价服务器实现高容错高可用</li>
+<li>控制流和数据流分离，针对当年的网络环境进行优化</li>
 </ol>
-<h1 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h1><p>GFS的核心服务分为三个部分</p>
+<h1 id="核心组件"><a class="markdownIt-Anchor" href="#核心组件"></a> 核心组件</h1>
+<p>GFS的核心服务分为三个部分，client, master 和chunkserver。</p>
+<ol>
+<li>
+<p>Client               -&gt;  Client就是各种应用中使用GFS的客户端,以库文件的形式提供</p>
+</li>
+<li>
+<p>MasterServer  -&gt;   MasterServer相当于对ChunkServer数据进行管理的管理者,存储整个文件传统的目录结构和文件元信息(包括Chunk分片信息和分片位置),Client从Master获取到具体的文件所在的ChunkServer的地址,然后直接与ChunkServer通信进行数据操作</p>
+</li>
+<li>
+<p>ChunkServer  -&gt;   存储具体文件数据的服务器</p>
+</li>
+</ol>
 <p><img data-src="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg" alt="1334712344_6225.jpg"></p>
 <p>GFS采用中心化的管理方式,Client作为应用使用方,Master作为ChunkServer的管理者,ChunkServer来负责数据的存储,client与master进行交互获取控制信息,然后与对应的ChunkServer交互获取具体的数据</p>
-<ol>
-<li><p>Client</p>
-<p> Client就是各种应用中使用GFS的客户端,以库文件的形式提供</p>
-</li>
-<li><p>MasterServer</p>
-<p> MasterServer相当于对ChunkServer数据进行管理的管理者,存储整个文件传统的目录结构和文件元信息(包括Chunk分片信息和分片位置),Client从Master获取到具体的文件所在的ChunkServer的地址,然后直接与ChunkServer通信进行数据操作</p>
-</li>
-<li><p>ChunkServer</p>
-<p> 存储具体文件数据的服务器</p>
-</li>
-</ol>
-<h1 id="内部数据管理机制"><a href="#内部数据管理机制" class="headerlink" title="内部数据管理机制"></a>内部数据管理机制</h1><h2 id="Master数据存储"><a href="#Master数据存储" class="headerlink" title="Master数据存储"></a>Master数据存储</h2><p>MasterServer中存储3类信息:</p>
+<h1 id="内部数据管理机制"><a class="markdownIt-Anchor" href="#内部数据管理机制"></a> 内部数据管理机制</h1>
+<h2 id="master数据存储"><a class="markdownIt-Anchor" href="#master数据存储"></a> Master数据存储</h2>
+<p>MasterServer中存储3类信息:</p>
 <ol>
 <li>文件系统的命名空间,整个文件系统的目录结构和Chunk基本信息</li>
 <li>文件与Chunk的映射关系</li>
 <li>Chunk副本的位置信息,默认每个Chunk使用3个副本</li>
 </ol>
-<p>由于MasterServer采用中心化的单节点管理,所以MasterServer的内存使用和性能都是我们要关注的点:</p>
+<p>由于MasterServer采用中心化的单节点管理，所以MasterServer的内存使用和性能都是我们要关注的点:</p>
 <pre><code>假设要存储1Pb的数据 MasterServer的内存使用为 
-
+    
 (1P * 64b * 3) / 64Mb = 3Gb
-
+    
 1P  : 是总数据大小
 64Mb: 是每个Chunk的容量
 3   : 是Chunk备份数量,默认为3
-64b : 是每个Chunk的元属性所占的空间</code></pre><h2 id="ChunkServer存储的数据"><a href="#ChunkServer存储的数据" class="headerlink" title="ChunkServer存储的数据"></a>ChunkServer存储的数据</h2><p>ChunkServer中存储Chunk的具体文件内容</p>
-<p>GFS将每个Chunk限制为64M, Chunk内部又分为众多的Block</p>
-<p>同时ChunkServer还负责进行具体每个Chunk文件的读写操作, 接受并执行每个主Chunk(租约Chunk)的指令</p>
-<p>ChunkServer还需要定时与master进行心跳同步，上报自己持有的运行状态和维护的chunk信息</p>
-<h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>由于GFS是由众多的廉价服务器组成的系统,所以系统的负载问题就是十分重要</p>
-<p>GFS会根据每个服务器的负载和最近操作数来决定新数据的分布,以保证数据分布的均匀</p>
-<p>一般有三个基本原则</p>
+64b : 是每个Chunk的元属性所占的空间
+</code></pre>
+<h2 id="chunkserver存储的数据"><a class="markdownIt-Anchor" href="#chunkserver存储的数据"></a> ChunkServer存储的数据</h2>
+<p>ChunkServer中存储Chunk的具体文件内容。GFS将每个Chunk限制为64M, Chunk内部又分为众多的Block，同时ChunkServer还负责进行具体每个Chunk文件的读写操作, 接受并执行每个主Chunk(租约Chunk)的指令。ChunkServer还需要定时与master进行心跳同步，上报自己的运行状态和维护的chunk信息</p>
+<p>ChunkServer启动时会向MasterServer上报存储的文件信息,也会周期性的向MasterServer上报自己的服务器状态, 以此来保证master上的ChunServer信息保持更新, 并及时发现ChunkServer的故障</p>
+<h2 id="负载均衡"><a class="markdownIt-Anchor" href="#负载均衡"></a> 负载均衡</h2>
+<p>由于GFS是由众多的廉价服务器组成的系统，所以系统的负载问题就是十分重要。GFS会根据每个服务器的负载和最近操作数来决定新数据的分布，以保证数据分布的均匀。一般有三个基本原则</p>
 <ol>
 <li>同一个Chunk的多个副本不会放在同一个机架</li>
 <li>ChunkServer最近操作数有一定的限制</li>
 <li>优先选择磁盘负载较低的服务器</li>
 </ol>
 <p>第二点十分重要但时常被忽略,如果没有第二条规则限制, 很容易出现新加的机器由于负载过低导致短时间内大量数据都往这个机器上操作, 导致新添加的机器被压垮</p>
-<p>ChunkServer启动时会向MasterServer上报存储的文件信息,也会周期性的向MasterServer上报自己的服务器状态, 以此来保证master上的ChunServer信息保持更新, 并及时发现ChunkServer的故障</p>
-<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>GFS采用标记回收的方式处理,删除一个文件之后,GFS并不会立即要求归还可用的物理空间,而是在元数据中将文件表示为一个不可用的隐藏名字,标记一个删除的时间戳</p>
+<h2 id="垃圾回收"><a class="markdownIt-Anchor" href="#垃圾回收"></a> 垃圾回收</h2>
+<p>GFS采用标记回收的方式处理,删除一个文件之后,GFS并不会立即要求归还可用的物理空间,而是在元数据中将文件表示为一个不可用的隐藏名字,标记一个删除的时间戳</p>
 <p>Master定时检查,文件被删除超过一定时间,Master会删除文件的元数据信息,之后在与ChunkServer交互时通知ChunkServer删除对应的Chunk信息,ChunkServer来处理后续的存储释放</p>
 <p>过期的Chunk也是通过垃圾回收机制来进行删除</p>
-<h2 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h2><p>一但对一个文件采取快照, GFS会通过租约机制先停止所有Chunk的写操作, 更新所有Chunk副本的引用计数</p>
+<h2 id="文件快照"><a class="markdownIt-Anchor" href="#文件快照"></a> 文件快照</h2>
+<p>一但对一个文件采取快照, GFS会通过租约机制先停止所有Chunk的写操作, 更新所有Chunk副本的引用计数</p>
 <p>然后之后的写请求在执行时会copy一个Chunk副本,后续的修改都会落到新的Chunk上面</p>
 <p>例如:</p>
-<p>对文件 f 执行快照生成 f_back , f在GFS中有三个Chunk: C1,C2,C3 </p>
-<p>Master首先会回收C1,C2,C3的写租约,从而保证此时的f状态一致,然后Master复制 f的元数据生成一个新的文件 f_back</p>
-<p>此时f_back的 Chunk仍然指向 C1,C2,C3. 快照之前, C1,C2,C3只被一个文件引用,引用计数为1, 快照之后引用技术更新为2</p>
-<p>当客户端向C3增加数据时,Master发现c3引用计数超过1,会通知ChunkServer生成新的C3’, 新的操作也会在C3’上面进行</p>
-<p>f的Chunk映射也会更新为 C1,C2,C3’</p>
+<p>对文件 F 执行快照生成 F’ ，F在GFS中有三个Chunk: C1,C2,C3 。Master首先会回收C1,C2,C3的写租约,从而保证此时的F状态一致,然后Master复制 F的元数据生成一个新的文件 F’。</p>
+<p>此时F’的 Chunk仍然指向 C1,C2,C3. 快照之前, C1,C2,C3只被一个文件引用,引用计数为1, 快照之后引用技术更新为2</p>
+<p>当客户端向C3增加数据时,Master发现c3引用计数超过1,会通知ChunkServer生成新的C3’, 新的操作也会在C3’上面进行，F的Chunk映射也会更新为 C1,C2,C3’</p>
 <blockquote>
 <p>ps: 这个机制叫写时复制(Copy On Write)</p>
 </blockquote>
-<h1 id="读写数据的流程"><a href="#读写数据的流程" class="headerlink" title="读写数据的流程"></a>读写数据的流程</h1><h2 id="读取流程"><a href="#读取流程" class="headerlink" title="读取流程"></a>读取流程</h2><p>GFS中的文件读取流程大致如下:</p>
+<h1 id="gfs读写数据的流程"><a class="markdownIt-Anchor" href="#gfs读写数据的流程"></a> GFS读写数据的流程</h1>
+<h2 id="读取流程"><a class="markdownIt-Anchor" href="#读取流程"></a> 读取流程</h2>
+<p>GFS中的文件读取流程大致如下:</p>
 <pre><code>1. client发送给master需要获取的文件名和偏移量(告诉服务器我要读某文件的某段数据)
 2. master根据文件名查找命名空间中的文件对应的文件块id,返回对应的ChunkServer和副本的位置
-3. client根据返回的ChunkServer的位置信息去对应的Chunk上面取对应的数据</code></pre><blockquote>
+3. client根据返回的ChunkServer的位置信息去对应的Chunk上面取对应的数据
+</code></pre>
+<blockquote>
 <p>ps: client会缓存一部分的ChunkServer元信息(某个ChunkServer在某个机器上面,副本分布情况等),但并不会缓存具体的文件内容, 以此降低Master服务器的负载, ChunkServer会对服务器的请求进行校验, 当ChunkServer信息有变动时, 客户端如果使用过期的Chunk信息, 能从ChunkServer得到反馈, 重新去Master获取最新的Chunk信息</p>
 </blockquote>
-<h2 id="数据的写"><a href="#数据的写" class="headerlink" title="数据的写"></a>数据的写</h2><p>GFS中写入数据的流程如下:</p>
+<p>这种读取方式的好处是client直接与chunk服务器进行数据交互，由于chunk服务器数量较多，可以同时支持极高的并行数据传输。</p>
+<h2 id="数据的写"><a class="markdownIt-Anchor" href="#数据的写"></a> 数据的写</h2>
+<p>GFS中写入数据的流程如下:</p>
 <p><img data-src="https://i.loli.net/2020/05/09/J5EbuqjnQHvRUIf.jpg" alt="1334931385_9113.jpg"></p>
 <p>master使用租约授权一个chunk副本为primary副本,执行client的写操作</p>
 <ol>
@@ -4539,23 +4553,31 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <li>primary回复client操作情况，任何副本错误都导致此次请求失败，并且此时副本处于不一致状态（写操作完成情况不一样）。client会尝试几次3到7的步骤，实在不行就只能重头来过了</li>
 </ol>
 <p>也就是说GFS也是使用持有租约的primary副本来进行一致性保证， 其他所有副本均按照primary确定的写入顺序执行</p>
-<h1 id="故障恢复和容错机制"><a href="#故障恢复和容错机制" class="headerlink" title="故障恢复和容错机制"></a>故障恢复和容错机制</h1><h2 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h2><p>GFS能使用checkpoint 文件和日志文件快速进行故障的恢复</p>
-<h2 id="副本复制"><a href="#副本复制" class="headerlink" title="副本复制"></a>副本复制</h2><p>GFS通过副本进行数据备份， 只要一个chunk有一个副本所在的机器存活，数据就可以恢复</p>
-<h2 id="Matser的容错"><a href="#Matser的容错" class="headerlink" title="Matser的容错"></a>Matser的容错</h2><p>Master会进行远程备份，Master存储文件的信息有</p>
+<h1 id="故障恢复和容错机制"><a class="markdownIt-Anchor" href="#故障恢复和容错机制"></a> 故障恢复和容错机制</h1>
+<h2 id="快速恢复"><a class="markdownIt-Anchor" href="#快速恢复"></a> 快速恢复</h2>
+<p>GFS能使用checkpoint 文件和日志文件快速进行故障的恢复</p>
+<h2 id="副本复制"><a class="markdownIt-Anchor" href="#副本复制"></a> 副本复制</h2>
+<p>GFS通过副本进行数据备份， 只要一个chunk有一个副本所在的机器存活，数据就可以恢复</p>
+<h2 id="matser的容错"><a class="markdownIt-Anchor" href="#matser的容错"></a> Matser的容错</h2>
+<p>Master会进行远程备份，Master存储文件的信息有</p>
 <ol>
 <li>文件的命名空间信息(整个文件系统的目录)</li>
 <li>Chunk服务器和文件名的映射关系</li>
 <li>Chunk服务器的地址和副本信息</li>
 </ol>
-<p>对于前两种操作GFS通过操作日志提供容错,日志会被被分到远程服务器<br>最后一种保存在ChunkServer上, 当ChunkServer跟master注册时,或者Master启动时,使用轮询的方式去ChunkServer获取元数据</p>
-<h2 id="ChunkServer的容错"><a href="#ChunkServer的容错" class="headerlink" title="ChunkServer的容错"></a>ChunkServer的容错</h2><ol>
+<p>对于前两种操作GFS通过操作日志提供容错,日志会被被分到远程服务器<br>
+最后一种保存在ChunkServer上, 当ChunkServer跟master注册时,或者Master启动时,使用轮询的方式去ChunkServer获取元数据</p>
+<h2 id="chunkserver的容错"><a class="markdownIt-Anchor" href="#chunkserver的容错"></a> ChunkServer的容错</h2>
+<ol>
 <li>每个Chunk默认拥有3个副本, 分布在不同的ChunkServer上面</li>
 <li>ChunkServer在发送数据之前会检查block的32的校验和,如果不一致就会上报Master,Master会从其他副本进行复制,并删除出错的副本数据</li>
 </ol>
 <blockquote>
-<p>ps：为什么是默认3个副本呢，是因为副本的分布要同时满足性能和安全性需求，也就是同一机架放两个副本，另一副本放到另一机架，平衡安全性和速度。<br>同时三个副本正好能覆盖chunk所有的可能存在的状态，1. 正常获得租约状态 2. 租约到期，进行转换  3. 作为其他chunk的副本 </p>
+<p>ps：为什么是默认3个副本呢，是因为副本的分布要同时满足性能和安全性需求，也就是同一机架放两个副本，另一副本放到另一机架，平衡安全性和速度。<br>
+同时三个副本正好能覆盖chunk所有的可能存在的状态，1. 正常获得租约状态 2. 租约到期，进行转换  3. 作为其他chunk的副本</p>
 </blockquote>
-<h1 id="其他优化的点"><a href="#其他优化的点" class="headerlink" title="其他优化的点"></a>其他优化的点</h1><ul>
+<h1 id="其他优化的点"><a class="markdownIt-Anchor" href="#其他优化的点"></a> 其他优化的点</h1>
+<ul>
 <li>文件树存储</li>
 </ul>
 <p>由于master需要存储所有的文件树和块的对应关系，采用了前缀树进行数据压缩，大大提高了可存储数据的容量</p>
@@ -4570,11 +4592,13 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <ul>
 <li>读数据时候的数据流</li>
 </ul>
-<p>GFS写入数据的时候客户端并不是采用星型或者树形结构，同时持有多个副本的链接并向副本发送数据，而是经过了一定的拓扑优化<br>客户端会将数据发送给离自己最近的节点s1，同时该节点会继续将数据发送给离自己最近的节点s2，没一个节点都发送给离自己最近同时又没有接受数据的节点，以其充分利用机器的带宽</p>
+<p>GFS写入数据的时候客户端并不是采用星型或者树形结构，同时持有多个副本的链接并向副本发送数据，而是经过了一定的拓扑优化<br>
+客户端会将数据发送给离自己最近的节点s1，同时该节点会继续将数据发送给离自己最近的节点s2，没一个节点都发送给离自己最近同时又没有接受数据的节点，以其充分利用机器的带宽</p>
 <blockquote>
 <p>ps: 这个问题有点像旅行商问题</p>
 </blockquote>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<ol>
 <li>GFS是一个中心化的分布式文件系统, 文件的具体信息分块存储, 同一文件可能被分为多个Chunk块, 每个Chunk块有多个副本</li>
 <li>Master负责文件的元数据的管理, ChunkServer负责文件具体数据的管理</li>
 <li>Client读数据需要先从Matser处获取到文件的Chunk分布信息, 然后去对应的ChunkServer上取得真正的文件数据</li>

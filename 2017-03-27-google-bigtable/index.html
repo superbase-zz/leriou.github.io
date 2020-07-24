@@ -18,18 +18,18 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="Google Bigtable本文希望能解答如下问题  Bigtable产生的原因是什么，解决了什么问题 Bigtable是怎么解决这些问题的 Bigtable当前采用的方案有什么优点和不足  GFS的限制GFS是谷歌的分布式文件系统，提供了基础的分布式存储和读写服务，解决了大规模的数据的存储和使用的问题。但是由于GFS接口过于底层，内部存储的都是纯粹的二进制文件数据。Google希望提供一个具有">
+  <meta name="description" content="Google Bigtable 本文希望能解答如下问题  Bigtable产生的原因是什么，解决了什么问题 Bigtable是怎么解决这些问题的 Bigtable当前采用的方案有什么优点和不足   GFS的限制 GFS是谷歌的分布式文件系统，提供了基础的分布式存储和读写服务，解决了大规模的数据的存储和使用的问题。但是由于GFS接口过于底层，内部存储的都是纯粹的二进制文件数据。Google希望提供">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Google-Bigtable学习记录">
 <meta property="og:url" content="https://leriou.github.io/2017-03-27-google-bigtable/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="Google Bigtable本文希望能解答如下问题  Bigtable产生的原因是什么，解决了什么问题 Bigtable是怎么解决这些问题的 Bigtable当前采用的方案有什么优点和不足  GFS的限制GFS是谷歌的分布式文件系统，提供了基础的分布式存储和读写服务，解决了大规模的数据的存储和使用的问题。但是由于GFS接口过于底层，内部存储的都是纯粹的二进制文件数据。Google希望提供一个具有">
+<meta property="og:description" content="Google Bigtable 本文希望能解答如下问题  Bigtable产生的原因是什么，解决了什么问题 Bigtable是怎么解决这些问题的 Bigtable当前采用的方案有什么优点和不足   GFS的限制 GFS是谷歌的分布式文件系统，提供了基础的分布式存储和读写服务，解决了大规模的数据的存储和使用的问题。但是由于GFS接口过于底层，内部存储的都是纯粹的二进制文件数据。Google希望提供">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/rvzm8XYQhSPCpfD.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/JETjbsYLZaFNyDA.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/10/kaMqH1gF7BNvE4b.png">
 <meta property="article:published_time" content="2017-03-27T10:51:00.000Z">
-<meta property="article:modified_time" content="2020-07-22T15:13:57.983Z">
+<meta property="article:modified_time" content="2020-07-24T15:32:20.216Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="Bigtable">
 <meta name="twitter:card" content="summary">
@@ -1272,7 +1272,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #b8a3ba;
+  background: #88a1ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3045,25 +3045,26 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Google-Bigtable"><a href="#Google-Bigtable" class="headerlink" title="Google Bigtable"></a>Google Bigtable</h2><p>本文希望能解答如下问题</p>
+        <h2 id="google-bigtable"><a class="markdownIt-Anchor" href="#google-bigtable"></a> Google Bigtable</h2>
+<p>本文希望能解答如下问题</p>
 <ol>
 <li>Bigtable产生的原因是什么，解决了什么问题</li>
 <li>Bigtable是怎么解决这些问题的</li>
 <li>Bigtable当前采用的方案有什么优点和不足</li>
 </ol>
-<h2 id="GFS的限制"><a href="#GFS的限制" class="headerlink" title="GFS的限制"></a>GFS的限制</h2><p>GFS是谷歌的分布式文件系统，提供了基础的分布式存储和读写服务，解决了大规模的数据的存储和使用的问题。但是由于GFS接口过于底层，内部存储的都是纯粹的二进制文件数据。Google希望提供一个具有结构模型的数据库产品以方便上层业务易于使用分布式数据存储服务</p>
-<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>Bigtable 是一个稀疏的、分布式的、持久化存储的多维度排序 Map。Map 的索引是行关键字、列关键字以及时间戳；Map 中的每个 value 都是一个未经解析的 byte 数组。</p>
+<h2 id="gfs的限制"><a class="markdownIt-Anchor" href="#gfs的限制"></a> GFS的限制</h2>
+<p>GFS是谷歌的分布式文件系统，提供了基础的分布式存储和读写服务，解决了大规模的数据的存储和使用的问题。但是由于GFS接口过于底层，内部存储的都是纯粹的二进制文件数据。Google希望提供一个具有结构模型的数据库产品以方便上层业务易于使用分布式数据存储服务</p>
+<h2 id="数据模型"><a class="markdownIt-Anchor" href="#数据模型"></a> 数据模型</h2>
+<p>Bigtable 是一个稀疏的、分布式的、持久化存储的多维度排序 Map。Map 的索引是行关键字、列关键字以及时间戳；Map 中的每个 value 都是一个未经解析的 byte 数组。</p>
 <p>map的key是以 &lt;row, column, time&gt; 为综合key的字符串</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(row:<span class="built_in">string</span>, column:<span class="built_in">string</span>,time:int64)-&gt;<span class="built_in">string</span></span><br></pre></td></tr></tbody></table></figure>
-
+<figure class="highlight powershell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(row:string, column:string,time:int64) -&gt; string</span><br></pre></td></tr></tbody></table></figure>
 <p>之所以采用这个一个简单的模型主要原因有以下几个</p>
 <ul>
 <li>足够简单灵活，可以满足大多数的数据存储需求</li>
 <li>足够可靠</li>
 </ul>
 <p><img data-src="https://i.loli.net/2020/05/09/rvzm8XYQhSPCpfD.png" alt="bigtable_figure1.png"></p>
-<p>这套k-v模型看起来简单， 却足以表达我们的其他表模型， 例如如下表格</p>
-<p>table1</p>
+<p>这套k-v模型看起来简单， 却足以表达我们的其他表模型， 例如如下表格-table1</p>
 <table>
 <thead>
 <tr>
@@ -3073,7 +3074,8 @@ ul.breadcrumb li + li:last-child {
 <th>meta:status</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>小明</td>
 <td>19</td>
@@ -3091,20 +3093,25 @@ ul.breadcrumb li + li:last-child {
 <td>13</td>
 <td>1</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>像上面的一个常见的二维表格在Bigtable中我们可以使用如下方式表示</p>
 <figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table1:<span class="number">1</span>:info:name -&gt; 小明</span><br><span class="line">table1:<span class="number">1</span>:info:age -&gt; <span class="number">19</span></span><br><span class="line">table1:<span class="number">1</span>:meta:status -&gt; <span class="number">1</span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>上面3个条记录共同构成原表中的rowkey为1的一行记录</p>
-<h3 id="行"><a href="#行" class="headerlink" title="行"></a>行</h3><p>表中的行关键字可以是任意小于64k的字符串，同一个行关键字的读或者写都是原子性的。上述的例子里面我们就可以把1/2/3作为行关键字。某种意义上，行关键字类似于传统数据库中的主键ID。</p>
+<h3 id="行"><a class="markdownIt-Anchor" href="#行"></a> 行</h3>
+<p>表中的行关键字可以是任意小于64k的字符串，同一个行关键字的读或者写都是原子性的。上述的例子里面我们就可以把1/2/3作为行关键字。某种意义上，行关键字类似于传统数据库中的主键ID。</p>
 <p>Bigtable中的数据拆分是按照行关键字来进行的，也就是说，如果我们有3个数据节点， 1 ， 2， 3这三条记录可以被被分到不同的机器上面</p>
-<h3 id="列族"><a href="#列族" class="headerlink" title="列族"></a>列族</h3><p>我们上述的表中的INFO和META就是列族, 图表1 中的anchor也是列族的体现。 列族必须提前创建。列族下还可以含有多个列，像NAME和AGE就同属于一个列族下面的不同列。</p>
+<h3 id="列族"><a class="markdownIt-Anchor" href="#列族"></a> 列族</h3>
+<p>我们上述的表中的INFO和META就是列族, 图表1 中的anchor也是列族的体现。 列族必须提前创建。列族下还可以含有多个列，像NAME和AGE就同属于一个列族下面的不同列。</p>
 <p>列族的存在是为了方便对数据进行压缩</p>
-<h3 id="时间戳"><a href="#时间戳" class="headerlink" title="时间戳"></a>时间戳</h3><p>在 Bigtable 中，表的每一个数据项都可以包含同一份数据的不同版本;不同版本的数据通过时间戳来索 引。Bigtable 时间戳的类型是 64 位整型。Bigtable 可以给时间戳赋值，用来表示精确到毫秒的“实时”时间; 用户程序也可以给时间戳赋值。</p>
+<h3 id="时间戳"><a class="markdownIt-Anchor" href="#时间戳"></a> 时间戳</h3>
+<p>在 Bigtable 中，表的每一个数据项都可以包含同一份数据的不同版本;不同版本的数据通过时间戳来索 引。Bigtable 时间戳的类型是 64 位整型。Bigtable 可以给时间戳赋值，用来表示精确到毫秒的“实时”时间; 用户程序也可以给时间戳赋值。</p>
 <p>如果应用程序需要避免数据版本冲突，那么它必须自己生成具有唯一性的时间戳。数据项中，不同版本的数据按照时间戳倒序排序，即最新的数据排在最前面。</p>
-<h2 id="接口约定"><a href="#接口约定" class="headerlink" title="接口约定"></a>接口约定</h2><p>客户程序可以对 Bigtable 进行如下的操作:写入或者删除 Bigtable 中的值、从每个行中查找值、或者遍历表中的一个数据子集。</p>
+<h2 id="接口约定"><a class="markdownIt-Anchor" href="#接口约定"></a> 接口约定</h2>
+<p>客户程序可以对 Bigtable 进行如下的操作:写入或者删除 Bigtable 中的值、从每个行中查找值、或者遍历表中的一个数据子集。</p>
 <p>Bigtable 可以和 MapReduce一起使用，MapReduce 是 Google 开发的大规模并行计算框架。Google已 经开发了一些 Wrapper 类，通过使用这些 Wrapper 类，Bigtable 可以作为 MapReduce 框架的输入和输出。</p>
-<h2 id="Bigtable架构"><a href="#Bigtable架构" class="headerlink" title="Bigtable架构"></a>Bigtable架构</h2><p>Bigtable是建立在其它的几个Google基础构件上的。BigTable使用Google的分布式文件系统(GFS)存储日志文件和数据文件。</p>
+<h2 id="bigtable架构"><a class="markdownIt-Anchor" href="#bigtable架构"></a> Bigtable架构</h2>
+<p>Bigtable是建立在其它的几个Google基础构件上的。BigTable使用Google的分布式文件系统(GFS)存储日志文件和数据文件。</p>
 <p>刚才提到的列族就是Bigtable存储的文件单位， 同一个列族的信息会被整合成一个SSTable文件，会随着rowkey分布到不同的机器上。多个SSTable会由索引文件来定位数据，也可以被加载到内存，通过二分查找查找其中的有序数据。</p>
 <p>BigTable 还依赖一个高可用的、序列化的分布式锁服务组件，叫做 Chubby。一个 Chubby 服务包括了 5 个活动的副本，其中的一个副本被选为 Master，并且处理请求。</p>
 <p>Bigtable 包括了三个主要的组件:链接到客户程序中的库、一个 Master 服务器和多个 Tablet 服务器。针 对系统工作负载的变化情况，BigTable 可以动态的向集群中添加(或者删除)Tablet 服务器。</p>
@@ -3115,7 +3122,8 @@ ul.breadcrumb li + li:last-child {
 <p><img data-src="https://i.loli.net/2020/05/10/kaMqH1gF7BNvE4b.png" alt="FElNjQbZkntR3YJ.png"></p>
 <p>Bigtable采用LSM树的形式进行读写操作，新数据先写入日志文件和内存，等内存达到一定数量或者一定时间在将内存中的数据固化到磁盘。 读取的时候先读区内存中的数据， 如果内存中没有要找的数据，返回磁盘进行逐级向上的查找。</p>
 <p>写入日志的存在是为了防止机器挂掉以后内存数据的丢失</p>
-<h3 id="Bigtable怎么解决一致性，可用性和分区容忍性"><a href="#Bigtable怎么解决一致性，可用性和分区容忍性" class="headerlink" title="Bigtable怎么解决一致性，可用性和分区容忍性"></a>Bigtable怎么解决一致性，可用性和分区容忍性</h3><p>Bigtable构架于GFS之上， Bigtable本身并没有提供备份或者主从副本的方案。所以Bigtable依赖于GFS提供一致性和可用性保证。</p>
+<h3 id="bigtable怎么解决一致性可用性和分区容忍性"><a class="markdownIt-Anchor" href="#bigtable怎么解决一致性可用性和分区容忍性"></a> Bigtable怎么解决一致性，可用性和分区容忍性</h3>
+<p>Bigtable构架于GFS之上， Bigtable本身并没有提供备份或者主从副本的方案。所以Bigtable依赖于GFS提供一致性和可用性保证。</p>
 
     </div>
 
@@ -3201,7 +3209,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Google-Bigtable"><span class="nav-number">1.</span> <span class="nav-text">Google Bigtable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GFS的限制"><span class="nav-number">2.</span> <span class="nav-text">GFS的限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据模型"><span class="nav-number">3.</span> <span class="nav-text">数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行"><span class="nav-number">3.1.</span> <span class="nav-text">行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列族"><span class="nav-number">3.2.</span> <span class="nav-text">列族</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳"><span class="nav-number">3.3.</span> <span class="nav-text">时间戳</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口约定"><span class="nav-number">4.</span> <span class="nav-text">接口约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bigtable架构"><span class="nav-number">5.</span> <span class="nav-text">Bigtable架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bigtable怎么解决一致性，可用性和分区容忍性"><span class="nav-number">5.1.</span> <span class="nav-text">Bigtable怎么解决一致性，可用性和分区容忍性</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#google-bigtable"><span class="nav-number">1.</span> <span class="nav-text"> Google Bigtable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gfs的限制"><span class="nav-number">2.</span> <span class="nav-text"> GFS的限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据模型"><span class="nav-number">3.</span> <span class="nav-text"> 数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行"><span class="nav-number">3.1.</span> <span class="nav-text"> 行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列族"><span class="nav-number">3.2.</span> <span class="nav-text"> 列族</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳"><span class="nav-number">3.3.</span> <span class="nav-text"> 时间戳</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口约定"><span class="nav-number">4.</span> <span class="nav-text"> 接口约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bigtable架构"><span class="nav-number">5.</span> <span class="nav-text"> Bigtable架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bigtable怎么解决一致性可用性和分区容忍性"><span class="nav-number">5.1.</span> <span class="nav-text"> Bigtable怎么解决一致性，可用性和分区容忍性</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

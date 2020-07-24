@@ -27,7 +27,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/HhJdn5CA14lwLjc.png">
 <meta property="article:published_time" content="2017-02-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-22T15:13:57.991Z">
+<meta property="article:modified_time" content="2020-07-24T15:32:20.228Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="系统设计">
 <meta property="article:tag" content="消息通知系统">
@@ -1271,7 +1271,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #b8a3ba;
+  background: #88a1ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3044,24 +3044,36 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="站内信通知系统的设计"><a href="#站内信通知系统的设计" class="headerlink" title="站内信通知系统的设计"></a>站内信通知系统的设计</h1><p>站内信系统是一个成熟的系统所应该具有的基本系统组件</p>
-<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>站内信通知系统的核心目标是为系统提供一个 用户与用户,系统与用户交互的手段,属于网站信息传播的一个重要途径,如果详细考虑,该系统实在是一个非常庞大的系统设计,可以做的事情非常的多</p>
+        <h1 id="站内信通知系统的设计"><a class="markdownIt-Anchor" href="#站内信通知系统的设计"></a> 站内信通知系统的设计</h1>
+<p>站内信系统是一个成熟的系统所应该具有的基本系统组件</p>
+<h2 id="需求分析"><a class="markdownIt-Anchor" href="#需求分析"></a> 需求分析</h2>
+<p>站内信通知系统的核心目标是为系统提供一个 用户与用户,系统与用户交互的手段,属于网站信息传播的一个重要途径,如果详细考虑,该系统实在是一个非常庞大的系统设计,可以做的事情非常的多</p>
 <p>这里只是简单梳理一下普通消息系统需要做到的部分和功能设计,并提供一个可用的实际消息系统框架</p>
 <p>一个完成的消息通知系统大概可以分为两部分, 消息系统和通知系统</p>
 <p>消息系统主要负责消息的产生,接收等,通知系统则要实现事件机制,通知机制,对接各种消息通知平台(短信,微信,邮件等)</p>
 <p>消息通知系统的核心处理大概可以分为以下3个部分:</p>
 <ol>
-<li><p>消息产生</p>
-<pre><code>消息的产生:消息如何产生,来源和消息对象的结构</code></pre></li>
-<li><p>推送消息</p>
-<pre><code>消息的分发:消息如何到达用户,用户如何获取消息</code></pre></li>
-<li><p>处理消息</p>
-<pre><code>消息的处理:用户可以对消息所做的操作</code></pre></li>
+<li>
+<p>消息产生</p>
+<pre><code> 消息的产生:消息如何产生,来源和消息对象的结构
+</code></pre>
+</li>
+<li>
+<p>推送消息</p>
+<pre><code> 消息的分发:消息如何到达用户,用户如何获取消息
+</code></pre>
+</li>
+<li>
+<p>处理消息</p>
+<pre><code> 消息的处理:用户可以对消息所做的操作
+</code></pre>
+</li>
 </ol>
 <p>同时还要在整个过程中随时持有消息的状态,这样才能最大化消息通知系统的功能</p>
 <p>一个成熟消息处理的流程大概如下图:</p>
 <p><img data-src="https://i.loli.net/2020/05/09/HhJdn5CA14lwLjc.png" alt="flow1.png"></p>
-<h2 id="消息产生"><a href="#消息产生" class="headerlink" title="消息产生"></a>消息产生</h2><p>消息系统的消息按类型大致可以分为私信类和通知类,其中私信类就是上文提到的消息部分,又可以分为管理员发送的和用户个人发送的</p>
+<h2 id="消息产生"><a class="markdownIt-Anchor" href="#消息产生"></a> 消息产生</h2>
+<p>消息系统的消息按类型大致可以分为私信类和通知类,其中私信类就是上文提到的消息部分,又可以分为管理员发送的和用户个人发送的</p>
 <p>私信类的消息大概情况如下:</p>
 <ol>
 <li>A给B发送了S内容,B给A回复了私信S2</li>
@@ -3079,8 +3091,11 @@ ul.breadcrumb li + li:last-child {
 <p>ps:用户: A,B,C 专栏: Z 回答: H 问题: W 文章: P 消息: S 评论: C</p>
 </blockquote>
 <p>私信形式的实现起来比较容易,这里不多做表述,现在主要针对消息通知类型的进行方案分析</p>
-<h3 id="基于订阅模式的消息产生"><a href="#基于订阅模式的消息产生" class="headerlink" title="基于订阅模式的消息产生"></a>基于订阅模式的消息产生</h3><p>消息类的通知总结一下就是A对B的某操作进行了某操作,具体模式是:  </p>
-<pre><code>用户X 收到了 用户B 对 对象O 的 事件E 操作的通知</code></pre><p>这种模式很符合订阅模型,以下几种消息都可以用订阅关系表示</p>
+<h3 id="基于订阅模式的消息产生"><a class="markdownIt-Anchor" href="#基于订阅模式的消息产生"></a> 基于订阅模式的消息产生</h3>
+<p>消息类的通知总结一下就是A对B的某操作进行了某操作,具体模式是:</p>
+<pre><code>    用户X 收到了 用户B 对 对象O 的 事件E 操作的通知
+</code></pre>
+<p>这种模式很符合订阅模型,以下几种消息都可以用订阅关系表示</p>
 <ol>
 <li>B订阅了问题W的回答事件ER</li>
 <li>B订阅了专栏Z的发表事件EP</li>
@@ -3089,11 +3104,13 @@ ul.breadcrumb li + li:last-child {
 <li>B订阅了评论C的点赞事件</li>
 </ol>
 <p>只要根据触发改消息的那条记录生成对应的消息即可</p>
-<h3 id="表结构设计"><a href="#表结构设计" class="headerlink" title="表结构设计"></a>表结构设计</h3><p>具体设计如下:</p>
+<h3 id="表结构设计"><a class="markdownIt-Anchor" href="#表结构设计"></a> 表结构设计</h3>
+<p>具体设计如下:</p>
 <blockquote>
 <p>ps:(这里模拟了几条记录,方便用来做演示)</p>
 </blockquote>
-<h4 id="订阅关系表"><a href="#订阅关系表" class="headerlink" title="订阅关系表"></a>订阅关系表</h4><p>用于记录用户的订阅信息</p>
+<h4 id="订阅关系表"><a class="markdownIt-Anchor" href="#订阅关系表"></a> 订阅关系表</h4>
+<p>用于记录用户的订阅信息</p>
 <table>
 <thead>
 <tr>
@@ -3105,7 +3122,8 @@ ul.breadcrumb li + li:last-child {
 <th>时间</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>B</td>
 <td>30</td>
@@ -3145,9 +3163,11 @@ ul.breadcrumb li + li:last-child {
 <td>up</td>
 <td>2018-01-01</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>当某对象产生某动作的时候,根据订阅关系表的订阅关系生成消息</p>
-<h4 id="订阅配置"><a href="#订阅配置" class="headerlink" title="订阅配置"></a>订阅配置</h4><p>用于为用户生成默认的订阅配置</p>
+<h4 id="订阅配置"><a class="markdownIt-Anchor" href="#订阅配置"></a> 订阅配置</h4>
+<p>用于为用户生成默认的订阅配置</p>
 <table>
 <thead>
 <tr>
@@ -3156,7 +3176,8 @@ ul.breadcrumb li + li:last-child {
 <th>订阅事件</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>关注问题</td>
 <td>问题更新/问题回答</td>
@@ -3166,34 +3187,39 @@ ul.breadcrumb li + li:last-child {
 <td>回答</td>
 <td>回答被评论/被点赞</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>这个表格记录了用户的某些操作会订阅怎样的对象动作,用于生成用户默认的订阅事件,后期如果开放权限,用户就可以对自己收到的提醒类型进行定制</p>
-<h4 id="消息内容表"><a href="#消息内容表" class="headerlink" title="消息内容表"></a>消息内容表</h4><p>消息内容表用来存储消息的具体内容,用户将来收到的信息就是该表中的信息</p>
+<h4 id="消息内容表"><a class="markdownIt-Anchor" href="#消息内容表"></a> 消息内容表</h4>
+<p>消息内容表用来存储消息的具体内容,用户将来收到的信息就是该表中的信息</p>
 <table>
 <thead>
 <tr>
-<th align="center">id</th>
-<th align="center">type</th>
-<th align="center">content</th>
+<th style="text-align:center">id</th>
+<th style="text-align:center">type</th>
+<th style="text-align:center">content</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">notice</td>
-<td align="center">用户C回答了问题W(id=30)</td>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">notice</td>
+<td style="text-align:center">用户C回答了问题W(id=30)</td>
 </tr>
 <tr>
-<td align="center">2</td>
-<td align="center">announce</td>
-<td align="center">知乎形象刘看山发布了</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">announce</td>
+<td style="text-align:center">知乎形象刘看山发布了</td>
 </tr>
 <tr>
-<td align="center">3</td>
-<td align="center">notice</td>
-<td align="center">B赞了你在问题W下面的R</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">notice</td>
+<td style="text-align:center">B赞了你在问题W下面的R</td>
 </tr>
-</tbody></table>
-<h4 id="消息记录表"><a href="#消息记录表" class="headerlink" title="消息记录表"></a>消息记录表</h4><p>消息记录表用来存储消息和用户的分发关系</p>
+</tbody>
+</table>
+<h4 id="消息记录表"><a class="markdownIt-Anchor" href="#消息记录表"></a> 消息记录表</h4>
+<p>消息记录表用来存储消息和用户的分发关系</p>
 <table>
 <thead>
 <tr>
@@ -3205,7 +3231,8 @@ ul.breadcrumb li + li:last-child {
 <th>type</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>1</td>
 <td>1</td>
@@ -3213,17 +3240,23 @@ ul.breadcrumb li + li:last-child {
 <td>0</td>
 <td>message</td>
 </tr>
-</tbody></table>
-<h3 id="私信类消息"><a href="#私信类消息" class="headerlink" title="私信类消息"></a>私信类消息</h3><p>对于第一类私信类的消息,原则上即便用户不上线也需要对用户进行推送,也即是直接写入消息表</p>
+</tbody>
+</table>
+<h3 id="私信类消息"><a class="markdownIt-Anchor" href="#私信类消息"></a> 私信类消息</h3>
+<p>对于第一类私信类的消息,原则上即便用户不上线也需要对用户进行推送,也即是直接写入消息表</p>
 <p>现在从消息的产生开始分析消息的数据流程</p>
-<p>用户A-&gt;发消息(“你吃饭了吗”)-&gt;消息内容表-&gt;消息记录表<br>用户B上线-&gt;查询消息记录表中的未读-&gt;阅读消息-&gt;回复内容</p>
+<p>用户A.         -&gt;  发消息(“你吃饭了吗”)         -&gt;  消息内容表  -&gt;  消息记录表<br>
+用户B上线  -&gt;  查询消息记录表中的未读   -&gt;  阅读消息      -&gt;  回复内容</p>
 <p>私信类型的比较简单,如果是管理员的话,把id设置为特殊值或者将消息类型标记为announce,在前台就可以进行相应的展示限制</p>
-<h3 id="提醒类消息"><a href="#提醒类消息" class="headerlink" title="提醒类消息"></a>提醒类消息</h3><p>重点是第二类提醒类的消息,提醒类消息也不允许用户漏接</p>
+<h3 id="提醒类消息"><a class="markdownIt-Anchor" href="#提醒类消息"></a> 提醒类消息</h3>
+<p>重点是第二类提醒类的消息,提醒类消息也不允许用户漏接</p>
 <p>提醒类消息的产生流程就比较麻烦</p>
 <ol>
-<li><p>某用户在某专栏发布某文章-&gt;生成消息存入消息表-&gt;检查订阅该专栏文章发布的用户和关注了该用户动态的其他用户-&gt;把消息表中的记录分发给这些用户-&gt;这些用户上线收到消息</p>
+<li>
+<p>某用户在某专栏发布某文章-&gt;生成消息存入消息表-&gt;检查订阅该专栏文章发布的用户和关注了该用户动态的其他用户-&gt;把消息表中的记录分发给这些用户-&gt;这些用户上线收到消息</p>
 </li>
-<li><p>你回答了一个问题-&gt;增加订阅该回答的点赞和评论动作-&gt;有人评论你的回答-&gt;生成消息内容表的内容-&gt;检查订阅该回答评论的用户-&gt;分发消息</p>
+<li>
+<p>你回答了一个问题-&gt;增加订阅该回答的点赞和评论动作-&gt;有人评论你的回答-&gt;生成消息内容表的内容-&gt;检查订阅该回答评论的用户-&gt;分发消息</p>
 </li>
 </ol>
 <p>例如以上记录会产生消息:</p>
@@ -3233,8 +3266,9 @@ ul.breadcrumb li + li:last-child {
 <li>B赞了你在问题W下的回答(该消息推送给回答者)</li>
 </ol>
 <p>消息表用于存储消息信息,当某事件被触发时,会生成对应的消息提醒内容,然后查询订阅该事件的所有用户,将消息和用户关系写入消息记录表</p>
-<h3 id="通知合并"><a href="#通知合并" class="headerlink" title="通知合并"></a>通知合并</h3><p>有时候,当某用户收到大量用户对某对象进行相似的操作的时候为了性能和用户体验,我们需要对用户的同志进行合并</p>
-<p>比如: 用户A 发布了一篇文章, 有5万人在1小时内都点赞了该文章, 我们就可以生成一条”张三,李四等5万个用户点赞了你的文章XXX”.</p>
+<h3 id="通知合并"><a class="markdownIt-Anchor" href="#通知合并"></a> 通知合并</h3>
+<p>有时候,当某用户收到大量用户对某对象进行相似的操作的时候为了性能和用户体验,我们需要对用户的同志进行合并</p>
+<p>比如: 用户A 发布了一篇文章, 有5万人在1小时内都点赞了该文章, 我们就可以生成一条"张三,李四等5万个用户点赞了你的文章XXX".</p>
 <p>消息合并的规则:</p>
 <ol>
 <li>按时间合并消息</li>
@@ -3250,9 +3284,11 @@ ul.breadcrumb li + li:last-child {
 <ol>
 <li>C点赞了你的回答之后，这条消息会被标记为可聚合，聚合keyword为操作ID/对象类型/对象ID</li>
 </ol>
-<p>例如: 在某段时间之类有两个用户赞了你的评论,这个时候可以使用 C,V等两个用户赞了你的评论C,当产生第一条通知的时候,消息表中有一条消息: C赞了你的回答,这个时候V赞了你的回答之后,两条记录可以合并成一条”c,v等两个人赞了你的回答”, 这个例子中的两条记录的操作类型(都是点赞)和操作对象(都是你的回答)相同</p>
-<h2 id="消息分发"><a href="#消息分发" class="headerlink" title="消息分发"></a>消息分发</h2><p>通知消息产生以后我们只是有个要推送给用户的消息体,怎么把消息推送给用户也是一个很重要的部分</p>
-<h4 id="通知的分发"><a href="#通知的分发" class="headerlink" title="通知的分发"></a>通知的分发</h4><p>消息分发一半常用的有两种方式,一种是消息推送(push)一种是消息拉取(pull),不过现在大多采用两者结合的方式,针对不同的场景使用不同的方式</p>
+<p>例如: 在某段时间之类有两个用户赞了你的评论,这个时候可以使用 C,V等两个用户赞了你的评论C,当产生第一条通知的时候,消息表中有一条消息: C赞了你的回答,这个时候V赞了你的回答之后,两条记录可以合并成一条"c,v等两个人赞了你的回答", 这个例子中的两条记录的操作类型(都是点赞)和操作对象(都是你的回答)相同</p>
+<h2 id="消息分发"><a class="markdownIt-Anchor" href="#消息分发"></a> 消息分发</h2>
+<p>通知消息产生以后我们只是有个要推送给用户的消息体,怎么把消息推送给用户也是一个很重要的部分</p>
+<h4 id="通知的分发"><a class="markdownIt-Anchor" href="#通知的分发"></a> 通知的分发</h4>
+<p>消息分发一半常用的有两种方式,一种是消息推送(push)一种是消息拉取(pull),不过现在大多采用两者结合的方式,针对不同的场景使用不同的方式</p>
 <ol>
 <li>push方式: 推送你有XX条消息未读(针对在线的用户)</li>
 <li>pull方式: 用户点击未读消息时对内容进行拉取</li>
@@ -3271,40 +3307,55 @@ ul.breadcrumb li + li:last-child {
 <li>按周和天分发</li>
 </ol>
 <p>分发管道 Web,微信,邮件,短信</p>
-<h4 id="用户对消息的处理"><a href="#用户对消息的处理" class="headerlink" title="用户对消息的处理"></a>用户对消息的处理</h4><h5 id="通知已读"><a href="#通知已读" class="headerlink" title="通知已读"></a>通知已读</h5><p>每条消息都应该带有一个是否已读的状态,以防止对用户造成重复的打扰</p>
+<h4 id="用户对消息的处理"><a class="markdownIt-Anchor" href="#用户对消息的处理"></a> 用户对消息的处理</h4>
+<h5 id="通知已读"><a class="markdownIt-Anchor" href="#通知已读"></a> 通知已读</h5>
+<p>每条消息都应该带有一个是否已读的状态,以防止对用户造成重复的打扰</p>
 <p>一旦用户点击获取消息,打开消息详情或点击消息体的任意连接,就算作已读该消息,已读消息不做重复提醒</p>
-<p>已读消息的排序: 用户有30条未读消息,点击列表已读20条,剩余10条未读消息怎么处理<br>解决方案: 获取消息未读消息列表时按时间顺序取前20条</p>
-<h5 id="通知内容的处理"><a href="#通知内容的处理" class="headerlink" title="通知内容的处理"></a>通知内容的处理</h5><pre><code>点击链接: 点击链接之后进入到与该消息有关的详情页面  
-回复: 用户可以对私信进行回复
-删除: 用户可以删除消息</code></pre><blockquote>
+<p>已读消息的排序: 用户有30条未读消息,点击列表已读20条,剩余10条未读消息怎么处理<br>
+解决方案: 获取消息未读消息列表时按时间顺序取前20条</p>
+<h5 id="通知内容的处理"><a class="markdownIt-Anchor" href="#通知内容的处理"></a> 通知内容的处理</h5>
+<pre><code>    点击链接: 点击链接之后进入到与该消息有关的详情页面  
+    回复: 用户可以对私信进行回复
+    删除: 用户可以删除消息
+</code></pre>
+<blockquote>
 <p>ps: 不同终端消息状态应保持统一</p>
 </blockquote>
-<h4 id="redis中消息的存储"><a href="#redis中消息的存储" class="headerlink" title="redis中消息的存储"></a>redis中消息的存储</h4><p>redis中不存储普通的用户消息,但是会存储系统公告和文章更新之类容易被复用的消息</p>
+<h4 id="redis中消息的存储"><a class="markdownIt-Anchor" href="#redis中消息的存储"></a> redis中消息的存储</h4>
+<p>redis中不存储普通的用户消息,但是会存储系统公告和文章更新之类容易被复用的消息</p>
 <p>消息:</p>
 <pre><code>msgid:xx:content:你订阅的XXX专栏更新了
 
-uid:xx:unread:10</code></pre><h3 id="消息回收"><a href="#消息回收" class="headerlink" title="消息回收"></a>消息回收</h3><p>消息处理还有其他一些需要系统处理的地方</p>
+uid:xx:unread:10
+</code></pre>
+<h3 id="消息回收"><a class="markdownIt-Anchor" href="#消息回收"></a> 消息回收</h3>
+<p>消息处理还有其他一些需要系统处理的地方</p>
 <ol>
 <li>用户对话消息的显示范围(可以根据时间),是否允许用户删除</li>
 <li>用户拉黑名单是否自动删除会话消息</li>
 <li>用户长时间未读取的系统消息自动回收的时间</li>
 <li>长时间的未读消息的处理, 永久保留,二次推送(通过其他渠道)</li>
 </ol>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>一个消息系统还涉及到其他的一些关键的地方</p>
-<h3 id="消息的离线计算和处理"><a href="#消息的离线计算和处理" class="headerlink" title="消息的离线计算和处理"></a>消息的离线计算和处理</h3><p>消息系统数据量有可能非常大,如果一个用户有50万粉丝,该用户发一篇文章,理论上就要为50万用户产生消息.想要实时计算消息基本是不可行的, 所以应该有一套成熟的数据处理系统来支持消息系统</p>
-<h3 id="新消息到达时候的交互"><a href="#新消息到达时候的交互" class="headerlink" title="新消息到达时候的交互"></a>新消息到达时候的交互</h3><p>用户获取消息以后的UI交互也是消息系统的一部分功能,也是需要考虑的一部分</p>
+<h2 id="其他"><a class="markdownIt-Anchor" href="#其他"></a> 其他</h2>
+<p>一个消息系统还涉及到其他的一些关键的地方</p>
+<h3 id="消息的离线计算和处理"><a class="markdownIt-Anchor" href="#消息的离线计算和处理"></a> 消息的离线计算和处理</h3>
+<p>消息系统数据量有可能非常大,如果一个用户有50万粉丝,该用户发一篇文章,理论上就要为50万用户产生消息.想要实时计算消息基本是不可行的, 所以应该有一套成熟的数据处理系统来支持消息系统</p>
+<h3 id="新消息到达时候的交互"><a class="markdownIt-Anchor" href="#新消息到达时候的交互"></a> 新消息到达时候的交互</h3>
+<p>用户获取消息以后的UI交互也是消息系统的一部分功能,也是需要考虑的一部分</p>
 <ol>
 <li>声音提示</li>
 <li>标题闪烁</li>
 <li>未读信息浮动层</li>
 <li>弹窗</li>
 </ol>
-<h3 id="防骚扰"><a href="#防骚扰" class="headerlink" title="防骚扰"></a>防骚扰</h3><ol>
+<h3 id="防骚扰"><a class="markdownIt-Anchor" href="#防骚扰"></a> 防骚扰</h3>
+<ol>
 <li>增加屏蔽功能</li>
 <li>设定接受消息的权限(例如:仅我关注的人可以给我发消息)</li>
 <li>黑名单</li>
 </ol>
-<h3 id="用户拉回"><a href="#用户拉回" class="headerlink" title="用户拉回"></a>用户拉回</h3><ol>
+<h3 id="用户拉回"><a class="markdownIt-Anchor" href="#用户拉回"></a> 用户拉回</h3>
+<ol>
 <li>长时间未处理消息的用户进行二次推送(通过短信和邮件等)</li>
 </ol>
 
@@ -3393,7 +3444,7 @@ uid:xx:unread:10</code></pre><h3 id="消息回收"><a href="#消息回收" class
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#站内信通知系统的设计"><span class="nav-number">1.</span> <span class="nav-text">站内信通知系统的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求分析"><span class="nav-number">1.1.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息产生"><span class="nav-number">1.2.</span> <span class="nav-text">消息产生</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于订阅模式的消息产生"><span class="nav-number">1.2.1.</span> <span class="nav-text">基于订阅模式的消息产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表结构设计"><span class="nav-number">1.2.2.</span> <span class="nav-text">表结构设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#订阅关系表"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">订阅关系表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#订阅配置"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">订阅配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息内容表"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">消息内容表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息记录表"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">消息记录表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#私信类消息"><span class="nav-number">1.2.3.</span> <span class="nav-text">私信类消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提醒类消息"><span class="nav-number">1.2.4.</span> <span class="nav-text">提醒类消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通知合并"><span class="nav-number">1.2.5.</span> <span class="nav-text">通知合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息分发"><span class="nav-number">1.3.</span> <span class="nav-text">消息分发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通知的分发"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">通知的分发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户对消息的处理"><span class="nav-number">1.3.0.2.</span> <span class="nav-text">用户对消息的处理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#通知已读"><span class="nav-number">1.3.0.2.1.</span> <span class="nav-text">通知已读</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通知内容的处理"><span class="nav-number">1.3.0.2.2.</span> <span class="nav-text">通知内容的处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis中消息的存储"><span class="nav-number">1.3.0.3.</span> <span class="nav-text">redis中消息的存储</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息回收"><span class="nav-number">1.3.1.</span> <span class="nav-text">消息回收</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">1.4.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息的离线计算和处理"><span class="nav-number">1.4.1.</span> <span class="nav-text">消息的离线计算和处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新消息到达时候的交互"><span class="nav-number">1.4.2.</span> <span class="nav-text">新消息到达时候的交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防骚扰"><span class="nav-number">1.4.3.</span> <span class="nav-text">防骚扰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户拉回"><span class="nav-number">1.4.4.</span> <span class="nav-text">用户拉回</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#站内信通知系统的设计"><span class="nav-number">1.</span> <span class="nav-text"> 站内信通知系统的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求分析"><span class="nav-number">1.1.</span> <span class="nav-text"> 需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息产生"><span class="nav-number">1.2.</span> <span class="nav-text"> 消息产生</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于订阅模式的消息产生"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 基于订阅模式的消息产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表结构设计"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 表结构设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#订阅关系表"><span class="nav-number">1.2.2.1.</span> <span class="nav-text"> 订阅关系表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#订阅配置"><span class="nav-number">1.2.2.2.</span> <span class="nav-text"> 订阅配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息内容表"><span class="nav-number">1.2.2.3.</span> <span class="nav-text"> 消息内容表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息记录表"><span class="nav-number">1.2.2.4.</span> <span class="nav-text"> 消息记录表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#私信类消息"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 私信类消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提醒类消息"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 提醒类消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通知合并"><span class="nav-number">1.2.5.</span> <span class="nav-text"> 通知合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息分发"><span class="nav-number">1.3.</span> <span class="nav-text"> 消息分发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通知的分发"><span class="nav-number">1.3.0.1.</span> <span class="nav-text"> 通知的分发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户对消息的处理"><span class="nav-number">1.3.0.2.</span> <span class="nav-text"> 用户对消息的处理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#通知已读"><span class="nav-number">1.3.0.2.1.</span> <span class="nav-text"> 通知已读</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通知内容的处理"><span class="nav-number">1.3.0.2.2.</span> <span class="nav-text"> 通知内容的处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#redis中消息的存储"><span class="nav-number">1.3.0.3.</span> <span class="nav-text"> redis中消息的存储</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息回收"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 消息回收</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">1.4.</span> <span class="nav-text"> 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息的离线计算和处理"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 消息的离线计算和处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新消息到达时候的交互"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 新消息到达时候的交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防骚扰"><span class="nav-number">1.4.3.</span> <span class="nav-text"> 防骚扰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户拉回"><span class="nav-number">1.4.4.</span> <span class="nav-text"> 用户拉回</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

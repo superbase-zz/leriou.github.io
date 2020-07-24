@@ -15,19 +15,19 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="文中所有内容均以类似今日头条的内容平台做例子 整体流程 用户兴趣特征的挖掘推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征">
+  <meta name="description" content="文中所有内容均以类似今日头条的内容平台做例子  整体流程   用户兴趣特征的挖掘 推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。 其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用户特征挖掘的方案">
 <meta property="og:url" content="https://leriou.github.io/2020-04-11-analyze-user-feture/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="文中所有内容均以类似今日头条的内容平台做例子 整体流程 用户兴趣特征的挖掘推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征">
+<meta property="og:description" content="文中所有内容均以类似今日头条的内容平台做例子  整体流程   用户兴趣特征的挖掘 推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。 其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png">
 <meta property="article:published_time" content="2020-04-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-24T13:23:13.472Z">
+<meta property="article:modified_time" content="2020-07-24T15:16:38.872Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
 <meta property="article:tag" content="jaccard系数">
@@ -1271,7 +1271,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff8538;
+  background: #ffff83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2861,7 +2861,7 @@ ul.breadcrumb li + li:last-child {
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"></noscript></head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');loadCss('//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css"></noscript></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -3045,13 +3045,20 @@ ul.breadcrumb li + li:last-child {
 
       
         <p>文中所有内容均以类似今日头条的内容平台做例子</p>
-<h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><p><img data-src="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png" alt="user-feture.png"></p>
-<h2 id="用户兴趣特征的挖掘"><a href="#用户兴趣特征的挖掘" class="headerlink" title="用户兴趣特征的挖掘"></a>用户兴趣特征的挖掘</h2><p>推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。<br>其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征。难的地方是你如果想要获得比较完整的，或者比较准确的用户兴趣，其实也是非常有挑战性的工作。<br>我想分享一点我自己在挖掘用户兴趣方面的想法和经验。</p>
+<h2 id="整体流程"><a class="markdownIt-Anchor" href="#整体流程"></a> 整体流程</h2>
+<p><img data-src="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png" alt="user-feture.png"></p>
+<h2 id="用户兴趣特征的挖掘"><a class="markdownIt-Anchor" href="#用户兴趣特征的挖掘"></a> 用户兴趣特征的挖掘</h2>
+<p>推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。<br>
+其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征。难的地方是你如果想要获得比较完整的，或者比较准确的用户兴趣，其实也是非常有挑战性的工作。<br>
+我想分享一点我自己在挖掘用户兴趣方面的想法和经验。</p>
 <blockquote>
 <p>ps:  我们这里所提及的用户兴趣统统是指用户的隐式特征，就是从用户行为中提取的非主动操作的信息</p>
 </blockquote>
-<h2 id="行为数据-用户特征矩阵-内容特征匹配"><a href="#行为数据-用户特征矩阵-内容特征匹配" class="headerlink" title="行为数据-用户特征矩阵-内容特征匹配"></a>行为数据-用户特征矩阵-内容特征匹配</h2><p>假设我们拥有一段用户的行为信息序列， 我们可以非常简单的统计出来用户经常观看的文章。<br>但是我们不能向用户推荐已经看过的文章， 所以我们需要挖掘用户观看某文章背后的潜在信息， 并给用户推荐内容比较相似的或者关键词比较相关的文章内容。</p>
-<h3 id="用户特征矩阵的生成"><a href="#用户特征矩阵的生成" class="headerlink" title="用户特征矩阵的生成"></a>用户特征矩阵的生成</h3><p>比如：我们可以基于用户观看的文章背后的标签出现次数进行分数统计，标签每出现一次记一分，获得一个用户对标签的喜好表。如下</p>
+<h2 id="行为数据-用户特征矩阵-内容特征匹配"><a class="markdownIt-Anchor" href="#行为数据-用户特征矩阵-内容特征匹配"></a> 行为数据-用户特征矩阵-内容特征匹配</h2>
+<p>假设我们拥有一段用户的行为信息序列， 我们可以非常简单的统计出来用户经常观看的文章。<br>
+但是我们不能向用户推荐已经看过的文章， 所以我们需要挖掘用户观看某文章背后的潜在信息， 并给用户推荐内容比较相似的或者关键词比较相关的文章内容。</p>
+<h3 id="用户特征矩阵的生成"><a class="markdownIt-Anchor" href="#用户特征矩阵的生成"></a> 用户特征矩阵的生成</h3>
+<p>比如：我们可以基于用户观看的文章背后的标签出现次数进行分数统计，标签每出现一次记一分，获得一个用户对标签的喜好表。如下</p>
 <table>
 <thead>
 <tr>
@@ -3062,7 +3069,8 @@ ul.breadcrumb li + li:last-child {
 <th>新闻资讯</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>5</td>
 <td>6</td>
@@ -3090,10 +3098,12 @@ ul.breadcrumb li + li:last-child {
 <td>4</td>
 <td>9</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>从上面我们可以知道用户1喜欢 金融政策和新冠肺炎相关的内容，用户2可能是李大霄的粉丝，喜欢看李大霄相关的文章。</p>
-<p>为了获取这个列表我们也可以根据用户对不同内容标签的点击率进行归一化的分数统计， 取点击率比较高的标签。一样可以得到蕾丝上面的<strong>&lt;用户, 特征,喜好程度&gt;</strong>的三元序列</p>
-<h3 id="根据特征矩阵进行内容推荐"><a href="#根据特征矩阵进行内容推荐" class="headerlink" title="根据特征矩阵进行内容推荐"></a>根据特征矩阵进行内容推荐</h3><p>然后我们就可以根据未推荐文章中出现的用户喜欢的特征和特征权重对不同文章进行计分， 对内容综合积分，按照分数进行排序输出。</p>
+<p>为了获取这个列表我们也可以根据用户对不同内容标签的点击率进行归一化的分数统计， 取点击率比较高的标签。一样可以得到蕾丝上面的**&lt;用户, 特征,喜好程度&gt;**的三元序列</p>
+<h3 id="根据特征矩阵进行内容推荐"><a class="markdownIt-Anchor" href="#根据特征矩阵进行内容推荐"></a> 根据特征矩阵进行内容推荐</h3>
+<p>然后我们就可以根据未推荐文章中出现的用户喜欢的特征和特征权重对不同文章进行计分， 对内容综合积分，按照分数进行排序输出。</p>
 <table>
 <thead>
 <tr>
@@ -3104,7 +3114,8 @@ ul.breadcrumb li + li:last-child {
 <th>新闻咨询</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>A</td>
 <td>0</td>
 <td>3</td>
@@ -3118,7 +3129,8 @@ ul.breadcrumb li + li:last-child {
 <td>1</td>
 <td>2</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>假设我们有A,B两篇文章，内容标签如上。我们可以对用户1， 2与内容的匹配程度进行分值计算。可以得到如下表格</p>
 <table>
 <thead>
@@ -3128,7 +3140,8 @@ ul.breadcrumb li + li:last-child {
 <th>b</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>3 x 6  = 18</td>
 <td>5 x 1+ 2 x  1 = 7</td>
@@ -3138,44 +3151,58 @@ ul.breadcrumb li + li:last-child {
 <td>9 x 1 = 9</td>
 <td>1 x 2 + 1 x 9 + 2 x 3 = 17</td>
 </tr>
-</tbody></table>
-<p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
-<h2 id="行为数据-用户特征-用户相似度-内容推荐"><a href="#行为数据-用户特征-用户相似度-内容推荐" class="headerlink" title="行为数据/用户特征-用户相似度-内容推荐"></a>行为数据/用户特征-用户相似度-内容推荐</h2><p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
-<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><p>我们使用Jaccard系数来表征用户的相似度</p>
+</tbody>
+</table>
+<p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>
+我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
+<h2 id="行为数据用户特征-用户相似度-内容推荐"><a class="markdownIt-Anchor" href="#行为数据用户特征-用户相似度-内容推荐"></a> 行为数据/用户特征-用户相似度-内容推荐</h2>
+<p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
+<h3 id="计算用户的相似用户"><a class="markdownIt-Anchor" href="#计算用户的相似用户"></a> 计算用户的相似用户</h3>
+<p>我们使用Jaccard系数来表征用户的相似度</p>
 <ul>
 <li>使用用户行为计算相似度</li>
 </ul>
-<p>我们可以使用用户行为信息如此计算两个用户的相似度<br>$$ Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2) $$<br>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
+<p>我们可以使用用户行为信息如此计算两个用户的相似度</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Y</mi><mo stretchy="false">(</mo><mi>s</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>a</mi><mi>r</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>U</mi><mn>1</mn><mo>∩</mo><mi>U</mi><mn>2</mn></mrow><mrow><mi>U</mi><mn>1</mn><mo>∪</mo><mi>U</mi><mn>2</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">Y(similar)=\frac{U1∩U2}{U1∪U2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
 <ul>
 <li>使用用户特征计算相似度</li>
 </ul>
-<p>我们也可以通过用户身上的标签，比如 ，使用的手机型号，年龄，性别，地区等信息。 一样采用如下公式进行用户标签相似度的计算。计算结果与上面用户行为相似度结果一样 </p>
-<p>$$Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2)$$</p>
-<h3 id="根据相似用户进行推荐"><a href="#根据相似用户进行推荐" class="headerlink" title="根据相似用户进行推荐"></a>根据相似用户进行推荐</h3><p>这个比例可以作用两个用户相似度的评价标准, 拿到用户的相似用户集合以后，通过统计相似用户已观看列表中的的内容的出现次数。可以得到如下表格</p>
+<p>我们也可以通过用户身上的标签，比如 ，使用的手机型号，年龄，性别，地区等信息。 一样采用如下公式进行用户标签相似度的计算。计算结果与上面用户行为相似度结果一样</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Y</mi><mo stretchy="false">(</mo><mi>s</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>a</mi><mi>r</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>U</mi><mn>1</mn><mo>∩</mo><mi>U</mi><mn>2</mn></mrow><mrow><mi>U</mi><mn>1</mn><mo>∪</mo><mi>U</mi><mn>2</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">Y(similar)=\frac{U1∩U2}{U1∪U2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<h3 id="根据相似用户进行推荐"><a class="markdownIt-Anchor" href="#根据相似用户进行推荐"></a> 根据相似用户进行推荐</h3>
+<p>这个比例可以作用两个用户相似度的评价标准, 拿到用户的相似用户集合以后，通过统计相似用户已观看列表中的的内容的出现次数。可以得到如下表格</p>
 <table>
 <thead>
 <tr>
-<th align="center">用户/内容</th>
+<th style="text-align:center">用户/内容</th>
 <th>A</th>
 <th>B</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">1</td>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
 <td>5</td>
 <td>2</td>
 </tr>
 <tr>
-<td align="center">2</td>
+<td style="text-align:center">2</td>
 <td>9</td>
 <td>1</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>选择出现次数多的进行推荐即可。</p>
 <p>也可以进一步利用相似用户的内容出现次数，通过统计去更新用户的特征矩阵中的(用户-&gt;特征)的分值。然后再根据特征的加权获取最终的推荐结果</p>
-<h2 id="用户数据-用户特征-用户分群-用户相似推荐"><a href="#用户数据-用户特征-用户分群-用户相似推荐" class="headerlink" title="用户数据-用户特征-用户分群-用户相似推荐"></a>用户数据-用户特征-用户分群-用户相似推荐</h2><p>我们也可以根据用户本身的特征，对用户进行分类。例如：女性用户，30-35岁， 使用安卓手机，经常在晚上6-9点使用app等特征对相似的用户进行分群</p>
+<h2 id="用户数据-用户特征-用户分群-用户相似推荐"><a class="markdownIt-Anchor" href="#用户数据-用户特征-用户分群-用户相似推荐"></a> 用户数据-用户特征-用户分群-用户相似推荐</h2>
+<p>我们也可以根据用户本身的特征，对用户进行分类。例如：女性用户，30-35岁， 使用安卓手机，经常在晚上6-9点使用app等特征对相似的用户进行分群</p>
 <p>然后统计分析该分群用户的行为记录。采用类似于上面用户相似度的统计方法，获得用户对内容或者对特征的分数矩阵结果</p>
-<h2 id="综合方案"><a href="#综合方案" class="headerlink" title="综合方案"></a>综合方案</h2><p>我们在实际的生产中可以综合以上各种策略， 获取用户的特征矩阵并对内容进行计算分数。在根据实际场景中的效果进行不同权重和比例的动态调整。<br>一般来说是可以获得不错的效果的。</p>
+<h2 id="综合方案"><a class="markdownIt-Anchor" href="#综合方案"></a> 综合方案</h2>
+<p>我们在实际的生产中可以综合以上各种策略， 获取用户的特征矩阵并对内容进行计算分数。在根据实际场景中的效果进行不同权重和比例的动态调整。<br>
+一般来说是可以获得不错的效果的。</p>
 
     </div>
 
@@ -3262,7 +3289,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体流程"><span class="nav-number">1.</span> <span class="nav-text">整体流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户兴趣特征的挖掘"><span class="nav-number">2.</span> <span class="nav-text">用户兴趣特征的挖掘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为数据-用户特征矩阵-内容特征匹配"><span class="nav-number">3.</span> <span class="nav-text">行为数据-用户特征矩阵-内容特征匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户特征矩阵的生成"><span class="nav-number">3.1.</span> <span class="nav-text">用户特征矩阵的生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据特征矩阵进行内容推荐"><span class="nav-number">3.2.</span> <span class="nav-text">根据特征矩阵进行内容推荐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为数据-用户特征-用户相似度-内容推荐"><span class="nav-number">4.</span> <span class="nav-text">行为数据/用户特征-用户相似度-内容推荐</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算用户的相似用户"><span class="nav-number">4.1.</span> <span class="nav-text">计算用户的相似用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据相似用户进行推荐"><span class="nav-number">4.2.</span> <span class="nav-text">根据相似用户进行推荐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户数据-用户特征-用户分群-用户相似推荐"><span class="nav-number">5.</span> <span class="nav-text">用户数据-用户特征-用户分群-用户相似推荐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合方案"><span class="nav-number">6.</span> <span class="nav-text">综合方案</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体流程"><span class="nav-number">1.</span> <span class="nav-text"> 整体流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户兴趣特征的挖掘"><span class="nav-number">2.</span> <span class="nav-text"> 用户兴趣特征的挖掘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为数据-用户特征矩阵-内容特征匹配"><span class="nav-number">3.</span> <span class="nav-text"> 行为数据-用户特征矩阵-内容特征匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户特征矩阵的生成"><span class="nav-number">3.1.</span> <span class="nav-text"> 用户特征矩阵的生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据特征矩阵进行内容推荐"><span class="nav-number">3.2.</span> <span class="nav-text"> 根据特征矩阵进行内容推荐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为数据用户特征-用户相似度-内容推荐"><span class="nav-number">4.</span> <span class="nav-text"> 行为数据/用户特征-用户相似度-内容推荐</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算用户的相似用户"><span class="nav-number">4.1.</span> <span class="nav-text"> 计算用户的相似用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据相似用户进行推荐"><span class="nav-number">4.2.</span> <span class="nav-text"> 根据相似用户进行推荐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户数据-用户特征-用户分群-用户相似推荐"><span class="nav-number">5.</span> <span class="nav-text"> 用户数据-用户特征-用户分群-用户相似推荐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合方案"><span class="nav-number">6.</span> <span class="nav-text"> 综合方案</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -3351,6 +3378,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   
   
@@ -3391,6 +3419,13 @@ ul.breadcrumb li + li:last-child {
   
 
   
+      
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  
 
 
 
@@ -3398,6 +3433,15 @@ ul.breadcrumb li + li:last-child {
 
 
 <script src="/bundle.js"></script><script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://leriou.github.io/2020-04-11-analyze-user-feture/',]
+      });
+      });
+  ;
+
 NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
   NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
     var GUEST = ['nick', 'mail', 'link'];

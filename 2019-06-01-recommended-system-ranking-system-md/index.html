@@ -15,18 +15,18 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="为啥需要排行榜推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。 此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题  最新内容：平台的最近发布的比较新鲜的资源 热门内容：平">
+  <meta name="description" content="为啥需要排行榜 推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。 此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题  最新内容：平台的最近发布的比较新鲜的资源 热门内容">
 <meta property="og:type" content="article">
 <meta property="og:title" content="排行榜系统设计">
 <meta property="og:url" content="https://leriou.github.io/2019-06-01-recommended-system-ranking-system-md/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="为啥需要排行榜推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。 此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题  最新内容：平台的最近发布的比较新鲜的资源 热门内容：平">
+<meta property="og:description" content="为啥需要排行榜 推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。 此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题  最新内容：平台的最近发布的比较新鲜的资源 热门内容">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-05-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-22T15:13:57.986Z">
+<meta property="article:modified_time" content="2020-07-24T15:16:38.855Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
 <meta name="twitter:card" content="summary">
@@ -1268,7 +1268,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff8538;
+  background: #ffff83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2858,7 +2858,7 @@ ul.breadcrumb li + li:last-child {
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"></noscript></head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');loadCss('//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css"></noscript></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -3041,7 +3041,8 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="为啥需要排行榜"><a href="#为啥需要排行榜" class="headerlink" title="为啥需要排行榜"></a>为啥需要排行榜</h1><p>推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。</p>
+        <h1 id="为啥需要排行榜"><a class="markdownIt-Anchor" href="#为啥需要排行榜"></a> 为啥需要排行榜</h1>
+<p>推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。</p>
 <p>此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题</p>
 <ol>
 <li>最新内容：平台的最近发布的比较新鲜的资源</li>
@@ -3049,28 +3050,30 @@ ul.breadcrumb li + li:last-child {
 <li>实时基于用户属性进行分群，基于用户群进行推荐（比如，上海地区用户，女性用户，30-40岁用户）</li>
 </ol>
 <p>其中的热门内容就需要排行榜系统的支持</p>
-<h1 id="排行榜系统"><a href="#排行榜系统" class="headerlink" title="排行榜系统"></a>排行榜系统</h1><p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
-<h2 id="固定时间范围的排行榜"><a href="#固定时间范围的排行榜" class="headerlink" title="固定时间范围的排行榜"></a>固定时间范围的排行榜</h2><p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
+<h1 id="排行榜系统"><a class="markdownIt-Anchor" href="#排行榜系统"></a> 排行榜系统</h1>
+<p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
+<h2 id="固定时间范围的排行榜"><a class="markdownIt-Anchor" href="#固定时间范围的排行榜"></a> 固定时间范围的排行榜</h2>
+<p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
 <p>针对“本月最火歌曲”这种需求的排行榜，处理起来相对简单</p>
 <p>只要统计从本月从1号到现在的所有歌曲的播放数据就可以了，如果数据量不大且要求不高，可以定时每一段时间计算一次， 计算方法如下</p>
 <figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">id</span>) <span class="keyword">from</span> play_record <span class="keyword">where</span> play_time &gt; <span class="string">"2019-05-01"</span> <span class="keyword">group</span> <span class="keyword">by</span> itemid;</span><br></pre></td></tr></tbody></table></figure>
-
 <p>如果实时性要求较高， 也可以使用基于事件的实时增量统计的方式，同时每天处理一次批量统计，做数据矫正。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add-score video_10086_play_times 1</span><br></pre></td></tr></tbody></table></figure>
-
+<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">add-score</span> video_10086_play_times <span class="number">1</span>)</span><br></pre></td></tr></tbody></table></figure>
 <p>具体就是每天计算一个排行榜之后， 使用流处理系统，当有新的播放事件，在榜单现有基础上做incr操作即可</p>
 <p>这种排行榜相对来说实现比较简单， 缺点也很明显</p>
 <p>比如今天如果是本月的1号， 那你的排行榜数据就由于样本数据有限，误差较大，无法起到排行榜真正的作用</p>
 <p>处理这种问题就需要“最近30天最火的歌曲”这种滚动排行榜</p>
-<h2 id="滚动排行榜"><a href="#滚动排行榜" class="headerlink" title="滚动排行榜"></a>滚动排行榜</h2><p>滚动排行榜是指基于最近一段时间范围的数据获得的排行榜统计结果  </p>
-<p>拿最近3天排行榜为例， 假设现在是是10号的10点钟， 那滚动排行榜覆盖的区间就是前推3天的数据  </p>
+<h2 id="滚动排行榜"><a class="markdownIt-Anchor" href="#滚动排行榜"></a> 滚动排行榜</h2>
+<p>滚动排行榜是指基于最近一段时间范围的数据获得的排行榜统计结果</p>
+<p>拿最近3天排行榜为例， 假设现在是是10号的10点钟， 那滚动排行榜覆盖的区间就是前推3天的数据</p>
 <p><code>7号从10点以后的数据 + 8，9号全天数据 + 10号截至目前的数据 的统计结果</code></p>
 <p>滚动排行榜相对来说难度增加了很多</p>
 <p>如果数据量不大，对实时性要求不高的话， 也可以采用每一段时间计算一次最近3天的播放量的批量的方式</p>
 <p>但是如果数据量较大或者对实时性有要求较高，那就需要设计一个实时的滚动排行榜</p>
-<h3 id="实时的滚动排行榜"><a href="#实时的滚动排行榜" class="headerlink" title="实时的滚动排行榜"></a>实时的滚动排行榜</h3><p>假如我要做3天的滚动歌曲榜单， 我就需要获取最近72小时的播放记录进行统计</p>
+<h3 id="实时的滚动排行榜"><a class="markdownIt-Anchor" href="#实时的滚动排行榜"></a> 实时的滚动排行榜</h3>
+<p>假如我要做3天的滚动歌曲榜单， 我就需要获取最近72小时的播放记录进行统计</p>
 <p>拿数据举例来说</p>
-<p>假设有如下的播放记录, 当前日期是 2019-04-04 13:00， 排行榜统计区间应该是 <code>04-01 13:00 ～ 04-04 13:00</code>  </p>
+<p>假设有如下的播放记录, 当前日期是 2019-04-04 13:00， 排行榜统计区间应该是 <code>04-01 13:00 ～ 04-04 13:00</code></p>
 <table>
 <thead>
 <tr>
@@ -3078,7 +3081,8 @@ ul.breadcrumb li + li:last-child {
 <th>播放时间</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1009</td>
 <td>2019-04-01  9:00</td>
 </tr>
@@ -3102,21 +3106,25 @@ ul.breadcrumb li + li:last-child {
 <td>1023</td>
 <td>2019-04-04 12:00</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>那我们获取到的3天榜单应该是这样(1009的播放记录已经过期)</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//  歌曲id:播放次数</span><br><span class="line">{</span><br><span class="line">     1023:1,</span><br><span class="line">     1010:2，</span><br><span class="line">     1089:1，</span><br><span class="line">     1020:1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
 <p>排行榜处理过程最关键的有两点</p>
 <ol>
-<li><p>对一个元素加分时，加当日周期榜、滚动榜；<br>还需根据其在今日滚动榜中的分数s、及n-1天日榜中的分数r，计算出其在明日滚动榜中的初始分数s-r写入明日滚动榜中；<br>即3个写操作；</p>
+<li>
+<p>对一个元素加分时，加当日周期榜、滚动榜；<br>
+还需根据其在今日滚动榜中的分数s、及n-1天日榜中的分数r，计算出其在明日滚动榜中的初始分数s-r写入明日滚动榜中；<br>
+即3个写操作；</p>
 </li>
-<li><p>如果一个元素在当日没有任何加分操作，那么不会触发写入初始分数操作，所以还需要一个离线工具补齐。<br>该离线工具可提前一天运行，即当日运行离线工具补齐次日的滚动榜数据即可。</p>
+<li>
+<p>如果一个元素在当日没有任何加分操作，那么不会触发写入初始分数操作，所以还需要一个离线工具补齐。<br>
+该离线工具可提前一天运行，即当日运行离线工具补齐次日的滚动榜数据即可。</p>
 </li>
 </ol>
 <p>R：每日的统计数据  S： 每日的滚动排行榜数据</p>
 <p>s-r &gt; 0 才进行写入操作</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">以3天滚动榜为例，次日滚动榜初始态为当日滚动榜减去n-2天的日榜数据。</span><br><span class="line">     +-------------------------------------------+</span><br><span class="line">     |                                           |</span><br><span class="line">+----+---+   +--------+   +--------+             |</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |             |</span><br><span class="line">+----+---+   +----+---+   +---+----+             |</span><br><span class="line">     |            |           |                  |</span><br><span class="line">     |            |           v+                 v-</span><br><span class="line">     |            |</span><br><span class="line">     |            |    +  +--------+        +--------+</span><br><span class="line">     |            +-----&gt; |        |     +  |        |</span><br><span class="line">     |                 +  |  S(i)  | +---+&gt; | S(i+1) |</span><br><span class="line">     +-----------------+&gt; |        |        |        |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line"></span><br><span class="line">分数变化</span><br><span class="line">                                +--------------+</span><br><span class="line">                                |   AddScore   |</span><br><span class="line">                                +-+----+-----+-+</span><br><span class="line">                                  |+   |     |</span><br><span class="line">                                  v    |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |+</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |   |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |</span><br><span class="line">                                       |     v</span><br><span class="line">                          +--------+   |    +--------+</span><br><span class="line">                          |  S(i)  |&lt;--+    | S(i+1) |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line">                                                 ^</span><br><span class="line">                                                 |+</span><br><span class="line">                                          +------------+</span><br><span class="line">                                          |    Tool    |</span><br><span class="line">                                          +------------+</span><br></pre></td></tr></tbody></table></figure>
-
 
     </div>
 
@@ -3202,7 +3210,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为啥需要排行榜"><span class="nav-number">1.</span> <span class="nav-text">为啥需要排行榜</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#排行榜系统"><span class="nav-number">2.</span> <span class="nav-text">排行榜系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#固定时间范围的排行榜"><span class="nav-number">2.1.</span> <span class="nav-text">固定时间范围的排行榜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动排行榜"><span class="nav-number">2.2.</span> <span class="nav-text">滚动排行榜</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实时的滚动排行榜"><span class="nav-number">2.2.1.</span> <span class="nav-text">实时的滚动排行榜</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为啥需要排行榜"><span class="nav-number">1.</span> <span class="nav-text"> 为啥需要排行榜</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#排行榜系统"><span class="nav-number">2.</span> <span class="nav-text"> 排行榜系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#固定时间范围的排行榜"><span class="nav-number">2.1.</span> <span class="nav-text"> 固定时间范围的排行榜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动排行榜"><span class="nav-number">2.2.</span> <span class="nav-text"> 滚动排行榜</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实时的滚动排行榜"><span class="nav-number">2.2.1.</span> <span class="nav-text"> 实时的滚动排行榜</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -3291,6 +3299,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   
   
@@ -3331,6 +3340,13 @@ ul.breadcrumb li + li:last-child {
   
 
   
+      
+
+
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  
 
 
 
@@ -3338,6 +3354,15 @@ ul.breadcrumb li + li:last-child {
 
 
 <script src="/bundle.js"></script><script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://leriou.github.io/2019-06-01-recommended-system-ranking-system-md/',]
+      });
+      });
+  ;
+
 NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
   NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
     var GUEST = ['nick', 'mail', 'link'];

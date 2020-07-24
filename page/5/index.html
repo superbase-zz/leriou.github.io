@@ -15,7 +15,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="君子生非异也, 善假于物也">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff8538;
+  background: #ffff83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2856,7 +2856,7 @@ ul.breadcrumb li + li:last-child {
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"></noscript></head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');loadCss('//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css"></noscript></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -3039,26 +3039,31 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Start"><a href="#Start" class="headerlink" title="Start"></a>Start</h2><p>这篇文章是写给编程初学者和完全不懂编程的小白的，目的是希望能通过这篇文章, 让大家知道一下游戏大概是怎么工作的，游戏中的画面是怎么显示出来的和游戏程序的大概结构。</p>
+          <h2 id="start"><a class="markdownIt-Anchor" href="#start"></a> Start</h2>
+<p>这篇文章是写给编程初学者和完全不懂编程的小白的，目的是希望能通过这篇文章, 让大家知道一下游戏大概是怎么工作的，游戏中的画面是怎么显示出来的和游戏程序的大概结构。</p>
 <p>下面会找一个github上的h5塔防游戏举例子。这个游戏是我在准备毕业设计时候遇到的，当时好奇就花了点时间研究了一下</p>
-<h3 id="游戏的工作流程"><a href="#游戏的工作流程" class="headerlink" title="游戏的工作流程"></a>游戏的工作流程</h3><p>几乎市面上所有常见游戏都是通过如下循环进行的</p>
+<h3 id="游戏的工作流程"><a class="markdownIt-Anchor" href="#游戏的工作流程"></a> 游戏的工作流程</h3>
+<p>几乎市面上所有常见游戏都是通过如下循环进行的</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">-&gt;</span><span class="bash"> 游戏启动</span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 根据开始参数，给玩家展示一些画面，包括游戏界面，控制界面等</span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 然后持续获取玩家的反馈动作 </span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 根据玩家的操作，对游戏画面进行更新, 显示游戏画面 </span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 获取玩家反馈动作 </span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 继续显示新画面</span></span><br><span class="line">....</span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 玩家退出游戏</span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash"> 结束</span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>所谓的玩游戏的过程也就是游戏通过设备(键盘, 鼠标, 屏幕触控, 话筒)等形式获取到玩家反馈数据对游戏进行更新, 不断重复该过程, 直到达到游戏结束条件为止</p>
-<h3 id="游戏画面的显示"><a href="#游戏画面的显示" class="headerlink" title="游戏画面的显示"></a>游戏画面的显示</h3><p>我们看到的游戏的画面, 不管多酷炫, 归根到底可以看做一系列的连续播放的图片, 而每张图片我们又可以看做是一个固定分辨率的色彩数组。</p>
+<h3 id="游戏画面的显示"><a class="markdownIt-Anchor" href="#游戏画面的显示"></a> 游戏画面的显示</h3>
+<p>我们看到的游戏的画面, 不管多酷炫, 归根到底可以看做一系列的连续播放的图片, 而每张图片我们又可以看做是一个固定分辨率的色彩数组。</p>
 <p>拿 1080*1920 分辨率, 60fps 的某一款游戏来说, 就是1s中给你播放60张1080p的图片给你看，那游戏怎么知道该给你看什么图片呢 ?</p>
 <p>图片的内容可以看成是一个 <code>1080(宽) * 1920(长) * 4(RGBA)</code>的数组, 只要把这个数组发送给显卡, 显卡就知道应该怎么显示, (为什么要用一维数组是因为基于性能考虑，一位数组的处理效率比高维数组要高)。</p>
 <p>游戏渲染的过程, 可以看做是根据用户反馈计算这一些列需要显示的数组的过程</p>
-<h3 id="游戏的通用结构"><a href="#游戏的通用结构" class="headerlink" title="游戏的通用结构"></a>游戏的通用结构</h3><p>从结构上说, 任何游戏, 实质上都是一个不断循环的程序, 当画面的处理和输出速度达到人眼视觉暂留的极限时(一般在30fps以上)，人就分不出来是不是真的实时了, 以此来模拟实时的效果, 早期的胶片电影使用的也是类似的原理</p>
+<h3 id="游戏的通用结构"><a class="markdownIt-Anchor" href="#游戏的通用结构"></a> 游戏的通用结构</h3>
+<p>从结构上说, 任何游戏, 实质上都是一个不断循环的程序, 当画面的处理和输出速度达到人眼视觉暂留的极限时(一般在30fps以上)，人就分不出来是不是真的实时了, 以此来模拟实时的效果, 早期的胶片电影使用的也是类似的原理</p>
 <p>任何游戏理论上都可以套用以下过程, 使用伪代码描述:</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">load( config );              <span class="comment">// 加载游戏配置</span></span><br><span class="line"><span class="keyword">while</span>( game_is_running() ) { <span class="comment">// 游戏是否继续进行</span></span><br><span class="line">    get_user_input(); 	     <span class="comment">// 接受用户的输入</span></span><br><span class="line">    do_something();  	       <span class="comment">// 根据用户输入处理数据处理</span></span><br><span class="line">    check_stop();		         <span class="comment">// 查看是否满足结束条件</span></span><br><span class="line">    render();			           <span class="comment">// 渲染页面,渲染一次就是fps</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">load( config );              <span class="comment">// 加载游戏配置</span></span><br><span class="line"><span class="keyword">while</span>( game_is_running() ) { <span class="comment">// 游戏是否继续进行</span></span><br><span class="line">    get_user_input(); 	     <span class="comment">// 接受用户的输入</span></span><br><span class="line">    do_something();  	     <span class="comment">// 根据用户输入处理数据处理</span></span><br><span class="line">    check_stop();		     <span class="comment">// 查看是否满足结束条件</span></span><br><span class="line">    render();			     <span class="comment">// 渲染页面,渲染一次就是fps</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>游戏的实质就是根据与用户交互, 不断的修改参数对页面进行渲染, 再接受用户输入, 这整个循环称为游戏的主循环。下面我将对一个简单的小塔防游戏进行分析, 来说明一下一个简单游戏的内部组成和功能实现</p>
-<h3 id="TF游戏"><a href="#TF游戏" class="headerlink" title="TF游戏"></a>TF游戏</h3><blockquote>
-<p>ps: TF只是一个游戏名字 </p>
+<h3 id="tf游戏"><a class="markdownIt-Anchor" href="#tf游戏"></a> TF游戏</h3>
+<blockquote>
+<p>ps: TF只是一个游戏名字</p>
 </blockquote>
-<h2 id="游戏地址"><a href="#游戏地址" class="headerlink" title="游戏地址"></a>游戏地址</h2><p>游戏地址: <a href="https://github.com/oldj/html5-tower-defense" target="_blank" rel="noopener">https://github.com/oldj/html5-tower-defense</a></p>
-<h2 id="TF中的主循环做的事情"><a href="#TF中的主循环做的事情" class="headerlink" title="TF中的主循环做的事情"></a>TF中的主循环做的事情</h2><p>tf既然也是一个游戏自然就遵循上面所说的基本规则,</p>
+<h2 id="游戏地址"><a class="markdownIt-Anchor" href="#游戏地址"></a> 游戏地址</h2>
+<p>游戏地址: <a href="https://github.com/oldj/html5-tower-defense" target="_blank" rel="noopener">https://github.com/oldj/html5-tower-defense</a></p>
+<h2 id="tf中的主循环做的事情"><a class="markdownIt-Anchor" href="#tf中的主循环做的事情"></a> TF中的主循环做的事情</h2>
+<p>tf既然也是一个游戏自然就遵循上面所说的基本规则,</p>
 <p>tf游戏中的主要过程如下</p>
 <ol>
 <li>响应用户的点击事件</li>
@@ -3066,12 +3071,16 @@ ul.breadcrumb li + li:last-child {
 <li>然后根据对象进行渲染</li>
 <li>判断游戏输赢(是否达到结束条件)</li>
 </ol>
-<h2 id="TF游戏中的各种子系统"><a href="#TF游戏中的各种子系统" class="headerlink" title="TF游戏中的各种子系统"></a>TF游戏中的各种子系统</h2><p>tf游戏虽小,但是却也是一个比较完善的游戏, 内部也是有许多的子系统构成</p>
-<h3 id="基本对象系统"><a href="#基本对象系统" class="headerlink" title="基本对象系统"></a>基本对象系统</h3><p>对象系统是tf的基础, 游戏中的所有会运动的怪物, 炮塔, 甚至包括文字, 按钮 都是对象系统的成员。但是,这些对象又具有一定的层级关系，游戏中的所有对象可以根据继承关系形成一个树状结构，之所以要建立对象系统是为了更好地以面向对象的形式来构建游戏，这种开发方式有助于降低开发难度。</p>
+<h2 id="tf游戏中的各种子系统"><a class="markdownIt-Anchor" href="#tf游戏中的各种子系统"></a> TF游戏中的各种子系统</h2>
+<p>tf游戏虽小,但是却也是一个比较完善的游戏, 内部也是有许多的子系统构成</p>
+<h3 id="基本对象系统"><a class="markdownIt-Anchor" href="#基本对象系统"></a> 基本对象系统</h3>
+<p>对象系统是tf的基础, 游戏中的所有会运动的怪物, 炮塔, 甚至包括文字, 按钮 都是对象系统的成员。但是,这些对象又具有一定的层级关系，游戏中的所有对象可以根据继承关系形成一个树状结构，之所以要建立对象系统是为了更好地以面向对象的形式来构建游戏，这种开发方式有助于降低开发难度。</p>
 <p>基本的对象系统是承载游戏数据的主要对象，各种游戏参数基本都表现为各种对象的各种属性，对象系统对上层的渲染系统提供渲染参数, 可以通过渲染系统把当前游戏运行状态可视化的显示出来。</p>
-<h3 id="事件系统"><a href="#事件系统" class="headerlink" title="事件系统"></a>事件系统</h3><p>事件系统是用户和游戏系统进行交互的窗口, 用户的所有操作都作为事件的形式被游戏所捕获。事件系统的功能主要是:收集用户的输入,提供事件来触发对数据的处理,实时的更新对象的数据。</p>
+<h3 id="事件系统"><a class="markdownIt-Anchor" href="#事件系统"></a> 事件系统</h3>
+<p>事件系统是用户和游戏系统进行交互的窗口, 用户的所有操作都作为事件的形式被游戏所捕获。事件系统的功能主要是:收集用户的输入,提供事件来触发对数据的处理,实时的更新对象的数据。</p>
 <p>事件系统是控制游戏进程和与用户交互的重要通道，事件系统在游戏中起到触发器的作用, 告诉游戏中的对象,什么时候用户做了什么事情,你们需要做些什么。一般来说事件系统会用一个具有优先级的队列来实现</p>
-<h3 id="渲染引擎"><a href="#渲染引擎" class="headerlink" title="渲染引擎"></a>渲染引擎</h3><p>tf中的渲染系统主要负责根据对象参数渲染对象的UI效果</p>
+<h3 id="渲染引擎"><a class="markdownIt-Anchor" href="#渲染引擎"></a> 渲染引擎</h3>
+<p>tf中的渲染系统主要负责根据对象参数渲染对象的UI效果</p>
 <p>画面中看到的小怪物,子弹, 文字, 建筑都是渲染系统来负责</p>
 <p>因为tf中没有用到图片,所有怪物和防御设施都是使用canvas绘制出来的, tf中的渲染系统承担的工作要更重一些</p>
 <p>渲染系统是游戏的核心功能之一</p>
@@ -3079,7 +3088,8 @@ ul.breadcrumb li + li:last-child {
 <p>用户的某种动作触发了事件之后,对应的对象的参数和状态会进行重新计算</p>
 <p>新的对象需要有渲染引擎来进行绘图和显示</p>
 <p>渲染系统是游戏内部状态的展示窗口, 核心功能是讲当前游戏内部状态以友好的方式呈现给用户</p>
-<h3 id="物理引擎"><a href="#物理引擎" class="headerlink" title="物理引擎"></a>物理引擎</h3><p>物理引擎在游戏中主要充当工具箱的作用, 属于渲染系统中的基础组件</p>
+<h3 id="物理引擎"><a class="markdownIt-Anchor" href="#物理引擎"></a> 物理引擎</h3>
+<p>物理引擎在游戏中主要充当工具箱的作用, 属于渲染系统中的基础组件</p>
 <p>主要的功能像<code>寻路算法</code>, <code>碰撞检测</code>等都属于物理引擎的范畴</p>
 <p>物理引擎可以赋予对象真实世界物体的各种效果</p>
 <p>负责计算渲染系统需要的各种描述状态的参数数据</p>
@@ -3088,9 +3098,11 @@ ul.breadcrumb li + li:last-child {
 <p>更加复杂的化学引擎也目前没人能实现</p>
 <p>理想的游戏引擎是能按照现实世界的各种粒子特性</p>
 <p>原子级的模拟整个现实世界,但是这在未来数百年显然是不可能的</p>
-<h3 id="音频-视频系统"><a href="#音频-视频系统" class="headerlink" title="音频/视频系统"></a>音频/视频系统</h3><p>其他大型游戏一般还有会有音频和视频系统来增强用户的游戏体验</p>
+<h3 id="音频视频系统"><a class="markdownIt-Anchor" href="#音频视频系统"></a> 音频/视频系统</h3>
+<p>其他大型游戏一般还有会有音频和视频系统来增强用户的游戏体验</p>
 <p>不过这个游戏并没有包含这一部分</p>
-<h3 id="资源系统"><a href="#资源系统" class="headerlink" title="资源系统"></a>资源系统</h3><p>大型游戏中的<code>音频</code>,<code>视频</code>,<code>文件</code>,<code>内存</code>,<code>I/0设备</code>等资源都需要进行管理</p>
+<h3 id="资源系统"><a class="markdownIt-Anchor" href="#资源系统"></a> 资源系统</h3>
+<p>大型游戏中的<code>音频</code>,<code>视频</code>,<code>文件</code>,<code>内存</code>,<code>I/0设备</code>等资源都需要进行管理</p>
 <p>一般会自己实现一套资源管理机制</p>
 
       
@@ -3423,6 +3435,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   
   
@@ -3461,6 +3474,11 @@ ul.breadcrumb li + li:last-child {
 
 
   
+
+  
+      
+
+
 
   
 

@@ -15,7 +15,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="君子生非异也, 善假于物也">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff8538;
+  background: #ffff83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2856,7 +2856,7 @@ ul.breadcrumb li + li:last-child {
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"></noscript></head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');loadCss('//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css"></noscript></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -3039,70 +3039,105 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>所有的推荐系统都有一个基本的要求：<code>不给用户推荐重复的信息</code></p>
-<p>这里的重复的信息有两层含义  </p>
+          <h1 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h1>
+<p>所有的推荐系统都有一个基本的要求：<code>不给用户推荐重复的信息</code></p>
+<p>这里的重复的信息有两层含义</p>
 <ol>
-<li><p>这个信息是id完全相同的一条信息<br> 这个很好理解，就是一模一样的两条信息，从数据库的角度将就是信息记录的主键id都相同<br> 如果用户已经接受过一次id为10086的信息的推荐，那这个10086就不能出现在后续的同类推荐中</p>
+<li>
+<p>这个信息是id完全相同的一条信息<br>
+这个很好理解，就是一模一样的两条信息，从数据库的角度将就是信息记录的主键id都相同<br>
+如果用户已经接受过一次id为10086的信息的推荐，那这个10086就不能出现在后续的同类推荐中</p>
 </li>
-<li><p>这两个个信息相似度很高，但是id不同<br> 这种情况出现于两条信息内容相似，比如有两篇文章10001，10002都在说特朗普要在美国边境造墙的事情<br> 那如果用户观看过10001，此时再给用户推荐10002，就可能会让用户觉得推荐的东西已经看到过了，毫无意义</p>
+<li>
+<p>这两个个信息相似度很高，但是id不同<br>
+这种情况出现于两条信息内容相似，比如有两篇文章10001，10002都在说特朗普要在美国边境造墙的事情<br>
+那如果用户观看过10001，此时再给用户推荐10002，就可能会让用户觉得推荐的东西已经看到过了，毫无意义</p>
 </li>
 </ol>
-<h1 id="处理相同id的过滤"><a href="#处理相同id的过滤" class="headerlink" title="处理相同id的过滤"></a>处理相同id的过滤</h1><p>我们的目的是给定一个id, 和一个已推荐集合，判断id是否在给定的集合以内</p>
-<h2 id="HashMap的方案"><a href="#HashMap的方案" class="headerlink" title="HashMap的方案"></a>HashMap的方案</h2><p>如果集合数据量比较少的情况下，我们可以使用Java中的<code>HashSet</code>存储集合， 使用contains来直接判断id是否在给定集合中，其他编程语言中也都有类似<code>HashSet</code>的数据结构</p>
+<h1 id="处理相同id的过滤"><a class="markdownIt-Anchor" href="#处理相同id的过滤"></a> 处理相同id的过滤</h1>
+<p>我们的目的是给定一个id, 和一个已推荐集合，判断id是否在给定的集合以内</p>
+<h2 id="hashmap的方案"><a class="markdownIt-Anchor" href="#hashmap的方案"></a> HashMap的方案</h2>
+<p>如果集合数据量比较少的情况下，我们可以使用Java中的<code>HashSet</code>存储集合， 使用contains来直接判断id是否在给定集合中，其他编程语言中也都有类似<code>HashSet</code>的数据结构</p>
 <p>由于<code>HashSet</code>的底层原理是使用的<code>HashMap</code>， 所以我直接使用 <code>HashMap</code>来进行原理的说明</p>
-<p>这种做法的原理其实是先将我们要查找的数据进行hash散列，映射到一个固定长度的地址空间<br>然后使用数组存储，如果有多个id经过hash映射到相同的地址空间那就做一个链表，存储相同hashcode对应的值   </p>
+<p>这种做法的原理其实是先将我们要查找的数据进行hash散列，映射到一个固定长度的地址空间<br>
+然后使用数组存储，如果有多个id经过hash映射到相同的地址空间那就做一个链表，存储相同hashcode对应的值</p>
 <p>具体结构如下：</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|          // hash数组槽</span><br><span class="line">    ↓           ↓     </span><br><span class="line">   107          87            // 槽内的指针对应的数据</span><br><span class="line">    ↓            </span><br><span class="line">    16</span><br></pre></td></tr></tbody></table></figure>
-
 <p>当我们查找id时， 也是先将要查找的id进行hash, 然后去对应的hashcode位置沿着链表/红黑树寻找是否有要查找的数字</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
+<ol>
 <li>使用简单，性能好，比较通用</li>
 <li>容易理解，无误判</li>
 </ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<h3 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h3>
+<ol>
 <li>空间利用率太低</li>
 </ol>
-<h2 id="Bitmap"><a href="#Bitmap" class="headerlink" title="Bitmap"></a>Bitmap</h2><p>考虑到<code>HashMap</code>的空间利用率太低，不适合海量数据的存储，我们可以利用计算机存储的一些特性，用另外一种方式来。</p>
+<h2 id="bitmap"><a class="markdownIt-Anchor" href="#bitmap"></a> Bitmap</h2>
+<p>考虑到<code>HashMap</code>的空间利用率太低，不适合海量数据的存储，我们可以利用计算机存储的一些特性，用另外一种方式来。</p>
 <p>我们都知道计算机底层是用bit来存储信息的，每个bit能存储一个0或者1的信息，如果我们使用二进制bit的位置信息来表示数字，对应位的bit值是1来代表这个数字存在，我们就可以在极小的空间存储大量的信息，使用时只需使用位运算，查看对应位置的bit值即可。</p>
 <p>Java中的bitset，redis中的bit操作都提供了这种bitmap的实现，bitmap的详情可以查看 <a href="https://leriou.github.io/2017-12-29-user-tag-sys-on-bitmap/">使用bitmap构建用户标签</a></p>
 <p>如下表示 【6，4，3】的集合，第6，4，3位为1，其他位为0</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bit值     0 1 0 1 1 0 0 0        // 0x01011000</span><br><span class="line">bit位     7 6 5 4 3 2 1 0</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ol>
+<h3 id="优点-2"><a class="markdownIt-Anchor" href="#优点-2"></a> 优点</h3>
+<ol>
 <li>空间利用率高，性能好，无误判</li>
 </ol>
-<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<h3 id="缺点-2"><a class="markdownIt-Anchor" href="#缺点-2"></a> 缺点</h3>
+<ol>
 <li>不够通用，要求数据的类型必须是数字且元素范围跨度不能太大</li>
 </ol>
-<h2 id="BloomFilter"><a href="#BloomFilter" class="headerlink" title="BloomFilter"></a>BloomFilter</h2><p>bloomfilter跟bitmap具有相似的原理， 都是使用位来存储信息，区别在于</p>
+<h2 id="bloomfilter"><a class="markdownIt-Anchor" href="#bloomfilter"></a> BloomFilter</h2>
+<p>bloomfilter跟bitmap具有相似的原理， 都是使用位来存储信息，区别在于</p>
 <p>bitmap使用元素自身数字对应的位置信息来存储数据，如果要存储的元素是个字符串或者其他类型的数据就无法使用这种方式了，或者你要存储的数字范围特别的大，比如你要存储一个100亿的数字， 那样即使只有一个数字你也需要一个前面的位置都是0的100亿bit来表示，对空间的利用率还是不高 (现在有一些空间压缩的bitmap实现能一定程度解决数据范围分布过大和分布稀疏的问题)</p>
 <p>BloomFilter就是针对这些做了优化，如果我们把要处理的数字进行hash, 映射到一个固定长度的地址空间，这样就同时解决了以上两个问题， 即缩减了映射的空间范围，又可以存储更通用的对象。但是由于hash函数本身会有冲突，就会出现两个不同元素因为同样的hashcode而产生误判的情况。</p>
 <p><strong>既如果判定结果是不存在(False)，则一定不存在；但是如果判定结果是存在(True)，则实际情况其实是可能存在，而不是一定存在，即假阳性。</strong></p>
-<h3 id="误判率的计算"><a href="#误判率的计算" class="headerlink" title="误判率的计算"></a>误判率的计算</h3><p>我们假设</p>
+<h3 id="误判率的计算"><a class="markdownIt-Anchor" href="#误判率的计算"></a> 误判率的计算</h3>
+<p>我们假设</p>
 <ul>
 <li>欲插入Bloom Filter中的元素数目: n</li>
 <li>Bloom Filter误判率: P(true)</li>
 <li>BitArray数组的大小: m</li>
 <li>Hash Function的数目: k</li>
 </ul>
-<p>则有误判率：<br><img data-src="https://www.zhihu.com/equation?tex=P%28true%29+%3D+%28P_1%5En%29%5Ek+%3D+%5B1+-+%28+1-+%5Cfrac%7B1%7D%7Bm%7D+%29%5E%7Bkn%7D%5D%5Ek+%5C%5C" alt="[公式]"><br>既 -&gt;<br><img data-src="https://www.zhihu.com/equation?tex=P%28true%29+%5Capprox+%281+-+e%5E%7B-%5Cfrac%7Bnk%7D%7Bm%7D%7D+%29%5Ek+%5C%5C" alt="[公式]"></p>
+<p>则有误判率：</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>t</mi><mi>r</mi><mi>u</mi><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><msubsup><mi>P</mi><mn>1</mn><mi>n</mi></msubsup><msup><mo stretchy="false">)</mo><mi>k</mi></msup><mo>=</mo><mo stretchy="false">[</mo><mn>1</mn><mo>−</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mfrac><mn>1</mn><mi>m</mi></mfrac><msup><mo stretchy="false">)</mo><mi>k</mi></msup><mi>n</mi><msup><mo stretchy="false">]</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">P(true) = (P^n_1)^k=[1-(1-\frac{1}{m})^kn]^k
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">u</span><span class="mord mathdefault">e</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7143919999999999em;"><span style="top:-2.4530000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span><span class="mord mathdefault">n</span><span class="mclose"><span class="mclose">]</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>即：</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>t</mi><mi>r</mi><mi>u</mi><mi>e</mi><mo stretchy="false">)</mo><mo>≈</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mfrac><mrow><mi>n</mi><mi>k</mi></mrow><mi>m</mi></mfrac></mrow></msup><msup><mo stretchy="false">)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">P(true)\approx(1-e^{-\frac{nk}{m}})^k
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">u</span><span class="mord mathdefault">e</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.27902em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.02902em;"><span style="top:-3.4130000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8800285714285714em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></span></p>
 <p>也就是说当BitArray数组的大小m增大 或 欲插入Bloom Filter中的元素数目n 减小时，均可以使得误判率P(true)下降</p>
-<h3 id="至于hash-function的数目k"><a href="#至于hash-function的数目k" class="headerlink" title="至于hash function的数目k"></a>至于hash function的数目k</h3><p><img data-src="https://www.zhihu.com/equation?tex=f%28k%29+%3D+%281+-+e%5E%7B-%5Cfrac%7Bnk%7D%7Bm%7D%7D+%29%5Ek+%5C%5C" alt="[公式]"></p>
-<p>令 <img data-src="https://www.zhihu.com/equation?tex=a+%3D+e%5E%7B%5Cfrac%7Bn%7D%7Bm%7D%7D" alt="[公式]"> ，则有：</p>
-<p><img data-src="https://www.zhihu.com/equation?tex=f%28k%29+%3D+%281+-+a%5E%7B-k%7D+%29%5Ek+%5C%5C" alt="[公式]"></p>
+<h3 id="至于hash-function的数目k"><a class="markdownIt-Anchor" href="#至于hash-function的数目k"></a> 至于hash function的数目k</h3>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mfrac><mrow><mi>n</mi><mi>k</mi></mrow><mi>m</mi></mfrac></mrow></msup><msup><mo stretchy="false">)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">f(k)=(1-e^{-\frac{nk}{m}})^k
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.27902em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.02902em;"><span style="top:-3.4130000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8800285714285714em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>令  <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>=</mo><msup><mi>e</mi><mfrac><mrow><mi>n</mi><mi>k</mi></mrow><mi>m</mi></mfrac></msup></mrow><annotation encoding="application/x-tex">a=e^{\frac{nk}{m}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">a</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.97902em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.97902em;"><span style="top:-3.363em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8800285714285714em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span></span></span></span> ，则有：</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mo stretchy="false">)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">f(k)=(1-e^{-1})^k
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.864108em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></span></p>
 <p>分别对上式两边，先取对数，再对k求一次导，可有：</p>
-<p><img data-src="https://www.zhihu.com/equation?tex=%5Cfrac%7B1%7D%7Bf%28k%29%7D+f%28k%29%5E%5Cprime+%3D+%5Cln%28+1-a%5E%7B-k%7D+%29+%2B+%5Cfrac%7B+k+a%5E%7B-k%7D+%5Cln+a+%7D%7B+1-a%5E%7B-k%7D+%7D+%5C%5C" alt="[公式]"></p>
-<p>易知，当k取极值点时，有 <img data-src="https://www.zhihu.com/equation?tex=f%28k%29%5E%5Cprime+%3D+0" alt="[公式]"> ，故将其带入上式即可求出k</p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-be7c83bcd595891c278e8e1c9171b24a_1440w.jpg" alt="img"></p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mn>1</mn><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow></mfrac><mi>f</mi><mo stretchy="false">(</mo><msup><mi>k</mi><mo mathvariant="normal">′</mo></msup><mo stretchy="false">)</mo><mo>=</mo><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mo>+</mo><mfrac><mrow><mi>k</mi><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mi>ln</mi><mo>⁡</mo><mi>a</mi></mrow><mrow><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{1}{f(k)}f(k')=\ln(1-a^{-k})+\frac{ka^{-k} \ln a}{1-a^{-k}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.25744em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">ln</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.295438em;vertical-align:-0.7693300000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5261079999999998em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7751079999999999em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693300000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>易知，当k取极值点时，有 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>k</mi><msup><mo stretchy="false">)</mo><mo mathvariant="normal">′</mo></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(k)'=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.001892em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span> ，故将其带入上式即可求出k</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mo>+</mo><mfrac><mrow><mi>k</mi><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mi>ln</mi><mo>⁡</mo><mi>a</mi></mrow><mrow><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup></mrow></mfrac><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\ln(1-a^{-k})+\frac{ka^{-k} \ln a}{1-a^{-k}}=0
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">ln</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.295438em;vertical-align:-0.7693300000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5261079999999998em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7751079999999999em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693300000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span></span></p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mi>k</mi><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mi>ln</mi><mo>⁡</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">=&gt; (1-a^{-k}) \ln(1-a^{-k})=-ka^{-k} \ln a
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9824379999999999em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">a</span></span></span></span></span></p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><msup><mi>e</mi><mrow><mo>−</mo><mfrac><mrow><mi>k</mi><mi>n</mi></mrow><mi>m</mi></mfrac></mrow></msup><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">=&gt; e^{-\frac{kn}{m}}=\frac{1}{2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.02902em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.02902em;"><span style="top:-3.4130000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8800285714285714em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><mi>k</mi><mo>=</mo><mfrac><mi>m</mi><mi>n</mi></mfrac><mi>ln</mi><mo>⁡</mo><mn>2</mn><mo>≈</mo><mn>0.7</mn><mfrac><mi>m</mi><mi>n</mi></mfrac></mrow><annotation encoding="application/x-tex">=&gt; k=\frac{m}{n}\ln2\approx0.7\frac{m}{n}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.7935600000000003em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.10756em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.7935600000000003em;vertical-align:-0.686em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">7</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.10756em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
 <p>所以我们通过调整k的值也能一定程度上降低误判率， 但是基于概率的问题，误判率依然存在。所以这种方法适合于允许一定误判率，并拥有海量数据要过滤的场景</p>
-<h3 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a>优点</h3><ol>
+<h3 id="优点-3"><a class="markdownIt-Anchor" href="#优点-3"></a> 优点</h3>
+<ol>
 <li>通用，空间效率高，灵活，可以在性能和误判率之间做取舍</li>
 </ol>
-<h3 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<h3 id="缺点-3"><a class="markdownIt-Anchor" href="#缺点-3"></a> 缺点</h3>
+<ol>
 <li>有误判，性能不如bitmap</li>
 </ol>
-<h1 id="处理相似文本的重复"><a href="#处理相似文本的重复" class="headerlink" title="处理相似文本的重复"></a>处理相似文本的重复</h1><p>能处理相同的id造成的重复之后，如果我们可以找出一个文章的相似内容， 只要把相似的内容id也添加到需要过滤的集合， 就可以完成对相似内容的过滤</p>
-<h2 id="simhash"><a href="#simhash" class="headerlink" title="simhash"></a>simhash</h2><p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>
+<h1 id="处理相似文本的重复"><a class="markdownIt-Anchor" href="#处理相似文本的重复"></a> 处理相似文本的重复</h1>
+<p>能处理相同的id造成的重复之后，如果我们可以找出一个文章的相似内容， 只要把相似的内容id也添加到需要过滤的集合， 就可以完成对相似内容的过滤</p>
+<h2 id="simhash"><a class="markdownIt-Anchor" href="#simhash"></a> simhash</h2>
+<p>如果只是检测一模一样的两个字符串，那我们完全可以采用md5之类的摘要算法， 但是这种方法对文章内容又哪怕一个字的差别，就不再适用</p>
 <p>所以我们使用<code>simhash</code>来处理内容相似度的问题</p>
 <p>simhash的核心思想是先提取文章的最重要核心特征， 如果两篇文章的核心特征重复度较高，那就是相似文章</p>
 <p>步骤如下</p>
@@ -3200,132 +3235,138 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="MongoDB-vs-Elasticsearch"><a href="#MongoDB-vs-Elasticsearch" class="headerlink" title="MongoDB  vs Elasticsearch"></a>MongoDB  vs Elasticsearch</h1><table>
+          <h1 id="mongodb-vs-elasticsearch"><a class="markdownIt-Anchor" href="#mongodb-vs-elasticsearch"></a> MongoDB  vs Elasticsearch</h1>
+<table>
 <thead>
 <tr>
-<th align="center"></th>
-<th align="center">MongoDB</th>
-<th align="center">ElasticSearch</th>
+<th style="text-align:center"></th>
+<th style="text-align:center">MongoDB</th>
+<th style="text-align:center">ElasticSearch</th>
 <th>备注</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">定位</td>
-<td align="center">(文档型)数据库</td>
-<td align="center">(文档型)搜索引擎</td>
+<tbody>
+<tr>
+<td style="text-align:center">定位</td>
+<td style="text-align:center">(文档型)数据库</td>
+<td style="text-align:center">(文档型)搜索引擎</td>
 <td>一个管理数据,一个检索数据</td>
 </tr>
 <tr>
-<td align="center">资源占用</td>
-<td align="center">一般</td>
-<td align="center">高</td>
+<td style="text-align:center">资源占用</td>
+<td style="text-align:center">一般</td>
+<td style="text-align:center">高</td>
 <td>mongo使用c++, es使用Java开发</td>
 </tr>
 <tr>
-<td align="center">写入延迟</td>
-<td align="center">低</td>
-<td align="center">高</td>
+<td style="text-align:center">写入延迟</td>
+<td style="text-align:center">低</td>
+<td style="text-align:center">高</td>
 <td>es的写入延迟默认1s, 可配置, 但是要牺牲一些东西</td>
 </tr>
 <tr>
-<td align="center">全文索引支持度</td>
-<td align="center">一般</td>
-<td align="center">非常好</td>
+<td style="text-align:center">全文索引支持度</td>
+<td style="text-align:center">一般</td>
+<td style="text-align:center">非常好</td>
 <td>es本来就是搜索引擎, 这个没啥可比性</td>
 </tr>
 <tr>
-<td align="center">有无Schema</td>
-<td align="center">无</td>
-<td align="center">无</td>
+<td style="text-align:center">有无Schema</td>
+<td style="text-align:center">无</td>
+<td style="text-align:center">无</td>
 <td>两者都是无Schema</td>
 </tr>
 <tr>
-<td align="center">支持的数据量</td>
-<td align="center">PB+</td>
-<td align="center">TB+  ~ PB</td>
+<td style="text-align:center">支持的数据量</td>
+<td style="text-align:center">PB+</td>
+<td style="text-align:center">TB+  ~ PB</td>
 <td>两者支持的量并不好说的太死, 都支持分片和横向扩展, 但是相对来说MongoDB的数据量支持要更大一点</td>
 </tr>
 <tr>
-<td align="center">性能</td>
-<td align="center">非常好</td>
-<td align="center">好</td>
+<td style="text-align:center">性能</td>
+<td style="text-align:center">非常好</td>
+<td style="text-align:center">好</td>
 <td>MongoDB在大部分场景性能比es强的多得多</td>
 </tr>
 <tr>
-<td align="center">索引结构</td>
-<td align="center">B树</td>
-<td align="center">LSM树</td>
+<td style="text-align:center">索引结构</td>
+<td style="text-align:center">B树</td>
+<td style="text-align:center">LSM树</td>
 <td>es追求写入吞吐量, MongoDB读写比较均衡</td>
 </tr>
 <tr>
-<td align="center">操作接口</td>
-<td align="center">TCP</td>
-<td align="center">Restful(Http)</td>
+<td style="text-align:center">操作接口</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">Restful(Http)</td>
 <td></td>
 </tr>
 <tr>
-<td align="center">是否支持分片</td>
-<td align="center">是</td>
-<td align="center">是</td>
+<td style="text-align:center">是否支持分片</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
 <td></td>
 </tr>
 <tr>
-<td align="center">是否支持副本</td>
-<td align="center">是</td>
-<td align="center">是</td>
+<td style="text-align:center">是否支持副本</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
 <td></td>
 </tr>
 <tr>
-<td align="center">选主算法</td>
-<td align="center">Bully(霸凌)</td>
-<td align="center">Bully(霸凌)</td>
+<td style="text-align:center">选主算法</td>
+<td style="text-align:center">Bully(霸凌)</td>
+<td style="text-align:center">Bully(霸凌)</td>
 <td>相比于Paxos和Raft算法实现更简单并有一定可靠性上的妥协，但是选举速度比较快</td>
 </tr>
 <tr>
-<td align="center">扩展难度</td>
-<td align="center">容易</td>
-<td align="center">非常容易</td>
+<td style="text-align:center">扩展难度</td>
+<td style="text-align:center">容易</td>
+<td style="text-align:center">非常容易</td>
 <td>es真的是我用过的扩展最方便的存储系统之一</td>
 </tr>
 <tr>
-<td align="center">配置难度</td>
-<td align="center">难</td>
-<td align="center">非常容易</td>
+<td style="text-align:center">配置难度</td>
+<td style="text-align:center">难</td>
+<td style="text-align:center">非常容易</td>
 <td></td>
 </tr>
 <tr>
-<td align="center">地理位置</td>
-<td align="center">支持</td>
-<td align="center">支持</td>
+<td style="text-align:center">地理位置</td>
+<td style="text-align:center">支持</td>
+<td style="text-align:center">支持</td>
 <td></td>
 </tr>
 <tr>
-<td align="center">运维工具</td>
-<td align="center">丰富</td>
-<td align="center">一般</td>
+<td style="text-align:center">运维工具</td>
+<td style="text-align:center">丰富</td>
+<td style="text-align:center">一般</td>
 <td></td>
 </tr>
 <tr>
-<td align="center">插件和引擎</td>
-<td align="center">有多个存储引擎供选择</td>
-<td align="center">有大量插件可以使用</td>
+<td style="text-align:center">插件和引擎</td>
+<td style="text-align:center">有多个存储引擎供选择</td>
+<td style="text-align:center">有大量插件可以使用</td>
 <td>-</td>
 </tr>
-</tbody></table>
-<h1 id="两者的定位"><a href="#两者的定位" class="headerlink" title="两者的定位"></a>两者的定位</h1><p><code>MongoDB</code>和<code>Elasticsearch</code>都属于NoSQL大家族, 且都属于文档型数据存储</p>
-<p>所以这两者的很多功能和特性高度重合, 但其实两者定位完全不同     </p>
-<p>MongoDB 是 <strong>文档型数据库</strong>,  提供 <strong>数据存储和管理服务</strong><br>Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服务</strong></p>
+</tbody>
+</table>
+<h1 id="两者的定位"><a class="markdownIt-Anchor" href="#两者的定位"></a> 两者的定位</h1>
+<p><code>MongoDB</code>和<code>Elasticsearch</code>都属于NoSQL大家族, 且都属于文档型数据存储</p>
+<p>所以这两者的很多功能和特性高度重合, 但其实两者定位完全不同</p>
+<p>MongoDB 是 <strong>文档型数据库</strong>,  提供 <strong>数据存储和管理服务</strong><br>
+Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服务</strong></p>
 <p>两者的很大区别在于源数据的存储和管理</p>
 <ul>
-<li>MongoDB作为一个数据库产品, 是拥有源数据管理能力的     </li>
-<li>Elasticsearch作为一个搜索引擎, 定位是<strong>提供数据检索服务</strong>, 也就是说我只管查, 不管写 ^_^, Elasticsearch的Mapping不可变也是为此服务的, 带来的代价就是<code>es不适合作为数据管理者</code>, es可以从其他数据源同步数据过来提供查询, 但是不适合自己对数据进行存储和管理 </li>
+<li>MongoDB作为一个数据库产品, 是拥有源数据管理能力的</li>
+<li>Elasticsearch作为一个搜索引擎, 定位是<strong>提供数据检索服务</strong>, 也就是说我只管查, 不管写 <sup>_</sup>, Elasticsearch的Mapping不可变也是为此服务的, 带来的代价就是<code>es不适合作为数据管理者</code>, es可以从其他数据源同步数据过来提供查询, 但是不适合自己对数据进行存储和管理</li>
 </ul>
 <p>es更侧重数据的查询, 各种复杂的花式查询支持的很好, 相比来说 MongoDB的查询能力就显得比较平庸了</p>
 <p>由此可见, 对于个人, 如果你有一批数据要看, 但是不经常进行修改, 这个时候毫无疑问可以用es, 但是如果你还打算继续修改数据, 最好就是使用MongoDB，但其实对大多数人公司来讲，这两者的数据管理能力并没有多大的影响</p>
 <blockquote>
 <p>ps: es修改Mapping的代价非常高, 所以我们一般都是把新数据重新写入一份新索引，然后直接切换读取的别名到新的索引</p>
 </blockquote>
-<h1 id="两者读写数据的异同"><a href="#两者读写数据的异同" class="headerlink" title="两者读写数据的异同"></a>两者读写数据的异同</h1><p><code>MongoDB</code>和<code>ElasticSearch</code>都支持全文索引, 虽然MongoDB的全文索引效果完全无法跟es相比(es毕竟是专业的搜索引擎产品, 着重提供数据的检所支持, 这方面吊打MongoDB也是可以理解的)</p>
+<h1 id="两者读写数据的异同"><a class="markdownIt-Anchor" href="#两者读写数据的异同"></a> 两者读写数据的异同</h1>
+<p><code>MongoDB</code>和<code>ElasticSearch</code>都支持全文索引, 虽然MongoDB的全文索引效果完全无法跟es相比(es毕竟是专业的搜索引擎产品, 着重提供数据的检所支持, 这方面吊打MongoDB也是可以理解的)</p>
 <p>MongoDB虽然在支持的部分查询功能上稍微弱于es, 但是在大部分场景下性能方面完爆es, 不管是读性能, 还是写性能</p>
 <p>es的写入延迟默认为1s, 这个虽然是写入延迟的范畴, 但是毫无疑问是一大缺点, 虽然可以配置为更短的时间, 但是这样就要牺牲一定的数据吞吐量, 会造成更频繁的磁盘刷新操作</p>
 <p>es底层使用<code>Lucene</code>作为核心引擎, 很多es的设计就是为了匹配Lucene中的概念, 其实es可以看成一个lucene的proxy层包装,将lucene的原生接口封装的更好用, 同时还实现了很多管理和监控等辅助功能, 但是整体来说es上层的模块和lucene的隔阂还是挺明显的, 耦合度上有一定的欠缺</p>
@@ -3333,31 +3374,37 @@ ul.breadcrumb li + li:last-child {
 <blockquote>
 <p>MongoDB支持多种存储引擎, 本文所有涉及mongo存储引擎的只谈默认的WiredTiger引擎, 其实还有某些方面更优秀的其他引擎,例如: MongoRocks等</p>
 </blockquote>
-<h1 id="部署和资源占用"><a href="#部署和资源占用" class="headerlink" title="部署和资源占用"></a>部署和资源占用</h1><p>单机部署的话其实MongoDB和Elasticsearch都十分的方便, 不过es相对来说资源占用更多一点, 性能也比MongoDB要弱一点</p>
-<p>集群化的部署, 我们一般都会选择分片+副本的部署方式, 这种方式下, es部署起来比MongoDB方便太多, MongoDB要部署一套完整的分片 + 副本模式还是比较麻烦的, 没有经验的人部署起来需要一定的学习成本    </p>
+<h1 id="部署和资源占用"><a class="markdownIt-Anchor" href="#部署和资源占用"></a> 部署和资源占用</h1>
+<p>单机部署的话其实MongoDB和Elasticsearch都十分的方便, 不过es相对来说资源占用更多一点, 性能也比MongoDB要弱一点</p>
+<p>集群化的部署, 我们一般都会选择分片+副本的部署方式, 这种方式下, es部署起来比MongoDB方便太多, MongoDB要部署一套完整的分片 + 副本模式还是比较麻烦的, 没有经验的人部署起来需要一定的学习成本</p>
 <p>资源占用方面, MongoDB可以支持存储文件类型的数据, 作为数据库也有数据压缩能力, es则因为大量的索引存在需要占用大量的磁盘和内存空间</p>
-<h1 id="可用性和容错"><a href="#可用性和容错" class="headerlink" title="可用性和容错"></a>可用性和容错</h1><p>MongoDB和ElasticSearch作为天生分布式的代表产品都支持数据分片和副本   </p>
-<p>两者都通过分片支持水平扩展, 同时都通过副本来支持高可用(HA) </p>
+<h1 id="可用性和容错"><a class="markdownIt-Anchor" href="#可用性和容错"></a> 可用性和容错</h1>
+<p>MongoDB和ElasticSearch作为天生分布式的代表产品都支持数据分片和副本</p>
+<p>两者都通过分片支持水平扩展, 同时都通过副本来支持高可用(HA)</p>
 <p>分片就是一个数据集的数据分为多份, 同时分布在多个节点上存储和管理, 主流分片方式有两种: hash分片和range分片, 两种分片方式各有优势, 适合不同的场景</p>
 <p>副本就是一份数据集同时有一个或者多个复制品(有些地方叫主从), 每份复制品都一模一样, 但是为了保证数据的一致性, 往往多个副本中只有一个作为Primary副本(通过选主算法从多个副本中选出Primary), 提供写服务, 其他副本只提供读, 或者只提供备份服务</p>
 <blockquote>
 <p>ps:es和MongoDB都可以通过副本增强读能力, 这与kafka很不一样(kafka的副本只有备份功能)</p>
 </blockquote>
-<h2 id="两者分布式方案的一些不同"><a href="#两者分布式方案的一些不同" class="headerlink" title="两者分布式方案的一些不同"></a>两者分布式方案的一些不同</h2><p>MongoDB和Elasticsearch虽然都是分布式服务, 但是还是有一些不同方案的选择的</p>
+<h2 id="两者分布式方案的一些不同"><a class="markdownIt-Anchor" href="#两者分布式方案的一些不同"></a> 两者分布式方案的一些不同</h2>
+<p>MongoDB和Elasticsearch虽然都是分布式服务, 但是还是有一些不同方案的选择的</p>
 <ul>
 <li>分片和副本单位的划分</li>
 </ul>
 <p>MongoDB是以节点为单位划分角色, 一旦一个节点被指定为副本, 其上面的数据都是副本</p>
-<p>Elasticsearch是以分片为单位划分角色, 一个节点上即可以拥有某分片的主分片和可以同时拥有另一个分片的副本分片, 同时es还支持自动的副本负载均衡, 如果一个新节点上面什么数据都没有, 系统会自动分配分片数据过来 </p>
+<p>Elasticsearch是以分片为单位划分角色, 一个节点上即可以拥有某分片的主分片和可以同时拥有另一个分片的副本分片, 同时es还支持自动的副本负载均衡, 如果一个新节点上面什么数据都没有, 系统会自动分配分片数据过来</p>
 <ul>
 <li>架构模式</li>
 </ul>
 <p>MongoDB的副本和分片是两种不同的模式, 虽然可以同时使用但是依然有各自的架构设计, 用户可以任意选择选型进行搭配, 每个节点的职责更加专一, 方便据此调整机器配置和进行优化</p>
 <p>Elasticsearch中的分片 + 副本是一套统一的架构设计, 每个节点具有接近同等的地位, 配置使用起来更加简单, 但是如果要针对节点所负责的功能对机器进一步做定制就不如MongoDB灵活</p>
-<h1 id="文档型数据库的特点和问题"><a href="#文档型数据库的特点和问题" class="headerlink" title="文档型数据库的特点和问题"></a>文档型数据库的特点和问题</h1><h2 id="无schema"><a href="#无schema" class="headerlink" title="无schema"></a>无schema</h2><p>文档型数据存储既能享受无schema限制带来的灵活, 又能享受索引查询的快速和类SQL查询的便捷</p>
+<h1 id="文档型数据库的特点和问题"><a class="markdownIt-Anchor" href="#文档型数据库的特点和问题"></a> 文档型数据库的特点和问题</h1>
+<h2 id="无schema"><a class="markdownIt-Anchor" href="#无schema"></a> 无schema</h2>
+<p>文档型数据存储既能享受无schema限制带来的灵活, 又能享受索引查询的快速和类SQL查询的便捷</p>
 <p>使他们用起来不像传统的RDBMS那么麻烦, 又不像 Redis,Hbase这种数据库查询功能不够强大, 处在一个传统RDBMS和经典K-V存储之间的比较均衡的位置</p>
 <p>我个人很喜欢这个特性, 没有schema的限制, 存储数据更方便也更灵活了, 但是有得有失, 很多固定schema的好处就无法享受到了, 比如: 对数据的高效压缩</p>
-<h2 id="鸡肋的Collection-和-Type"><a href="#鸡肋的Collection-和-Type" class="headerlink" title="鸡肋的Collection 和 Type"></a>鸡肋的Collection 和 Type</h2><p>早期为了跟传统rdbms数据库保持概念一致 ，mongodb和elasticsearch都设计了跟传统数据库里面的<code>库-&gt;表-&gt;记录行</code>对应的概念，具体如下</p>
+<h2 id="鸡肋的collection-和-type"><a class="markdownIt-Anchor" href="#鸡肋的collection-和-type"></a> 鸡肋的Collection 和 Type</h2>
+<p>早期为了跟传统rdbms数据库保持概念一致 ，mongodb和elasticsearch都设计了跟传统数据库里面的<code>库-&gt;表-&gt;记录行</code>对应的概念，具体如下</p>
 <table>
 <thead>
 <tr>
@@ -3366,7 +3413,8 @@ ul.breadcrumb li + li:last-child {
 <th>Elasticsearch</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>库</td>
 <td>库</td>
 <td>索引</td>
@@ -3381,17 +3429,22 @@ ul.breadcrumb li + li:last-child {
 <td>文档</td>
 <td>文档</td>
 </tr>
-</tbody></table>
-<p>其实对于nosql数据库来讲, 集合/类型的意义其实不大, Nosql数据库几乎都是k-v类型的存储结构，完全可以通过key进行业务隔离和区分，真的没有必要为了跟传统数据库对应强行搞出来一个中间概念 ^_^</p>
+</tbody>
+</table>
+<p>其实对于nosql数据库来讲, 集合/类型的意义其实不大, Nosql数据库几乎都是k-v类型的存储结构，完全可以通过key进行业务隔离和区分，真的没有必要为了跟传统数据库对应强行搞出来一个中间概念 <sup>_</sup></p>
 <p>Elasticsearch从<code>6.x</code>版本开始强制只允许一个索引使用一个type, 其实就是意识到这个这个设计的失误, 不想让你用这个type类型, 因为type和传统数据库里面的表概念其实是不一样的，这种概念类比给人造成了误解，到了es的7.x版本会默认取消type类型, 就说明这个type字段真的是鸡肋的不行</p>
-<h2 id="弱事务"><a href="#弱事务" class="headerlink" title="弱事务"></a>弱事务</h2><p>MongoDB以前只是支持同一文档内的原子更新, 以此来实现伪事务功能, 不过Mongo4.0支持Replica Set事务, 大大加强了事务方面的能力 </p>
+<h2 id="弱事务"><a class="markdownIt-Anchor" href="#弱事务"></a> 弱事务</h2>
+<p>MongoDB以前只是支持同一文档内的原子更新, 以此来实现伪事务功能, 不过Mongo4.0支持Replica Set事务, 大大加强了事务方面的能力</p>
 <p>es在这方面倒没有什么进展，因为从应用场景上es对事务的需求不高，不过用户其实也可以使用同文档更新或者通过程序自己来实现事务机制</p>
-<h2 id="无join支持"><a href="#无join支持" class="headerlink" title="无join支持"></a>无join支持</h2><p>文档型数据库大多数都不支持join(也有少量支持的), 但是我一般也用不上多表join的功能, 即便真的需要使用join也可以通过应用层或者通过耦合数据来实现（不过据说未来Mongo4.2版本会带来对join的支持）</p>
+<h2 id="无join支持"><a class="markdownIt-Anchor" href="#无join支持"></a> 无join支持</h2>
+<p>文档型数据库大多数都不支持join(也有少量支持的), 但是我一般也用不上多表join的功能, 即便真的需要使用join也可以通过应用层或者通过耦合数据来实现（不过据说未来Mongo4.2版本会带来对join的支持）</p>
 <p>不支持join带来的问题就是我们需要自己对数据进行连接, 但是这在擅长使用分布式计算的大数据领域不算什么问题, 相应的缺少join功能可能对善于使用SQL的数据分析师就不大友好</p>
-<h2 id="Bully的选主算法的缺陷"><a href="#Bully的选主算法的缺陷" class="headerlink" title="Bully的选主算法的缺陷"></a>Bully的选主算法的缺陷</h2><p>elasticsearch和MongoDB选择的选主算法实现很简单, 但是代价就是有几率出现脑裂的情况, 当然, 具体情况跟配置也有关系(比如:你有三个es节点但是设置的最小主节点数为1, 将最小主节点数设置为2可以避免脑裂情况)</p>
-<p>不过脑裂问题一方面发生概率较低，另一方面即使出现了脑裂的情况, 使用<code>重启大法</code>一般就能解决 ^_^</p>
+<h2 id="bully的选主算法的缺陷"><a class="markdownIt-Anchor" href="#bully的选主算法的缺陷"></a> Bully的选主算法的缺陷</h2>
+<p>elasticsearch和MongoDB选择的选主算法实现很简单, 但是代价就是有几率出现脑裂的情况, 当然, 具体情况跟配置也有关系(比如:你有三个es节点但是设置的最小主节点数为1, 将最小主节点数设置为2可以避免脑裂情况)</p>
+<p>不过脑裂问题一方面发生概率较低，另一方面即使出现了脑裂的情况, 使用<code>重启大法</code>一般就能解决 <sup>_</sup></p>
 <p>总体来说, 这方面不如使用Paxos和Raft算法或者使用zk做协调器的其他分布式系统靠谱</p>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
+<h1 id="其他"><a class="markdownIt-Anchor" href="#其他"></a> 其他</h1>
+<ul>
 <li>运维工具</li>
 </ul>
 <p>两者背后都有商业公司的支持</p>
@@ -3402,7 +3455,8 @@ ul.breadcrumb li + li:last-child {
 </ul>
 <p>es使用Restful来提供统一的操作接口, 屏蔽了各种语言之间的障碍, 但是同样带来了表达能力和性能的损失</p>
 <p>MongoDB则使用TCP, 降低了序列化和网络这一层的性能损耗, 并最大程度保留了接口的内容表达能力, 但是相对的使用起来就不如http那么的方便</p>
-<h1 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h1><p>两者其实在很多使用场景上有重合之处, 是可以互相替代, 比如日志收集</p>
+<h1 id="适用场景"><a class="markdownIt-Anchor" href="#适用场景"></a> 适用场景</h1>
+<p>两者其实在很多使用场景上有重合之处, 是可以互相替代, 比如日志收集</p>
 <p>但是某些方面两者又各有特色，比如： 如果打算使用一个文档型的业务数据库， 那最好还是选mongodb, 如果你有要求复杂查询又并发性能要求高的场景，类似搜索服务，那最好的选择是elasticsearch</p>
 <p>除此之外：</p>
 <p>MongoDB有多个存储引擎可以选择, 而且MongoDB不仅看重数据的分析, 对数据的管理同样看重, 总的来说MongoDB更倾向于数据的存储和管理, 可以作为数据源对外提供， 未来说不定还会有支持join和支持倒排索引的mongo引擎出现</p>
@@ -3427,10 +3481,11 @@ ul.breadcrumb li + li:last-child {
 <li>监控信息/日志信息检索</li>
 <li>小团队但是有多语言服务，es拥有restful接口，用起来最方便</li>
 </ol>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>MongoDB和Elasticsearch都是我比较喜欢的存储产品</p>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>MongoDB和Elasticsearch都是我比较喜欢的存储产品</p>
 <p>两者的功能特性也存在很多重合的地方, 其实现在很多数据库产品都在互相借(chao)鉴(xi), 功能和特性都在逐渐变得相似, 这也是未来很多存储产品的发展趋势, 大家都希望自己能覆盖尽量多的场景和用户群体</p>
-<p>很多产品总是在不断的从<code>没有</code>-&gt;<code>有</code>-&gt;<code>功能丰富</code>,但是功能丰富一定是做了很多的妥协, 于是又有了 <code>功能众多的单体服务</code>-&gt;<code>多个功能单一的子服务</code> 方向的转变,就像三国里面说的 “天下大势, 分久必合合久必分”. </p>
-<p>现在NoSQL数据库产品就在这个路上, NoSQL归根到底都是 RDBMS的某个方面的妥协, 现在各种NoSQL 也都在加入对经典SQL和传统RDBMS的 join, 事务的支持, 但是我相信等到两者区别足够小的时候, 一定会有放弃了大而全, 而专注于某一场景的新的存储产品出现，到时候搞不好又是一波新的Nosql潮流 </p>
+<p>很多产品总是在不断的从<code>没有</code>-&gt;<code>有</code>-&gt;<code>功能丰富</code>,但是功能丰富一定是做了很多的妥协, 于是又有了 <code>功能众多的单体服务</code>-&gt;<code>多个功能单一的子服务</code> 方向的转变,就像三国里面说的 “天下大势, 分久必合合久必分”.</p>
+<p>现在NoSQL数据库产品就在这个路上, NoSQL归根到底都是 RDBMS的某个方面的妥协, 现在各种NoSQL 也都在加入对经典SQL和传统RDBMS的 join, 事务的支持, 但是我相信等到两者区别足够小的时候, 一定会有放弃了大而全, 而专注于某一场景的新的存储产品出现，到时候搞不好又是一波新的Nosql潮流</p>
 
       
     </div>
@@ -5720,6 +5775,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   
   
@@ -5758,6 +5814,11 @@ ul.breadcrumb li + li:last-child {
 
 
   
+
+  
+      
+
+
 
   
 

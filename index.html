@@ -15,7 +15,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+    var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="君子生非异也, 善假于物也">
@@ -1266,7 +1266,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff8538;
+  background: #ffff83;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2856,7 +2856,7 @@ ul.breadcrumb li + li:last-child {
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"></noscript></head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext');loadCss('//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&amp;display=swap&amp;subset=latin,latin-ext"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css"></noscript></head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -3556,13 +3556,20 @@ ul.breadcrumb li + li:last-child {
 
       
           <p>文中所有内容均以类似今日头条的内容平台做例子</p>
-<h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><p><img data-src="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png" alt="user-feture.png"></p>
-<h2 id="用户兴趣特征的挖掘"><a href="#用户兴趣特征的挖掘" class="headerlink" title="用户兴趣特征的挖掘"></a>用户兴趣特征的挖掘</h2><p>推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。<br>其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征。难的地方是你如果想要获得比较完整的，或者比较准确的用户兴趣，其实也是非常有挑战性的工作。<br>我想分享一点我自己在挖掘用户兴趣方面的想法和经验。</p>
+<h2 id="整体流程"><a class="markdownIt-Anchor" href="#整体流程"></a> 整体流程</h2>
+<p><img data-src="https://i.loli.net/2020/05/09/nTbNjk8MtJHic19.png" alt="user-feture.png"></p>
+<h2 id="用户兴趣特征的挖掘"><a class="markdownIt-Anchor" href="#用户兴趣特征的挖掘"></a> 用户兴趣特征的挖掘</h2>
+<p>推荐系统所依赖的数据之中一类很重要的信息是用户到底喜欢什么，这个喜欢的标的物可能是某一类内容， 某一个人，某一个话题相关的内容等，我们需要做的事情就是尽可能的发现用户可能喜欢的事物标签。<br>
+其实用户的兴趣挖掘说难也难，说容易也容易。容易的地方在于很好入门，你只要知道一个序列的用户行为信息，就可以根据行为信息获得用户的部分兴趣特征。难的地方是你如果想要获得比较完整的，或者比较准确的用户兴趣，其实也是非常有挑战性的工作。<br>
+我想分享一点我自己在挖掘用户兴趣方面的想法和经验。</p>
 <blockquote>
 <p>ps:  我们这里所提及的用户兴趣统统是指用户的隐式特征，就是从用户行为中提取的非主动操作的信息</p>
 </blockquote>
-<h2 id="行为数据-用户特征矩阵-内容特征匹配"><a href="#行为数据-用户特征矩阵-内容特征匹配" class="headerlink" title="行为数据-用户特征矩阵-内容特征匹配"></a>行为数据-用户特征矩阵-内容特征匹配</h2><p>假设我们拥有一段用户的行为信息序列， 我们可以非常简单的统计出来用户经常观看的文章。<br>但是我们不能向用户推荐已经看过的文章， 所以我们需要挖掘用户观看某文章背后的潜在信息， 并给用户推荐内容比较相似的或者关键词比较相关的文章内容。</p>
-<h3 id="用户特征矩阵的生成"><a href="#用户特征矩阵的生成" class="headerlink" title="用户特征矩阵的生成"></a>用户特征矩阵的生成</h3><p>比如：我们可以基于用户观看的文章背后的标签出现次数进行分数统计，标签每出现一次记一分，获得一个用户对标签的喜好表。如下</p>
+<h2 id="行为数据-用户特征矩阵-内容特征匹配"><a class="markdownIt-Anchor" href="#行为数据-用户特征矩阵-内容特征匹配"></a> 行为数据-用户特征矩阵-内容特征匹配</h2>
+<p>假设我们拥有一段用户的行为信息序列， 我们可以非常简单的统计出来用户经常观看的文章。<br>
+但是我们不能向用户推荐已经看过的文章， 所以我们需要挖掘用户观看某文章背后的潜在信息， 并给用户推荐内容比较相似的或者关键词比较相关的文章内容。</p>
+<h3 id="用户特征矩阵的生成"><a class="markdownIt-Anchor" href="#用户特征矩阵的生成"></a> 用户特征矩阵的生成</h3>
+<p>比如：我们可以基于用户观看的文章背后的标签出现次数进行分数统计，标签每出现一次记一分，获得一个用户对标签的喜好表。如下</p>
 <table>
 <thead>
 <tr>
@@ -3573,7 +3580,8 @@ ul.breadcrumb li + li:last-child {
 <th>新闻资讯</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>5</td>
 <td>6</td>
@@ -3601,10 +3609,12 @@ ul.breadcrumb li + li:last-child {
 <td>4</td>
 <td>9</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>从上面我们可以知道用户1喜欢 金融政策和新冠肺炎相关的内容，用户2可能是李大霄的粉丝，喜欢看李大霄相关的文章。</p>
-<p>为了获取这个列表我们也可以根据用户对不同内容标签的点击率进行归一化的分数统计， 取点击率比较高的标签。一样可以得到蕾丝上面的<strong>&lt;用户, 特征,喜好程度&gt;</strong>的三元序列</p>
-<h3 id="根据特征矩阵进行内容推荐"><a href="#根据特征矩阵进行内容推荐" class="headerlink" title="根据特征矩阵进行内容推荐"></a>根据特征矩阵进行内容推荐</h3><p>然后我们就可以根据未推荐文章中出现的用户喜欢的特征和特征权重对不同文章进行计分， 对内容综合积分，按照分数进行排序输出。</p>
+<p>为了获取这个列表我们也可以根据用户对不同内容标签的点击率进行归一化的分数统计， 取点击率比较高的标签。一样可以得到蕾丝上面的**&lt;用户, 特征,喜好程度&gt;**的三元序列</p>
+<h3 id="根据特征矩阵进行内容推荐"><a class="markdownIt-Anchor" href="#根据特征矩阵进行内容推荐"></a> 根据特征矩阵进行内容推荐</h3>
+<p>然后我们就可以根据未推荐文章中出现的用户喜欢的特征和特征权重对不同文章进行计分， 对内容综合积分，按照分数进行排序输出。</p>
 <table>
 <thead>
 <tr>
@@ -3615,7 +3625,8 @@ ul.breadcrumb li + li:last-child {
 <th>新闻咨询</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>A</td>
 <td>0</td>
 <td>3</td>
@@ -3629,7 +3640,8 @@ ul.breadcrumb li + li:last-child {
 <td>1</td>
 <td>2</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>假设我们有A,B两篇文章，内容标签如上。我们可以对用户1， 2与内容的匹配程度进行分值计算。可以得到如下表格</p>
 <table>
 <thead>
@@ -3639,7 +3651,8 @@ ul.breadcrumb li + li:last-child {
 <th>b</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>3 x 6  = 18</td>
 <td>5 x 1+ 2 x  1 = 7</td>
@@ -3649,44 +3662,58 @@ ul.breadcrumb li + li:last-child {
 <td>9 x 1 = 9</td>
 <td>1 x 2 + 1 x 9 + 2 x 3 = 17</td>
 </tr>
-</tbody></table>
-<p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
-<h2 id="行为数据-用户特征-用户相似度-内容推荐"><a href="#行为数据-用户特征-用户相似度-内容推荐" class="headerlink" title="行为数据/用户特征-用户相似度-内容推荐"></a>行为数据/用户特征-用户相似度-内容推荐</h2><p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
-<h3 id="计算用户的相似用户"><a href="#计算用户的相似用户" class="headerlink" title="计算用户的相似用户"></a>计算用户的相似用户</h3><p>我们使用Jaccard系数来表征用户的相似度</p>
+</tbody>
+</table>
+<p>很容的知道应该给用户1 推荐 A 文章， 给用户2推荐B文章。<br>
+我们也可以采用其他的综合考虑权重的计分方法， 但是核心要点都是两个，一个是获得用户与特征的矩阵， 一个是获得内容和特征的矩阵。鉴于计算量巨大，可以使用 矩阵相乘的算法进行加速。</p>
+<h2 id="行为数据用户特征-用户相似度-内容推荐"><a class="markdownIt-Anchor" href="#行为数据用户特征-用户相似度-内容推荐"></a> 行为数据/用户特征-用户相似度-内容推荐</h2>
+<p>我们也可以根据用户经常观看的信息， 寻找与用户比较相似的用户群体，然后假定用户与相似的用户群具有相似喜好， 从用户群体的共同喜欢内容中挑选出来一些用户未观看的推荐给用户</p>
+<h3 id="计算用户的相似用户"><a class="markdownIt-Anchor" href="#计算用户的相似用户"></a> 计算用户的相似用户</h3>
+<p>我们使用Jaccard系数来表征用户的相似度</p>
 <ul>
 <li>使用用户行为计算相似度</li>
 </ul>
-<p>我们可以使用用户行为信息如此计算两个用户的相似度<br>$$ Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2) $$<br>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
+<p>我们可以使用用户行为信息如此计算两个用户的相似度</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Y</mi><mo stretchy="false">(</mo><mi>s</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>a</mi><mi>r</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>U</mi><mn>1</mn><mo>∩</mo><mi>U</mi><mn>2</mn></mrow><mrow><mi>U</mi><mn>1</mn><mo>∪</mo><mi>U</mi><mn>2</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">Y(similar)=\frac{U1∩U2}{U1∪U2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>使用用户1 和用户2 的观看内容中相交的部分 / 用户1 和用户2 内容的并集， 能得到两个人都喜欢的内容，在两个人观看总内容的一个比例</p>
 <ul>
 <li>使用用户特征计算相似度</li>
 </ul>
-<p>我们也可以通过用户身上的标签，比如 ，使用的手机型号，年龄，性别，地区等信息。 一样采用如下公式进行用户标签相似度的计算。计算结果与上面用户行为相似度结果一样 </p>
-<p>$$Y(similar) =  (U1 ∩ U2)/ (U1 ∪ U2)$$</p>
-<h3 id="根据相似用户进行推荐"><a href="#根据相似用户进行推荐" class="headerlink" title="根据相似用户进行推荐"></a>根据相似用户进行推荐</h3><p>这个比例可以作用两个用户相似度的评价标准, 拿到用户的相似用户集合以后，通过统计相似用户已观看列表中的的内容的出现次数。可以得到如下表格</p>
+<p>我们也可以通过用户身上的标签，比如 ，使用的手机型号，年龄，性别，地区等信息。 一样采用如下公式进行用户标签相似度的计算。计算结果与上面用户行为相似度结果一样</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Y</mi><mo stretchy="false">(</mo><mi>s</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>a</mi><mi>r</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>U</mi><mn>1</mn><mo>∩</mo><mi>U</mi><mn>2</mn></mrow><mrow><mi>U</mi><mn>1</mn><mo>∪</mo><mi>U</mi><mn>2</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">Y(similar)=\frac{U1∩U2}{U1∪U2}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<h3 id="根据相似用户进行推荐"><a class="markdownIt-Anchor" href="#根据相似用户进行推荐"></a> 根据相似用户进行推荐</h3>
+<p>这个比例可以作用两个用户相似度的评价标准, 拿到用户的相似用户集合以后，通过统计相似用户已观看列表中的的内容的出现次数。可以得到如下表格</p>
 <table>
 <thead>
 <tr>
-<th align="center">用户/内容</th>
+<th style="text-align:center">用户/内容</th>
 <th>A</th>
 <th>B</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">1</td>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
 <td>5</td>
 <td>2</td>
 </tr>
 <tr>
-<td align="center">2</td>
+<td style="text-align:center">2</td>
 <td>9</td>
 <td>1</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>选择出现次数多的进行推荐即可。</p>
 <p>也可以进一步利用相似用户的内容出现次数，通过统计去更新用户的特征矩阵中的(用户-&gt;特征)的分值。然后再根据特征的加权获取最终的推荐结果</p>
-<h2 id="用户数据-用户特征-用户分群-用户相似推荐"><a href="#用户数据-用户特征-用户分群-用户相似推荐" class="headerlink" title="用户数据-用户特征-用户分群-用户相似推荐"></a>用户数据-用户特征-用户分群-用户相似推荐</h2><p>我们也可以根据用户本身的特征，对用户进行分类。例如：女性用户，30-35岁， 使用安卓手机，经常在晚上6-9点使用app等特征对相似的用户进行分群</p>
+<h2 id="用户数据-用户特征-用户分群-用户相似推荐"><a class="markdownIt-Anchor" href="#用户数据-用户特征-用户分群-用户相似推荐"></a> 用户数据-用户特征-用户分群-用户相似推荐</h2>
+<p>我们也可以根据用户本身的特征，对用户进行分类。例如：女性用户，30-35岁， 使用安卓手机，经常在晚上6-9点使用app等特征对相似的用户进行分群</p>
 <p>然后统计分析该分群用户的行为记录。采用类似于上面用户相似度的统计方法，获得用户对内容或者对特征的分数矩阵结果</p>
-<h2 id="综合方案"><a href="#综合方案" class="headerlink" title="综合方案"></a>综合方案</h2><p>我们在实际的生产中可以综合以上各种策略， 获取用户的特征矩阵并对内容进行计算分数。在根据实际场景中的效果进行不同权重和比例的动态调整。<br>一般来说是可以获得不错的效果的。</p>
+<h2 id="综合方案"><a class="markdownIt-Anchor" href="#综合方案"></a> 综合方案</h2>
+<p>我们在实际的生产中可以综合以上各种策略， 获取用户的特征矩阵并对内容进行计算分数。在根据实际场景中的效果进行不同权重和比例的动态调整。<br>
+一般来说是可以获得不错的效果的。</p>
 
       
     </div>
@@ -3774,35 +3801,40 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="推荐系统的排序策略"><a href="#推荐系统的排序策略" class="headerlink" title="推荐系统的排序策略"></a>推荐系统的排序策略</h1><p>排序策略起到的作用</p>
+          <h1 id="推荐系统的排序策略"><a class="markdownIt-Anchor" href="#推荐系统的排序策略"></a> 推荐系统的排序策略</h1>
+<p>排序策略起到的作用</p>
 <ol>
-<li><p>将多种召回集的结果进行融合，挑出少量的推结果内容</p>
-</li>
-<li><p>返回结果应平衡多种来源的密度分布</p>
-</li>
-<li><p>根据排版要求进行精排序</p>
-<h1 id="问题和需求描述"><a href="#问题和需求描述" class="headerlink" title="问题和需求描述"></a>问题和需求描述</h1><p>假设我们现在拥有3个召回策略的来源的数据分别为</p>
-</li>
-<li><p>个性化内容约 200 个</p>
-</li>
-<li><p>新内容约 2000 个</p>
-</li>
-<li><p>热门内容约 200 个</p>
-</li>
+<li>将多种召回集的结果进行融合，挑出少量的推结果内容</li>
+<li>返回结果应平衡多种来源的密度分布</li>
+<li>根据排版要求进行精排序</li>
+</ol>
+<h1 id="问题和需求描述"><a class="markdownIt-Anchor" href="#问题和需求描述"></a> 问题和需求描述</h1>
+<p>假设我们现在拥有3个召回策略的来源的数据分别为</p>
+<ol>
+<li>个性化内容约 200 个</li>
+<li>新内容约 2000 个</li>
+<li>热门内容约 200 个</li>
 </ol>
 <p>我们希望达到如下目标</p>
 <ol>
 <li>从这么多用户可能感兴趣的内容中挑出来10个内容返回</li>
 <li>用户已经推荐过的不再进行推荐</li>
-<li>用户的推荐结果中,结果保持多样性各种来源按照一定比例，个性化：新内容：热门内容比例为  3:4:3， 某种题材比例不足采用其他内容进行填充<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">;用代码描述如下</span></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name">recommendation</span> user)</span><br><span class="line">	(<span class="name"><span class="builtin-name">lambda</span></span> (user)</span><br><span class="line">    (<span class="name"><span class="builtin-name">cons</span></span> (<span class="name"><span class="builtin-name">cond</span></span> (<span class="name">personal?</span> user) (<span class="name">get-personal</span> user)</span><br><span class="line">                (<span class="name"><span class="builtin-name">else</span></span> '()))</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> hottest? (<span class="name">get-hottest</span>) '())</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> lattest? (<span class="name">get-lattest</span>) '())</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> hot-spot? (<span class="name">get-hot-spot</span>) '()))))</span><br></pre></td></tr></tbody></table></figure>
-<h1 id="朴素处理"><a href="#朴素处理" class="headerlink" title="朴素处理"></a>朴素处理</h1></li>
-<li>直接从个性化内容里面 取10<em>0.3 个没有推荐过的，从新内容里面取 10 * 0.4 个， 从热门里面取 10</em> 0.3 个放到一个队列返回<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rec</span></span>(a:<span class="type">Set</span>[个性化], b: <span class="type">Set</span>[新], c: <span class="type">Set</span>[热门],d: <span class="type">Set</span>[看过]): <span class="type">Set</span>[<span class="number">10</span>] = {</span><br><span class="line">    ans = <span class="type">Set</span>()</span><br><span class="line">    ans += a.forEach(v -&gt; !d.contains(v)).take(<span class="number">3</span>)</span><br><span class="line">    ans += b.forEach(v -&gt; !d.contains(v)).take(<span class="number">4</span>)</span><br><span class="line">    ans += c.forEach(v -&gt; !d.contains(v)).take(<span class="number">3</span>)</span><br><span class="line">    ans</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-这种处理方法在遇到 某种策略内容不够的时候 就需要手动做判断，再从其他两种内容里面获取<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ans.size() &lt; rec {</span><br><span class="line">  ans += b.forEach(v -&gt; !d.contains(v)).take(<span class="number">4</span>)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-假如其他集合还是不够的话还要继续处理，代码复杂度就直线上升</li>
+<li>用户的推荐结果中,结果保持多样性各种来源按照一定比例，个性化：新内容：热门内容比例为  3:4:3， 某种题材比例不足采用其他内容进行填充</li>
 </ol>
-<h1 id="基线排序法"><a href="#基线排序法" class="headerlink" title="基线排序法"></a>基线排序法</h1><p>先选择一个数量较多的内容集合作为基线：例如 新内容。将基线集合的数据通过排名映射到[0，1]的空间之内</p>
+<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">;用代码描述如下</span></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name">recommendation</span> user)</span><br><span class="line">	(<span class="name"><span class="builtin-name">lambda</span></span> (user)</span><br><span class="line">    (<span class="name"><span class="builtin-name">cons</span></span> (<span class="name"><span class="builtin-name">cond</span></span> (<span class="name">personal?</span> user) (<span class="name">get-personal</span> user)</span><br><span class="line">                (<span class="name"><span class="builtin-name">else</span></span> '()))</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> hottest? (<span class="name">get-hottest</span>) '())</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> lattest? (<span class="name">get-lattest</span>) '())</span><br><span class="line">          (<span class="name"><span class="builtin-name">if</span></span> hot-spot? (<span class="name">get-hot-spot</span>) '()))))</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="朴素处理"><a class="markdownIt-Anchor" href="#朴素处理"></a> 朴素处理</h1>
+<ol>
+<li>直接从个性化内容里面 取10<em>0.3 个没有推荐过的，从新内容里面取 10 * 0.4 个， 从热门里面取 10</em> 0.3 个放到一个队列返回</li>
+</ol>
+<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rec</span></span>(a:<span class="type">Set</span>[个性化], b: <span class="type">Set</span>[新], c: <span class="type">Set</span>[热门],d: <span class="type">Set</span>[看过]): <span class="type">Set</span>[<span class="number">10</span>] = {</span><br><span class="line">    ans = <span class="type">Set</span>()</span><br><span class="line">    ans += a.forEach(v -&gt; !d.contains(v)).take(<span class="number">3</span>)</span><br><span class="line">    ans += b.forEach(v -&gt; !d.contains(v)).take(<span class="number">4</span>)</span><br><span class="line">    ans += c.forEach(v -&gt; !d.contains(v)).take(<span class="number">3</span>)</span><br><span class="line">    ans</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>这种处理方法在遇到 某种策略内容不够的时候 就需要手动做判断，再从其他两种内容里面获取</p>
+<figure class="highlight scala"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> ans.size() &lt; rec {</span><br><span class="line">  ans += b.forEach(v -&gt; !d.contains(v)).take(<span class="number">4</span>)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>假如其他集合还是不够的话还要继续处理，代码复杂度就直线上升</p>
+<h1 id="基线排序法"><a class="markdownIt-Anchor" href="#基线排序法"></a> 基线排序法</h1>
+<p>先选择一个数量较多的内容集合作为基线：例如 新内容。将基线集合的数据通过排名映射到[0，1]的空间之内</p>
 <p>计分函数</p>
-<p><img data-src="https://i.loli.net/2020/05/09/v7xnQTdfiqLJDC2.png" alt="QsBjsd0gNmbnail.png"></p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>s</mi><mi>c</mi><mi>o</mi><mi>r</mi><mi>e</mi><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>x</mi><mo>⋅</mo><mi>r</mi><mi>a</mi><mi>n</mi><mi>k</mi></mrow><mrow><mi>s</mi><mi>i</mi><mi>z</mi><mi>e</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">f(score)=1-\frac{x\cdot rank}{size}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mord mathdefault">c</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.05744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="mord mathdefault">e</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
 <figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 新内容：假设我们有2000个新内容，那第400个的得分应该为</span></span><br><span class="line">         第400个</span><br><span class="line">  ｜       ｜       ｜       ｜       ｜      ｜</span><br><span class="line">  <span class="number">1.0</span>     <span class="number">0.8</span>      <span class="number">0.6</span>      <span class="number">0.4</span>      <span class="number">0.2</span>     <span class="number">0</span></span><br></pre></td></tr></tbody></table></figure>
 <p>然后我们把其他召回集内容也通过某个积分函数均匀散列在以上区间</p>
 <p>由于我们要满足 3:4:3的概率所以我们要求在原来的40个新内容的范围里面，均匀混进去30个热门和30个个性化内容，这样比例就满足了</p>
@@ -3811,9 +3843,11 @@ ul.breadcrumb li + li:last-child {
 <p>x = 0.02 * 200 / 30  = 0.133</p>
 <p>也就是说热门内容分布的边界范围应该为 [1，0.867]</p>
 <figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 热门内容</span></span><br><span class="line">       第30个         第100个         第200个</span><br><span class="line">  ｜     ｜            ｜              ｜      </span><br><span class="line">  <span class="number">1.0</span>   <span class="number">0.98</span>         <span class="number">0.935</span>          <span class="number">0.867</span></span><br></pre></td></tr></tbody></table></figure>
-<p>个性化内容也是同理<br>最后三者进行融合以后重新排序结果如下</p>
+<p>个性化内容也是同理<br>
+最后三者进行融合以后重新排序结果如下</p>
 <figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 融合之后的内容集合分布</span></span><br><span class="line">        第800个</span><br><span class="line">  ｜       ｜       ｜       ｜       ｜      ｜</span><br><span class="line">  <span class="number">1.0</span>     <span class="number">0.8</span>      <span class="number">0.6</span>      <span class="number">0.4</span>      <span class="number">0.2</span>     <span class="number">0</span></span><br><span class="line">[1， 0.8]的空间内同时含有 400个新内容，200个热门内容和200个个性化内容</span><br></pre></td></tr></tbody></table></figure>
-<p>这种情况下顺序取前10个内容， 三种来源的比例就是 3:4:3<br>同样在这种算法情况下， 无论是调整 结果数量， 还是调整比例，都可以用同一个逻辑轻松实现需求， 实现优雅，性能也得到了保证</p>
+<p>这种情况下顺序取前10个内容， 三种来源的比例就是 3:4:3<br>
+同样在这种算法情况下， 无论是调整 结果数量， 还是调整比例，都可以用同一个逻辑轻松实现需求， 实现优雅，性能也得到了保证</p>
 
       
     </div>
@@ -4607,7 +4641,8 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="为啥需要排行榜"><a href="#为啥需要排行榜" class="headerlink" title="为啥需要排行榜"></a>为啥需要排行榜</h1><p>推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。</p>
+          <h1 id="为啥需要排行榜"><a class="markdownIt-Anchor" href="#为啥需要排行榜"></a> 为啥需要排行榜</h1>
+<p>推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。</p>
 <p>此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题</p>
 <ol>
 <li>最新内容：平台的最近发布的比较新鲜的资源</li>
@@ -4615,28 +4650,30 @@ ul.breadcrumb li + li:last-child {
 <li>实时基于用户属性进行分群，基于用户群进行推荐（比如，上海地区用户，女性用户，30-40岁用户）</li>
 </ol>
 <p>其中的热门内容就需要排行榜系统的支持</p>
-<h1 id="排行榜系统"><a href="#排行榜系统" class="headerlink" title="排行榜系统"></a>排行榜系统</h1><p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
-<h2 id="固定时间范围的排行榜"><a href="#固定时间范围的排行榜" class="headerlink" title="固定时间范围的排行榜"></a>固定时间范围的排行榜</h2><p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
+<h1 id="排行榜系统"><a class="markdownIt-Anchor" href="#排行榜系统"></a> 排行榜系统</h1>
+<p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
+<h2 id="固定时间范围的排行榜"><a class="markdownIt-Anchor" href="#固定时间范围的排行榜"></a> 固定时间范围的排行榜</h2>
+<p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
 <p>针对“本月最火歌曲”这种需求的排行榜，处理起来相对简单</p>
 <p>只要统计从本月从1号到现在的所有歌曲的播放数据就可以了，如果数据量不大且要求不高，可以定时每一段时间计算一次， 计算方法如下</p>
 <figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">id</span>) <span class="keyword">from</span> play_record <span class="keyword">where</span> play_time &gt; <span class="string">"2019-05-01"</span> <span class="keyword">group</span> <span class="keyword">by</span> itemid;</span><br></pre></td></tr></tbody></table></figure>
-
 <p>如果实时性要求较高， 也可以使用基于事件的实时增量统计的方式，同时每天处理一次批量统计，做数据矫正。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add-score video_10086_play_times 1</span><br></pre></td></tr></tbody></table></figure>
-
+<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">add-score</span> video_10086_play_times <span class="number">1</span>)</span><br></pre></td></tr></tbody></table></figure>
 <p>具体就是每天计算一个排行榜之后， 使用流处理系统，当有新的播放事件，在榜单现有基础上做incr操作即可</p>
 <p>这种排行榜相对来说实现比较简单， 缺点也很明显</p>
 <p>比如今天如果是本月的1号， 那你的排行榜数据就由于样本数据有限，误差较大，无法起到排行榜真正的作用</p>
 <p>处理这种问题就需要“最近30天最火的歌曲”这种滚动排行榜</p>
-<h2 id="滚动排行榜"><a href="#滚动排行榜" class="headerlink" title="滚动排行榜"></a>滚动排行榜</h2><p>滚动排行榜是指基于最近一段时间范围的数据获得的排行榜统计结果  </p>
-<p>拿最近3天排行榜为例， 假设现在是是10号的10点钟， 那滚动排行榜覆盖的区间就是前推3天的数据  </p>
+<h2 id="滚动排行榜"><a class="markdownIt-Anchor" href="#滚动排行榜"></a> 滚动排行榜</h2>
+<p>滚动排行榜是指基于最近一段时间范围的数据获得的排行榜统计结果</p>
+<p>拿最近3天排行榜为例， 假设现在是是10号的10点钟， 那滚动排行榜覆盖的区间就是前推3天的数据</p>
 <p><code>7号从10点以后的数据 + 8，9号全天数据 + 10号截至目前的数据 的统计结果</code></p>
 <p>滚动排行榜相对来说难度增加了很多</p>
 <p>如果数据量不大，对实时性要求不高的话， 也可以采用每一段时间计算一次最近3天的播放量的批量的方式</p>
 <p>但是如果数据量较大或者对实时性有要求较高，那就需要设计一个实时的滚动排行榜</p>
-<h3 id="实时的滚动排行榜"><a href="#实时的滚动排行榜" class="headerlink" title="实时的滚动排行榜"></a>实时的滚动排行榜</h3><p>假如我要做3天的滚动歌曲榜单， 我就需要获取最近72小时的播放记录进行统计</p>
+<h3 id="实时的滚动排行榜"><a class="markdownIt-Anchor" href="#实时的滚动排行榜"></a> 实时的滚动排行榜</h3>
+<p>假如我要做3天的滚动歌曲榜单， 我就需要获取最近72小时的播放记录进行统计</p>
 <p>拿数据举例来说</p>
-<p>假设有如下的播放记录, 当前日期是 2019-04-04 13:00， 排行榜统计区间应该是 <code>04-01 13:00 ～ 04-04 13:00</code>  </p>
+<p>假设有如下的播放记录, 当前日期是 2019-04-04 13:00， 排行榜统计区间应该是 <code>04-01 13:00 ～ 04-04 13:00</code></p>
 <table>
 <thead>
 <tr>
@@ -4644,7 +4681,8 @@ ul.breadcrumb li + li:last-child {
 <th>播放时间</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1009</td>
 <td>2019-04-01  9:00</td>
 </tr>
@@ -4668,21 +4706,25 @@ ul.breadcrumb li + li:last-child {
 <td>1023</td>
 <td>2019-04-04 12:00</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>那我们获取到的3天榜单应该是这样(1009的播放记录已经过期)</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//  歌曲id:播放次数</span><br><span class="line">{</span><br><span class="line">     1023:1,</span><br><span class="line">     1010:2，</span><br><span class="line">     1089:1，</span><br><span class="line">     1020:1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
 <p>排行榜处理过程最关键的有两点</p>
 <ol>
-<li><p>对一个元素加分时，加当日周期榜、滚动榜；<br>还需根据其在今日滚动榜中的分数s、及n-1天日榜中的分数r，计算出其在明日滚动榜中的初始分数s-r写入明日滚动榜中；<br>即3个写操作；</p>
+<li>
+<p>对一个元素加分时，加当日周期榜、滚动榜；<br>
+还需根据其在今日滚动榜中的分数s、及n-1天日榜中的分数r，计算出其在明日滚动榜中的初始分数s-r写入明日滚动榜中；<br>
+即3个写操作；</p>
 </li>
-<li><p>如果一个元素在当日没有任何加分操作，那么不会触发写入初始分数操作，所以还需要一个离线工具补齐。<br>该离线工具可提前一天运行，即当日运行离线工具补齐次日的滚动榜数据即可。</p>
+<li>
+<p>如果一个元素在当日没有任何加分操作，那么不会触发写入初始分数操作，所以还需要一个离线工具补齐。<br>
+该离线工具可提前一天运行，即当日运行离线工具补齐次日的滚动榜数据即可。</p>
 </li>
 </ol>
 <p>R：每日的统计数据  S： 每日的滚动排行榜数据</p>
 <p>s-r &gt; 0 才进行写入操作</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">以3天滚动榜为例，次日滚动榜初始态为当日滚动榜减去n-2天的日榜数据。</span><br><span class="line">     +-------------------------------------------+</span><br><span class="line">     |                                           |</span><br><span class="line">+----+---+   +--------+   +--------+             |</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |             |</span><br><span class="line">+----+---+   +----+---+   +---+----+             |</span><br><span class="line">     |            |           |                  |</span><br><span class="line">     |            |           v+                 v-</span><br><span class="line">     |            |</span><br><span class="line">     |            |    +  +--------+        +--------+</span><br><span class="line">     |            +-----&gt; |        |     +  |        |</span><br><span class="line">     |                 +  |  S(i)  | +---+&gt; | S(i+1) |</span><br><span class="line">     +-----------------+&gt; |        |        |        |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line"></span><br><span class="line">分数变化</span><br><span class="line">                                +--------------+</span><br><span class="line">                                |   AddScore   |</span><br><span class="line">                                +-+----+-----+-+</span><br><span class="line">                                  |+   |     |</span><br><span class="line">                                  v    |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |+</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |   |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |</span><br><span class="line">                                       |     v</span><br><span class="line">                          +--------+   |    +--------+</span><br><span class="line">                          |  S(i)  |&lt;--+    | S(i+1) |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line">                                                 ^</span><br><span class="line">                                                 |+</span><br><span class="line">                                          +------------+</span><br><span class="line">                                          |    Tool    |</span><br><span class="line">                                          +------------+</span><br></pre></td></tr></tbody></table></figure>
-
 
       
     </div>
@@ -4842,6 +4884,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   
   
@@ -4880,6 +4923,11 @@ ul.breadcrumb li + li:last-child {
 
 
   
+
+  
+      
+
+
 
   
 

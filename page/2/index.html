@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cd8336;
+  background: #f10ae2;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3064,7 +3064,7 @@ ul.breadcrumb li + li:last-child {
 然后使用数组存储，如果有多个id经过hash映射到相同的地址空间那就做一个链表，存储相同hashcode对应的值</p>
 <p>具体结构如下：</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|          // hash数组槽</span><br><span class="line">    ↓           ↓     </span><br><span class="line">   107          87            // 槽内的指针对应的数据</span><br><span class="line">    ↓            </span><br><span class="line">    16</span><br></pre></td></tr></tbody></table></figure>
-<p>当我们查找id时， 也是先将要查找的id进行hash, 然后去对应的hashcode位置沿着链表/红黑树寻找是否有要查找的数字</p>
+<p>当我们查找id时， 也是先将要查找的id进行hash, 然后去对应的hashcode位置沿着链表 or 红黑树寻找是否有要查找的数字</p>
 <h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
 <ol>
 <li>使用简单，性能好，比较通用</li>
@@ -3120,11 +3120,11 @@ ul.breadcrumb li + li:last-child {
 <p>易知，当k取极值点时，有 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>k</mi><msup><mo stretchy="false">)</mo><mo mathvariant="normal">′</mo></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(k)'=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.001892em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span> ，故将其带入上式即可求出k</p>
 <p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mo>+</mo><mfrac><mrow><mi>k</mi><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mi>ln</mi><mo>⁡</mo><mi>a</mi></mrow><mrow><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup></mrow></mfrac><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\ln(1-a^{-k})+\frac{ka^{-k} \ln a}{1-a^{-k}}=0
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">ln</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.295438em;vertical-align:-0.7693300000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5261079999999998em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7751079999999999em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693300000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span></span></p>
-<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mi>k</mi><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mi>ln</mi><mo>⁡</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">=&gt; (1-a^{-k}) \ln(1-a^{-k})=-ka^{-k} \ln a
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mi>ln</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mi>k</mi><msup><mi>a</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup><mi>ln</mi><mo>⁡</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">=&gt;  (1-a^{-k}) \ln(1-a^{-k})=-ka^{-k} \ln a
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.149108em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9824379999999999em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">a</span></span></span></span></span></p>
-<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><msup><mi>e</mi><mrow><mo>−</mo><mfrac><mrow><mi>k</mi><mi>n</mi></mrow><mi>m</mi></mfrac></mrow></msup><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">=&gt; e^{-\frac{kn}{m}}=\frac{1}{2}
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><msup><mi>e</mi><mrow><mo>−</mo><mfrac><mrow><mi>k</mi><mi>n</mi></mrow><mi>m</mi></mfrac></mrow></msup><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">=&gt;  e^{-\frac{kn}{m}}=\frac{1}{2}
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.02902em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.02902em;"><span style="top:-3.4130000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8800285714285714em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span style="top:-3.2255000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
-<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><mi>k</mi><mo>=</mo><mfrac><mi>m</mi><mi>n</mi></mfrac><mi>ln</mi><mo>⁡</mo><mn>2</mn><mo>≈</mo><mn>0.7</mn><mfrac><mi>m</mi><mi>n</mi></mfrac></mrow><annotation encoding="application/x-tex">=&gt; k=\frac{m}{n}\ln2\approx0.7\frac{m}{n}
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>=</mo><mo>&gt;</mo><mi>k</mi><mo>=</mo><mfrac><mi>m</mi><mi>n</mi></mfrac><mi>ln</mi><mo>⁡</mo><mn>2</mn><mo>≈</mo><mn>0.7</mn><mfrac><mi>m</mi><mi>n</mi></mfrac></mrow><annotation encoding="application/x-tex">=&gt;  k=\frac{m}{n}\ln2\approx0.7\frac{m}{n}
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.7935600000000003em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.10756em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">ln</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.7935600000000003em;vertical-align:-0.686em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">7</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.10756em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
 <p>所以我们通过调整k的值也能一定程度上降低误判率， 但是基于概率的问题，误判率依然存在。所以这种方法适合于允许一定误判率，并拥有海量数据要过滤的场景</p>
 <h3 id="优点-3"><a class="markdownIt-Anchor" href="#优点-3"></a> 优点</h3>
@@ -3561,77 +3561,90 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h1><h1 id="1月"><a href="#1月" class="headerlink" title="1月"></a>1月</h1><p>看书:</p>
+          <h1 id="2019"><a class="markdownIt-Anchor" href="#2019"></a> 2019</h1>
+<h1 id="1月"><a class="markdownIt-Anchor" href="#1月"></a> 1月</h1>
+<p>看书:</p>
 <ul>
-<li><input disabled="" type="checkbox"> 神经网络与深度学习</li>
-<li><input disabled="" type="checkbox"> 深入理解Java虚拟机</li>
+<li>[ ] 神经网络与深度学习</li>
+<li>[ ] 深入理解Java虚拟机</li>
 </ul>
-<h1 id="2月"><a href="#2月" class="headerlink" title="2月"></a>2月</h1><p>看书:</p>
+<h1 id="2月"><a class="markdownIt-Anchor" href="#2月"></a> 2月</h1>
+<p>看书:</p>
 <ul>
-<li><input disabled="" type="checkbox"> 设计数据密集型应用</li>
+<li>[ ] 设计数据密集型应用</li>
 </ul>
-<h1 id="3月"><a href="#3月" class="headerlink" title="3月"></a>3月</h1><p>看书:</p>
+<h1 id="3月"><a class="markdownIt-Anchor" href="#3月"></a> 3月</h1>
+<p>看书:</p>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 富爸爸穷爸爸</li>
+<li>[x] 富爸爸穷爸爸</li>
 </ul>
-<h1 id="4月"><a href="#4月" class="headerlink" title="4月"></a>4月</h1><p>看书:</p>
+<h1 id="4月"><a class="markdownIt-Anchor" href="#4月"></a> 4月</h1>
+<p>看书:</p>
 <ul>
-<li><input disabled="" type="checkbox"> 一本书看懂经济学</li>
-<li><input checked="" disabled="" type="checkbox"> 从零开始学炒股</li>
-<li><input disabled="" type="checkbox"> 设计数据密集型应用</li>
-<li><input disabled="" type="checkbox"> 剑指offer</li>
+<li>[ ] 一本书看懂经济学</li>
+<li>[x] 从零开始学炒股</li>
+<li>[ ] 设计数据密集型应用</li>
+<li>[ ] 剑指offer</li>
 </ul>
-<h1 id="5月"><a href="#5月" class="headerlink" title="5月"></a>5月</h1><p>看书:</p>
+<h1 id="5月"><a class="markdownIt-Anchor" href="#5月"></a> 5月</h1>
+<p>看书:</p>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 设计数据密集型应用</li>
-<li><input disabled="" type="checkbox"> 股市真规则</li>
-<li><input checked="" disabled="" type="checkbox"> hbase权威指南</li>
+<li>[x] 设计数据密集型应用</li>
+<li>[ ] 股市真规则</li>
+<li>[x] hbase权威指南</li>
 </ul>
-<h1 id="6月"><a href="#6月" class="headerlink" title="6月"></a>6月</h1><ul>
-<li><input disabled="" type="checkbox"> 剑指offer</li>
-<li><input disabled="" type="checkbox"> 深入理解Java虚拟机</li>
-<li><input disabled="" type="checkbox"> 推荐系统三十六式(在线课程)</li>
-<li><input checked="" disabled="" type="checkbox"> 数据结构与算法之美(在线课程)</li>
-<li><input checked="" disabled="" type="checkbox"> 大规模数据处理实战(在线课程)</li>
-<li><input disabled="" type="checkbox"> Mysql实战45讲(在线课程)</li>
-<li><input disabled="" type="checkbox"> Java核心技术36讲(在线课程)</li>
+<h1 id="6月"><a class="markdownIt-Anchor" href="#6月"></a> 6月</h1>
+<ul>
+<li>[ ] 剑指offer</li>
+<li>[ ] 深入理解Java虚拟机</li>
+<li>[ ] 推荐系统三十六式(在线课程)</li>
+<li>[x] 数据结构与算法之美(在线课程)</li>
+<li>[x] 大规模数据处理实战(在线课程)</li>
+<li>[ ] Mysql实战45讲(在线课程)</li>
+<li>[ ] Java核心技术36讲(在线课程)</li>
 </ul>
-<h1 id="7月"><a href="#7月" class="headerlink" title="7月"></a>7月</h1><ul>
-<li><input checked="" disabled="" type="checkbox"> 推荐系统三十六式(在线课程)</li>
-<li><input disabled="" type="checkbox"> 从一到无穷大</li>
-<li><input disabled="" type="checkbox"> 海龟交易法则</li>
+<h1 id="7月"><a class="markdownIt-Anchor" href="#7月"></a> 7月</h1>
+<ul>
+<li>[x] 推荐系统三十六式(在线课程)</li>
+<li>[ ] 从一到无穷大</li>
+<li>[ ] 海龟交易法则</li>
 </ul>
-<h1 id="8月"><a href="#8月" class="headerlink" title="8月"></a>8月</h1><ul>
-<li><input checked="" disabled="" type="checkbox"> Java核心技术36讲(在线课程)</li>
-<li><input checked="" disabled="" type="checkbox"> rust程序设计语言</li>
+<h1 id="8月"><a class="markdownIt-Anchor" href="#8月"></a> 8月</h1>
+<ul>
+<li>[x] Java核心技术36讲(在线课程)</li>
+<li>[x] rust程序设计语言</li>
 </ul>
-<h1 id="9月"><a href="#9月" class="headerlink" title="9月"></a>9月</h1><ul>
-<li><input checked="" disabled="" type="checkbox"> 数学之美</li>
-<li><input disabled="" type="checkbox"> 剑指offer</li>
-<li><input checked="" disabled="" type="checkbox"> 深入理解Java虚拟机</li>
-<li><input checked="" disabled="" type="checkbox"> 从0开始学大数据(在线课程)</li>
+<h1 id="9月"><a class="markdownIt-Anchor" href="#9月"></a> 9月</h1>
+<ul>
+<li>[x] 数学之美</li>
+<li>[ ] 剑指offer</li>
+<li>[x] 深入理解Java虚拟机</li>
+<li>[x] 从0开始学大数据(在线课程)</li>
 </ul>
-<h1 id="10月"><a href="#10月" class="headerlink" title="10月"></a>10月</h1><ul>
-<li><input disabled="" type="checkbox"> Mysql实战45讲(在线课程)</li>
-<li><input disabled="" type="checkbox"> 从一到无穷大</li>
-<li><input checked="" disabled="" type="checkbox"> 阶层越迁</li>
-<li><input checked="" disabled="" type="checkbox"> kafka核心技术与实战(在线课程)</li>
-<li><input checked="" disabled="" type="checkbox"> 小岛经济学</li>
-<li><input disabled="" type="checkbox"> Java编程的逻辑</li>
-<li><input checked="" disabled="" type="checkbox"> 走进搜索引擎（第二遍）</li>
+<h1 id="10月"><a class="markdownIt-Anchor" href="#10月"></a> 10月</h1>
+<ul>
+<li>[ ] Mysql实战45讲(在线课程)</li>
+<li>[ ] 从一到无穷大</li>
+<li>[x] 阶层越迁</li>
+<li>[x] kafka核心技术与实战(在线课程)</li>
+<li>[x] 小岛经济学</li>
+<li>[ ] Java编程的逻辑</li>
+<li>[x] 走进搜索引擎（第二遍）</li>
 </ul>
-<h1 id="11月"><a href="#11月" class="headerlink" title="11月"></a>11月</h1><ul>
-<li><input disabled="" type="checkbox"> 思考，快与慢</li>
-<li><input disabled="" type="checkbox"> Java编程的逻辑</li>
-<li><input checked="" disabled="" type="checkbox"> 用户行为网络画像</li>
-<li><input disabled="" type="checkbox"> 这就是搜索引擎</li>
-<li><input checked="" disabled="" type="checkbox"> 分布式技术原理与算法解析(在线课程)</li>
-<li><input disabled="" type="checkbox"> 推荐系统与深度学习</li>
+<h1 id="11月"><a class="markdownIt-Anchor" href="#11月"></a> 11月</h1>
+<ul>
+<li>[ ] 思考，快与慢</li>
+<li>[ ] Java编程的逻辑</li>
+<li>[x] 用户行为网络画像</li>
+<li>[ ] 这就是搜索引擎</li>
+<li>[x] 分布式技术原理与算法解析(在线课程)</li>
+<li>[ ] 推荐系统与深度学习</li>
 </ul>
-<h1 id="12月"><a href="#12月" class="headerlink" title="12月"></a>12月</h1><ul>
-<li><input disabled="" type="checkbox"> Java编程的逻辑</li>
-<li><input disabled="" type="checkbox"> 这就是搜索引擎</li>
-<li><input disabled="" type="checkbox"> 推荐系统与深度学习</li>
+<h1 id="12月"><a class="markdownIt-Anchor" href="#12月"></a> 12月</h1>
+<ul>
+<li>[ ] Java编程的逻辑</li>
+<li>[ ] 这就是搜索引擎</li>
+<li>[ ] 推荐系统与深度学习</li>
 </ul>
 
       
@@ -3720,87 +3733,115 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p>
+          <h1 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h1>
+<p>因为业务需要, 公司现在需要一个实时的计算平台来支撑上层的各种业务</p>
 <p>借这个机会, 对我们用到的相关技术部分进行了整理</p>
-<h1 id="业务场景分析"><a href="#业务场景分析" class="headerlink" title="业务场景分析"></a>业务场景分析</h1><p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建，以及其中遇到的一些坑</p>
-<h1 id="业务1-统一的产品池服务"><a href="#业务1-统一的产品池服务" class="headerlink" title="业务1. 统一的产品池服务"></a>业务1. 统一的产品池服务</h1><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><h3 id="统一产品数据池"><a href="#统一产品数据池" class="headerlink" title="统一产品数据池"></a>统一产品数据池</h3><p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL</p>
+<h1 id="业务场景分析"><a class="markdownIt-Anchor" href="#业务场景分析"></a> 业务场景分析</h1>
+<p>下面拿我自己经历的两个项目来探讨一下实时计算平台的构建，以及其中遇到的一些坑</p>
+<h1 id="业务1-统一的产品池服务"><a class="markdownIt-Anchor" href="#业务1-统一的产品池服务"></a> 业务1. 统一的产品池服务</h1>
+<h2 id="需求"><a class="markdownIt-Anchor" href="#需求"></a> 需求</h2>
+<h3 id="统一产品数据池"><a class="markdownIt-Anchor" href="#统一产品数据池"></a> 统一产品数据池</h3>
+<p>由于公司部门比较分散,公司的不同品类的产品(在线旅游公司)分属不同的BU(Business Unit),不同部门之间不仅数据不互通, 而且使用的数据库,产品数据结构和使用的存储技术也都不相同, 数据库存储主要使用Oracle和MySQL</p>
 <p>我们组的业务由于含有统一的列表页和内容服务, 所有分类产品的相关信息都需要进行聚合展示, 所以原来我们使用产品都需要根据产品品类调用不同部门提供的接口进行数据查询</p>
-<p>考虑到接口性能和未来业务的增长，我们需要一个统一的产品池功能来帮助汇总所有的产品信息，向上层业务提供一个统一的最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦  </p>
-<p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可，同时作为基础的数据服务还需要保证服务的性能和高可用性，于是有了产品池这个项目   </p>
-<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>主要涉及的中间件和服务<code>redis</code>,<code>kafka</code>,<code>storm</code>,<code>elasticsearch</code>,<code>mysql</code></p>
-<h2 id="项目详情"><a href="#项目详情" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
+<p>考虑到接口性能和未来业务的增长，我们需要一个统一的产品池功能来帮助汇总所有的产品信息，向上层业务提供一个统一的最基本的产品信息查询, 之后所有组内的产品信息统统通过产品池进行获取, 这样把数据和业务进行充分解耦</p>
+<p>上层业务不需要了解各种分类的产品信息的存储位置和处理逻辑,只需要从统一的产品池获取产品信息即可，同时作为基础的数据服务还需要保证服务的性能和高可用性，于是有了产品池这个项目</p>
+<h2 id="组件"><a class="markdownIt-Anchor" href="#组件"></a> 组件</h2>
+<p>主要涉及的中间件和服务<code>redis</code>,<code>kafka</code>,<code>storm</code>,<code>elasticsearch</code>,<code>mysql</code></p>
+<h2 id="项目详情"><a class="markdownIt-Anchor" href="#项目详情"></a> 项目详情</h2>
+<ol>
 <li>对接各BU, 整合各BU的产品信息到统一的产品容器内(选择redis/es作为主要的对外存储容器)</li>
 <li>提供统一的产品信息获取接口</li>
 </ol>
-<h2 id="整体结构"><a href="#整体结构" class="headerlink" title="整体结构"></a>整体结构</h2><p><img data-src="https://i.loli.net/2020/05/09/DOkCVIlZ7BKz16r.png" alt="productpool.jpg"></p>
+<h2 id="整体结构"><a class="markdownIt-Anchor" href="#整体结构"></a> 整体结构</h2>
+<p><img data-src="https://i.loli.net/2020/05/09/DOkCVIlZ7BKz16r.png" alt="productpool.jpg"></p>
 <p>其中各组件的主要功能:</p>
 <p><code>Redis</code>: 存储k-v结构的产品信息, 提供前台api接口的产品基础信息查询数据</p>
 <p><code>Elasticsearch</code>: 提供后台和部分前台对产品的搜索功能</p>
 <p><code>kafka</code>: 数据总线, 后台数据流转的核心</p>
 <p><code>mysql/oracle</code>: 提供最初始的数据源</p>
 <p><code>storm</code>: 产品信息计算平台</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><h3 id="前台api获取产品的流程"><a href="#前台api获取产品的流程" class="headerlink" title="前台api获取产品的流程"></a>前台api获取产品的流程</h3><p><img data-src="https://i.loli.net/2020/05/09/YlEnJMbQuqDXBNh.png" alt="flow1.png"></p>
-<h3 id="后台构建产品的流程"><a href="#后台构建产品的流程" class="headerlink" title="后台构建产品的流程"></a>后台构建产品的流程</h3><p><img data-src="https://i.loli.net/2020/05/09/iVF5gAlwafOmSXv.png" alt="flow2.png"></p>
-<h2 id="详细步骤描述"><a href="#详细步骤描述" class="headerlink" title="详细步骤描述"></a>详细步骤描述</h2><ul>
-<li><p>定时的产品id添加: 定期进行全量的产品数据重建, 为了方便控制重建过程, 将要处理的产品id分批存入kafka中的<code>全量重建topic</code>, 也就是把批处理转化为流处理  </p>
+<h2 id="流程图"><a class="markdownIt-Anchor" href="#流程图"></a> 流程图</h2>
+<h3 id="前台api获取产品的流程"><a class="markdownIt-Anchor" href="#前台api获取产品的流程"></a> 前台api获取产品的流程</h3>
+<p><img data-src="https://i.loli.net/2020/05/09/YlEnJMbQuqDXBNh.png" alt="flow1.png"></p>
+<h3 id="后台构建产品的流程"><a class="markdownIt-Anchor" href="#后台构建产品的流程"></a> 后台构建产品的流程</h3>
+<p><img data-src="https://i.loli.net/2020/05/09/iVF5gAlwafOmSXv.png" alt="flow2.png"></p>
+<h2 id="详细步骤描述"><a class="markdownIt-Anchor" href="#详细步骤描述"></a> 详细步骤描述</h2>
+<ul>
+<li>
+<p>定时的产品id添加: 定期进行全量的产品数据重建, 为了方便控制重建过程, 将要处理的产品id分批存入kafka中的<code>全量重建topic</code>, 也就是把批处理转化为流处理</p>
 </li>
-<li><p>失效的产品id: 当某个产品不存在于redis中时, 也会重新放入kafka的另外的<code>miss产品topic</code>中进行重建  </p>
+<li>
+<p>失效的产品id: 当某个产品不存在于redis中时, 也会重新放入kafka的另外的<code>miss产品topic</code>中进行重建</p>
 </li>
-<li><p>当产品信息变更时候也会有对应的变更产品id入kafka的<code>变更产品topic</code>中进行重建  </p>
+<li>
+<p>当产品信息变更时候也会有对应的变更产品id入kafka的<code>变更产品topic</code>中进行重建</p>
 </li>
-<li><p>处理产品时会从以上三个产品源topic中读取需要重建的产品, 根据分类发放到<code>不同的分类topic</code>, 然后交给storm进行产品信息计算, 这部分信息只有简单的产品ID和更新类型标识  </p>
+<li>
+<p>处理产品时会从以上三个产品源topic中读取需要重建的产品, 根据分类发放到<code>不同的分类topic</code>, 然后交给storm进行产品信息计算, 这部分信息只有简单的产品ID和更新类型标识</p>
 </li>
-<li><p>storm中构建失败的产品(数据库中不存在等原因), 会在redis中进行标记暂时不可用(有效期1天), 不可用的产品不会继续进行重建  </p>
+<li>
+<p>storm中构建失败的产品(数据库中不存在等原因), 会在redis中进行标记暂时不可用(有效期1天), 不可用的产品不会继续进行重建</p>
 </li>
-<li><p>kafka多个topic中的消息含有需要构建的 产品id和产品需要构建的内容, 也就是说可以通过消息内容格式控制构建产品的某个部分的信息(例如: 只更新产品的基本信息, 只更新价格信息, 只更新评论数,好评数等信息)</p>
+<li>
+<p>kafka多个topic中的消息含有需要构建的 产品id和产品需要构建的内容, 也就是说可以通过消息内容格式控制构建产品的某个部分的信息(例如: 只更新产品的基本信息, 只更新价格信息, 只更新评论数,好评数等信息)</p>
 </li>
-<li><p>storm从kafka中获取消息, 进行产品的信息计算, 计算完成的信息会重新返回kafka, 同样根据产品分类发放到不同的<code>分类topic</code>, 这部分信息含有全量的产品信息数据</p>
+<li>
+<p>storm从kafka中获取消息, 进行产品的信息计算, 计算完成的信息会重新返回kafka, 同样根据产品分类发放到不同的<code>分类topic</code>, 这部分信息含有全量的产品信息数据</p>
 </li>
-<li><p>整合各个分类topic的产品计算结果, 写入redis 和 es, 并回写部分mysql表</p>
+<li>
+<p>整合各个分类topic的产品计算结果, 写入redis 和 es, 并回写部分mysql表</p>
 </li>
 </ul>
-<h2 id="产品数据更新"><a href="#产品数据更新" class="headerlink" title="产品数据更新"></a>产品数据更新</h2><p>通过<code>canal</code>监听mysql数据库的产品表数据变更, 将变更数据发给kafka中的<code>产品表日志topic</code>, 后续从kafka的<code>产品日志topic</code> ,根据数据内容解析出来产品更新事件, 封装对应的事件消息, 存入<code>产品事件topic</code>  </p>
+<h2 id="产品数据更新"><a class="markdownIt-Anchor" href="#产品数据更新"></a> 产品数据更新</h2>
+<p>通过<code>canal</code>监听mysql数据库的产品表数据变更, 将变更数据发给kafka中的<code>产品表日志topic</code>, 后续从kafka的<code>产品日志topic</code> ,根据数据内容解析出来产品更新事件, 封装对应的事件消息, 存入<code>产品事件topic</code></p>
 <p>通过读取<code>产品事件topic</code>中的数据, 根据品类和变更内容, 向产品池<code>变更产品topic中发送</code>发送产品池信息重构需求</p>
-<h2 id="经验和总结"><a href="#经验和总结" class="headerlink" title="经验和总结"></a>经验和总结</h2><ul>
+<h2 id="经验和总结"><a class="markdownIt-Anchor" href="#经验和总结"></a> 经验和总结</h2>
+<ul>
 <li>为什么要分多个产品数据源topic</li>
 </ul>
 <ol>
-<li><p>为了优先级考虑, 不同来源的产品对时效性要求是不同的, 但是kafka本身又做不了带有优先级的消息处理</p>
+<li>
+<p>为了优先级考虑, 不同来源的产品对时效性要求是不同的, 但是kafka本身又做不了带有优先级的消息处理</p>
 </li>
-<li><p>不同的分类的产品的处理逻辑不同, 更新频率和数据量也不同, 提前进行分流</p>
+<li>
+<p>不同的分类的产品的处理逻辑不同, 更新频率和数据量也不同, 提前进行分流</p>
 </li>
 </ol>
 <ul>
 <li>为什么不同分类的产品要用不同的写入topic</li>
 </ul>
 <ol>
-<li>如果有其他业务需要使用其中某个分类的产品数据只需订阅对应的产品topic流就可以了, 免去了从全量产品流中过滤的步骤 </li>
+<li>如果有其他业务需要使用其中某个分类的产品数据只需订阅对应的产品topic流就可以了, 免去了从全量产品流中过滤的步骤</li>
 </ol>
 <ul>
 <li>为什么最后还要把产品信息吐会回kafka</li>
 </ul>
 <ol>
-<li><p>为了统一控制写入源并做优化, 使用统一的topic存储数据可以让整个程序只有一个数据写入的源, 所有写入操作统统使用写总线来处理, 解耦了功能, 提高了可靠性, 扩展性和可维护性</p>
+<li>
+<p>为了统一控制写入源并做优化, 使用统一的topic存储数据可以让整个程序只有一个数据写入的源, 所有写入操作统统使用写总线来处理, 解耦了功能, 提高了可靠性, 扩展性和可维护性</p>
 </li>
-<li><p>可以对数据写入做优化, 比如:幂等处理, 批压缩写入处理, ABA问题的重写</p>
+<li>
+<p>可以对数据写入做优化, 比如:幂等处理, 批压缩写入处理, ABA问题的重写</p>
 </li>
-<li><p>为了数据重用, 因为其他部分业务组也可能需要使用产品信息, 到时候直接订阅最终的产品信息表就可以了</p>
+<li>
+<p>为了数据重用, 因为其他部分业务组也可能需要使用产品信息, 到时候直接订阅最终的产品信息表就可以了</p>
 </li>
-<li><p>为了方便扩展, 如果将来数据量大, 出现了写入瓶颈, 只要对这一部分承担写总线功能的写入程序进行扩展就可以了</p>
+<li>
+<p>为了方便扩展, 如果将来数据量大, 出现了写入瓶颈, 只要对这一部分承担写总线功能的写入程序进行扩展就可以了</p>
 </li>
 </ol>
-<h1 id="业务2-用户画像之用户信息完善系统"><a href="#业务2-用户画像之用户信息完善系统" class="headerlink" title="业务2. 用户画像之用户信息完善系统"></a>业务2. 用户画像之用户信息完善系统</h1><h2 id="需求-1"><a href="#需求-1" class="headerlink" title="需求"></a>需求</h2><p>这个项目是用户画像的子项目, 目的是将用户分布在不同BU的信息进行整合, 提供一份统一最完整的用户信息出来</p>
+<h1 id="业务2-用户画像之用户信息完善系统"><a class="markdownIt-Anchor" href="#业务2-用户画像之用户信息完善系统"></a> 业务2. 用户画像之用户信息完善系统</h1>
+<h2 id="需求-2"><a class="markdownIt-Anchor" href="#需求-2"></a> 需求</h2>
+<p>这个项目是用户画像的子项目, 目的是将用户分布在不同BU的信息进行整合, 提供一份统一最完整的用户信息出来</p>
 <p>同时进行一些数据清洗和数据统计</p>
 <ul>
 <li>对分散在各个表中的会员信息进行梳理, 整合一份相对比较完善的用户信息</li>
 </ul>
-<p>例如: 用户1在基本信息中填写了一份信息 </p>
+<p>例如: 用户1在基本信息中填写了一份信息</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">{ </span><br><span class="line">    "username":"zhang",</span><br><span class="line">    "birthday":"1990-01-01",</span><br><span class="line">    "gender":"M"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
 <p>同时用户上传了一张个人身份证, 通过解析, 身份证含有的信息是</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    "birthday":"1990-12-07",</span><br><span class="line">    "gender":"F"</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>也就是说用户自己填写的信息和身份证中的信息不一致, 相同的情况可能出现在多个业务部门, 因为业务拆分各部门相互独立, 同一个用户在多个业务部门可能拥有多份不太一致的用户信息  </p>
+<p>也就是说用户自己填写的信息和身份证中的信息不一致, 相同的情况可能出现在多个业务部门, 因为业务拆分各部门相互独立, 同一个用户在多个业务部门可能拥有多份不太一致的用户信息</p>
 <ul>
 <li>对进行过清洗的用户数据进行完善度的计算</li>
 </ul>
@@ -3809,27 +3850,31 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <li>定期统计用户的完善度报表</li>
 </ul>
 <p>根据用户会员等级/地区/性别 等基本属性和 对应的销售vip客服人员进行用户信息的报表统计</p>
-<h2 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h2><p>主要相关的组件有 <code>mysql</code>,<code>kafka</code>,<code>storm</code>,<code>hbase</code>, <code>es</code></p>
-<h2 id="项目详情-1"><a href="#项目详情-1" class="headerlink" title="项目详情"></a>项目详情</h2><ol>
+<h2 id="组件-2"><a class="markdownIt-Anchor" href="#组件-2"></a> 组件</h2>
+<p>主要相关的组件有 <code>mysql</code>,<code>kafka</code>,<code>storm</code>,<code>hbase</code>, <code>es</code></p>
+<h2 id="项目详情-2"><a class="markdownIt-Anchor" href="#项目详情-2"></a> 项目详情</h2>
+<ol>
 <li>对接各数据源, 根据用户身份表示整合统一的用户信息</li>
 <li>统一存储用户信息</li>
 </ol>
 <blockquote>
 <p>ps:由于部分原因, 项目的实际开发时间很短, 只有200左右的工时, 也就是一个人工作一个月, 而且大部分时间都花在内部数据问题的处理上面, 所以项目未能做到最终非常完善的程度</p>
 </blockquote>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
+<h2 id="流程"><a class="markdownIt-Anchor" href="#流程"></a> 流程</h2>
+<ol>
 <li>定期的全量用户信息补全</li>
 <li>用户信息变更以后触发的补全</li>
 <li>用户资料补全以后进行完善度的计算</li>
 <li>定期根据用户属性对用户完善度进行报表统计</li>
 </ol>
-<p>具体的细节跟上面产品池相似, 都是利用<code>kafka</code>的数据流转, 将需要计算的消息流到<code>storm</code>, 经过计算以后再通过<code>kafka</code> 回馈给数据库和存储 </p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实回顾这两个项目</p>
+<p>具体的细节跟上面产品池相似, 都是利用<code>kafka</code>的数据流转, 将需要计算的消息流到<code>storm</code>, 经过计算以后再通过<code>kafka</code> 回馈给数据库和存储</p>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>其实回顾这两个项目</p>
 <p>在其中主要起作用的中间件主要是<code>kafka</code>和<code>storm</code></p>
-<p><code>kafka</code> 承担了系统几乎所有的数据流转需求, 做了一个数据总线的角色, 提供了<code>事件驱动</code>,<code>ETL</code>,<code>解耦</code>等功能   </p>
-<p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能  </p>
-<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的数据桥接作用   </p>
-<p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力  </p>
+<p><code>kafka</code> 承担了系统几乎所有的数据流转需求, 做了一个数据总线的角色, 提供了<code>事件驱动</code>,<code>ETL</code>,<code>解耦</code>等功能</p>
+<p><code>storm</code> 则承担了主要的计算任务和部分数据转发功能</p>
+<p>其他 <code>mysql</code>, <code>redis</code>,<code>elasticsearch</code>则一直充当数据提供方和数据使用方(业务)之间的数据桥接作用</p>
+<p>这一套消息处理流程目前来看还没遇到太大的问题, 但是因为我们部门业务相对比较单一, 尚不能完全发挥这套架构的潜力</p>
 <p>希望以后可以多尝试, 并进行改进</p>
 
       
@@ -3918,19 +3963,28 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="什么是智慧"><a href="#什么是智慧" class="headerlink" title="什么是智慧"></a>什么是智慧</h1><p>一直以来我都很认同<code>大道至简</code>的看法</p>
-<p>所以我天真的认为处理世界上的所有事情肯定有一个通用的框架, 该框架应该适用于所有麻烦的事情<br>而我们庸庸众人只需要学习这一种处事方式就能轻松应付生活,即所谓的The One Truth<br>后来的我渐渐意识到,<code>世界本来就是混乱无序的</code>, 那个万能法则肯定是不存在的   </p>
+          <h1 id="什么是智慧"><a class="markdownIt-Anchor" href="#什么是智慧"></a> 什么是智慧</h1>
+<p>一直以来我都很认同<code>大道至简</code>的看法</p>
+<p>所以我天真的认为处理世界上的所有事情肯定有一个通用的框架, 该框架应该适用于所有麻烦的事情<br>
+而我们庸庸众人只需要学习这一种处事方式就能轻松应付生活,即所谓的The One Truth &nbsp;<br>
+后来的我渐渐意识到,<code>世界本来就是混乱无序的</code>, 那个万能法则肯定是不存在的</p>
 <blockquote>
 <p>从物理学上来讲, 一个封闭的系统中, 熵(代表混乱程度)处在不断增加的状态,一味地想维持低熵状态往往需要额外的付出更多能量.同样的,如果我强行要求这个系统是有序的并且规则的,那对这个系统来说,必然需要极大的能量来维持这种状态</p>
 </blockquote>
 <p><strong>智慧的本质, 就是对空间和时间的理解</strong></p>
 <p><img data-src="https://i.loli.net/2020/05/09/b2at6W9HpIVl4rJ.png" alt="wisdom_mindnode1.png"></p>
 <p>所谓智慧, 就是能很好地平衡时间和空间, 而怎么平衡, 就涉及到度的把握</p>
-<h2 id="度"><a href="#度" class="headerlink" title="度"></a>度</h2><p><strong>度</strong>或者叫<strong>分寸</strong>, 一种抉择中的取舍<br>我们无时无刻不在面临许多的抉择<br>大部分的抉择都存在我们可以感知的正面和反面效果,即便看起来非常正面的行为背后也隐藏着隐忧<br>例如:    </p>
+<h2 id="度"><a class="markdownIt-Anchor" href="#度"></a> 度</h2>
+<p><strong>度</strong>或者叫<strong>分寸</strong>, 一种抉择中的取舍<br>
+我们无时无刻不在面临许多的抉择<br>
+大部分的抉择都存在我们可以感知的正面和反面效果,即便看起来非常正面的行为背后也隐藏着隐忧<br>
+例如:</p>
 <ul>
 <li>培养好的习惯是应该的, 但是好的习惯不可能一直增加. 我们的精力是有限的,我们所处的的环境也在不断改变, 根据环境调整自己习惯才是我们要做的,否则随着时间增加我们的习惯也越来越多,如果不及时调整, 你的所有时间会被积累下来的习惯完全占据</li>
 </ul>
-<p>一个人在待人接物方面能很好地把握分寸, 我们会说他情商高<br>一个人在自己和外界的联系方面能很好地把握分寸, 我们会说他有品位<br>一个人在处理冲突方面能很好地把握分寸, 我们会说他有智慧   </p>
+<p>一个人在待人接物方面能很好地把握分寸, 我们会说他情商高<br>
+一个人在自己和外界的联系方面能很好地把握分寸, 我们会说他有品位<br>
+一个人在处理冲突方面能很好地把握分寸, 我们会说他有智慧</p>
 
       
     </div>
@@ -4023,7 +4077,8 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <p>从网上搜了好久都找不到个人信息</p>
 <p>后来偶然间从某个摄影师处了解到这个小姐姐的微博</p>
 <p>开心了好多天</p>
-<h1 id="以下是美图欣赏"><a href="#以下是美图欣赏" class="headerlink" title="以下是美图欣赏"></a>以下是美图欣赏</h1><p>魅族耳机照</p>
+<h1 id="以下是美图欣赏"><a class="markdownIt-Anchor" href="#以下是美图欣赏"></a> 以下是美图欣赏</h1>
+<p>魅族耳机照</p>
 <p><img data-src="https://i.loli.net/2020/05/09/MHXrfROKTq7JNgS.png" alt="WX20180528-200414.png"></p>
 <p><img data-src="https://i.loli.net/2020/05/09/6jiXNxMYbq8UuOe.png" alt="WX20180529-095529.png"></p>
 <p>以下图片来自微博</p>
@@ -4120,15 +4175,18 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
       
           <p>我想说说我自己对当前社会的一些担忧</p>
 <p>我总觉得未来的3年(2018-2020)会是我国社会的重大转折点</p>
-<h1 id="人口结构的隐忧"><a href="#人口结构的隐忧" class="headerlink" title="人口结构的隐忧"></a>人口结构的隐忧</h1><p>中国的人口老龄化加剧已经是一个无法避免的事情了</p>
+<h1 id="人口结构的隐忧"><a class="markdownIt-Anchor" href="#人口结构的隐忧"></a> 人口结构的隐忧</h1>
+<p>中国的人口老龄化加剧已经是一个无法避免的事情了</p>
 <p>即便国家最近几年放开了二胎政策, 但是从数据上面看效果并不是很好</p>
 <p>下面是一份部分年份的出生和死亡人数的图(单位:万人)</p>
 <p><img data-src="https://i.loli.net/2020/05/09/KFjRLxNfbq9cUd5.png" alt="people-1.png"></p>
-<h2 id="出生与死亡人口"><a href="#出生与死亡人口" class="headerlink" title="出生与死亡人口"></a>出生与死亡人口</h2><p>目前我国的人均寿命男性在74岁, 女性在77岁, 综合平均值大概在75.5岁上下</p>
+<h2 id="出生与死亡人口"><a class="markdownIt-Anchor" href="#出生与死亡人口"></a> 出生与死亡人口</h2>
+<p>目前我国的人均寿命男性在74岁, 女性在77岁, 综合平均值大概在75.5岁上下</p>
 <p>也就是说去年2017年, 按照平均寿命来算, 去年的大量正常死亡人口都是出生于1941年的, 假设我们预计平均寿命每5年增长一岁的话, 1946年出生的人口正常死亡时间在2023年左右,再加上一些非正常因素, 也就是说2023年左右死亡人数至少在1200万+</p>
 <p>从上面的图推论, 我们有理由相信在未来10年, 中国每年的死亡人口将迅速由每年970万左右上升到每年1600万+( 深绿色曲线将沿着浅绿色曲线旧轨迹上升)</p>
 <p>到2020年,1955年出生的人将步入65岁, 人到了这个阶段, 已经进入疾病高发期, 也就是说未来几年我国将新增至少5200万65岁以上的老人,这批人对养老和医疗造成的压力会很大, 我非常担忧之后医疗资源和社会资源的消耗情况</p>
-<h1 id="社会影响和政策"><a href="#社会影响和政策" class="headerlink" title="社会影响和政策"></a>社会影响和政策</h1><ul>
+<h1 id="社会影响和政策"><a class="markdownIt-Anchor" href="#社会影响和政策"></a> 社会影响和政策</h1>
+<ul>
 <li>对出生人口的预测</li>
 </ul>
 <p>回过头来看我们的出生人口, 最近几年国内出生人口持续下降, 2016-17年由于二胎政策有小幅回升, 17年1700万出生人口中,二胎占800万(这其实是一个很不好的信号)</p>
@@ -4147,7 +4205,8 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <p><strong>最迟中国将在2022年迎来人口负增长!!!</strong></p>
 <p><strong>2022年人口负增长!!!</strong></p>
 <p>中国人口一旦减少, 将是一个革命性的时刻, 到时候很有可能中国将会走上一条没有人能预想到的道路</p>
-<h2 id="人口老龄化的影响"><a href="#人口老龄化的影响" class="headerlink" title="人口老龄化的影响"></a>人口老龄化的影响</h2><p><strong>人是社会的基础</strong> </p>
+<h2 id="人口老龄化的影响"><a class="markdownIt-Anchor" href="#人口老龄化的影响"></a> 人口老龄化的影响</h2>
+<p><strong>人是社会的基础</strong></p>
 <p>人口结构和数量的变化将会带来社会的巨大改变</p>
 <p>而目前我国逐步严重的人口老龄化将会为我们的社会带来难以想象的巨大的压力</p>
 <ul>
@@ -4157,11 +4216,11 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <p>一个接一个知名公众人物离世, 大家纷纷都说不喜欢2018年, 因为失去了太多喜爱的老前辈</p>
 <p>其实这个现象是正常的</p>
 <ol>
-<li>80, 90后是新媒体的第一代受众, 这一代人开始认识比父辈更多的公众人物, 我们认识的公众人物更多  </li>
-<li>电视, 广播时代的前几代先驱者到现在都逐步步入老年时代, 他们普遍比我们年纪大很多, 他们在变老  </li>
+<li>80, 90后是新媒体的第一代受众, 这一代人开始认识比父辈更多的公众人物, 我们认识的公众人物更多</li>
+<li>电视, 广播时代的前几代先驱者到现在都逐步步入老年时代, 他们普遍比我们年纪大很多, 他们在变老</li>
 </ol>
 <p>以后这个情况恐怕会越来越严重</p>
-<p>我算一笔账, 现代网络时代每个人听说过的的公众人物进入老年人行列的少说也有 1000人 </p>
+<p>我算一笔账, 现代网络时代每个人听说过的的公众人物进入老年人行列的少说也有 1000人</p>
 <p>假设他们都在30年内相继离世, 每年是30人, 平均下来, 差不多每10天就有一个你熟知的公众人物离世</p>
 <p>但是真实情况是我们每个人熟知的人远超 1000人, 他们也不一定都能长寿到100岁, 所以现实情况未来只会更糟糕</p>
 <ul>
@@ -4169,24 +4228,27 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 </ul>
 <ol>
 <li>殡葬行业的需求量未来会爆增, 加上我国传统思想的影响, 行业将会迎来前所未有的机遇</li>
-<li>医疗资源紧张, 成人纸尿裤一定会大卖 ^_^</li>
+<li>医疗资源紧张, 成人纸尿裤一定会大卖 <sup>_</sup></li>
 <li>健康保健行业的机遇, 以后大家会越来越重视健康生活, 保健品行业可能会迎来爆发期</li>
 <li>旅游行业和保险行业未来也会进入一段时间的黄金时期</li>
 <li>同时由于国内文化的特殊性, 老龄化还会造成教育行业的快速发展</li>
 </ol>
 <p>诸位注意投资</p>
-<h2 id="平均寿命和养老金"><a href="#平均寿命和养老金" class="headerlink" title="平均寿命和养老金"></a>平均寿命和养老金</h2><p>我国早期制定的养老金计划是依照平均寿命60岁制定的, 可当时的人们没有想到人类的平均寿命增长的如此之快</p>
+<h2 id="平均寿命和养老金"><a class="markdownIt-Anchor" href="#平均寿命和养老金"></a> 平均寿命和养老金</h2>
+<p>我国早期制定的养老金计划是依照平均寿命60岁制定的, 可当时的人们没有想到人类的平均寿命增长的如此之快</p>
 <p>以至于旧有的养老金制度无法满足当前社会的需要, 我国养老金亏空已经是人尽皆知的事情了</p>
 <p>现在年轻人生育欲望低, 未来的养老更是没有保障, 这样我估计将来怕是连这个养老金制度都会崩溃</p>
 <p>养老金问题已经成为了我国一个十分重大的社会问题, 不知道未来国家会采用怎么样的方式来解决</p>
-<h2 id="房价"><a href="#房价" class="headerlink" title="房价"></a>房价</h2><p>在我们的邻国日本有研究表明, 日本的房价和年轻人的生育意愿呈负相关.</p>
+<h2 id="房价"><a class="markdownIt-Anchor" href="#房价"></a> 房价</h2>
+<p>在我们的邻国日本有研究表明, 日本的房价和年轻人的生育意愿呈负相关.</p>
 <p>国内现在房价如此之高,导致养孩子的成本极高, 没有一定的物质积累,年轻人怕是不敢妄谈生育</p>
 <p>高房价会进一步降低年轻人的生育意愿</p>
 <p>我上面对我国出生人口的预测还是太过乐观了</p>
 <p>不过我同时也觉得现在房价泡沫有点偏大了, 预计未来3年(2018-2020)就会破灭, 房价就会崩盘</p>
 <p>即便很多人说国家不会允许房价崩盘, 但是我想说, 房价不崩盘, 其他所有实体行业统统要崩盘, 两害相权取其轻, 相信国家会这么选择的</p>
 <p>所以打算买房的朋友可以稍微等上几年</p>
-<h2 id="国家未来几年可能会采取鼓励生育政策"><a href="#国家未来几年可能会采取鼓励生育政策" class="headerlink" title="国家未来几年可能会采取鼓励生育政策"></a>国家未来几年可能会采取鼓励生育政策</h2><p>由于人口压力,国家未来几年一定会出台各种鼓励生育的政策</p>
+<h2 id="国家未来几年可能会采取鼓励生育政策"><a class="markdownIt-Anchor" href="#国家未来几年可能会采取鼓励生育政策"></a> 国家未来几年可能会采取鼓励生育政策</h2>
+<p>由于人口压力,国家未来几年一定会出台各种鼓励生育的政策</p>
 <p>我在这里做一下预测, 未来几年可能会采取的政策</p>
 <ol>
 <li>取消多胎生育限制</li>
@@ -4209,7 +4271,9 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 </ol>
 <p>鼓励年轻人谈恋爱同事灌输多子多福的思想才是理论上的可持续发展战略</p>
 <p>其他的政策都只能治标不能治本</p>
-<h1 id="教育和阶级固化"><a href="#教育和阶级固化" class="headerlink" title="教育和阶级固化"></a>教育和阶级固化</h1><h2 id="教育周期的延长"><a href="#教育周期的延长" class="headerlink" title="教育周期的延长"></a>教育周期的延长</h2><p>随着现在社会的发展, 人类掌握的知识总量呈指数发展</p>
+<h1 id="教育和阶级固化"><a class="markdownIt-Anchor" href="#教育和阶级固化"></a> 教育和阶级固化</h1>
+<h2 id="教育周期的延长"><a class="markdownIt-Anchor" href="#教育周期的延长"></a> 教育周期的延长</h2>
+<p>随着现在社会的发展, 人类掌握的知识总量呈指数发展</p>
 <p>同样, 一个人从出生到达科研领域最前沿的时间也在不断增长</p>
 <p>牛顿时代,一个25岁的数学系高材生就能接触到最前沿的数学理论研究, 此时的物理更是连基本的框架都没有, 这个时期人学习某种技术的周期相对较短, 一般能在25岁完成对所需基本知识的积累</p>
 <p>到了现代, 哪怕你专研一个领域并且博士毕业, 都未必能接触到最前沿的研究</p>
@@ -4222,11 +4286,23 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <li>领域继续细分，降低研究人员积累必要知识的负担</li>
 <li>借助电脑帮助加快研究速度</li>
 </ol>
-<h2 id="阶级固化"><a href="#阶级固化" class="headerlink" title="阶级固化"></a>阶级固化</h2><p><strong>社会阶层的固化是历史上每一段和平时期的主旋律</strong></p>
-<p>我只说一个现象,我当年上学时候, 同学里面还有县长的孩子,教育局长的孩子.公安局副局长的孩子<br>但是我弟弟上学的时候, 都已经很少遇到权贵子弟了, 是当任的权贵年龄偏大吗, 不是,是因为这些人的孩子早出国去了   </p>
-<p>大家自己富裕了, 自然就想给孩子更好地条件<br>富者愈富, 穷者愈穷<br><strong>而且这是个死循环,你还不能不给孩子投入</strong><br>我有朋友说,”有多少钱,出多少资源, 不可能什么都给孩子准备好,只能靠他自己,我当年没钱也不过来了吗”<br>其实这种看法我是很反对的     </p>
-<p>现在很多小孩子你不给他报什么钢琴班,美术班,英语班, 他会的技能就比其他孩子少,小孩子们之间攀比心很重,你孩子不懂这些,没有这些,人家别的小孩子不跟你玩…<br>别人有Switch,你没有, 别人报了绘画班,钢琴班,你没有,别人学了英语/美术,你没有, 那别人就不跟你玩…因为孩子也有圈子,圈子是由共同语言组形成的   </p>
-<p>你的孩子不应该拿来跟20多年前的你来比, 他的竞争对手是他的同龄人, 应该看看他们同龄人是怎么样的条件<br>而且现在很多老师会在入学时候收集家长信息,对孩子因家庭条件施教,甚至你不给老师送红包就不在意你孩子<br><strong>这都是中国特色的现象,逼着你的孩子不得不拼爹</strong><br>这几年这种现象尤为明显, 现在大家都希望把最大的投入放到孩子的教育上面, 由于教育的投入,孩子的差距也会越来越大<br>就像&lt;&lt;名侦探柯南&gt;&gt;里面有一集说的: 政治家的儿子依然是政治家, 企业家的孩子依然是企业家, 明星的孩子依旧是明星<br>日本已经经历过我过正在经历的阶段和遇到的诸多问题, 日本的现状我们能从中学到很多    </p>
+<h2 id="阶级固化"><a class="markdownIt-Anchor" href="#阶级固化"></a> 阶级固化</h2>
+<p><strong>社会阶层的固化是历史上每一段和平时期的主旋律</strong></p>
+<p>我只说一个现象,我当年上学时候, 同学里面还有县长的孩子,教育局长的孩子.公安局副局长的孩子<br>
+但是我弟弟上学的时候, 都已经很少遇到权贵子弟了, 是当任的权贵年龄偏大吗, 不是,是因为这些人的孩子早出国去了</p>
+<p>大家自己富裕了, 自然就想给孩子更好地条件<br>
+富者愈富, 穷者愈穷<br>
+<strong>而且这是个死循环,你还不能不给孩子投入</strong><br>
+我有朋友说,“有多少钱,出多少资源, 不可能什么都给孩子准备好,只能靠他自己,我当年没钱也不过来了吗”<br>
+其实这种看法我是很反对的</p>
+<p>现在很多小孩子你不给他报什么钢琴班,美术班,英语班, 他会的技能就比其他孩子少,小孩子们之间攀比心很重,你孩子不懂这些,没有这些,人家别的小孩子不跟你玩…<br>
+别人有Switch,你没有, 别人报了绘画班,钢琴班,你没有,别人学了英语/美术,你没有, 那别人就不跟你玩…因为孩子也有圈子,圈子是由共同语言组形成的</p>
+<p>你的孩子不应该拿来跟20多年前的你来比, 他的竞争对手是他的同龄人, 应该看看他们同龄人是怎么样的条件<br>
+而且现在很多老师会在入学时候收集家长信息,对孩子因家庭条件施教,甚至你不给老师送红包就不在意你孩子<br>
+<strong>这都是中国特色的现象,逼着你的孩子不得不拼爹</strong><br>
+这几年这种现象尤为明显, 现在大家都希望把最大的投入放到孩子的教育上面, 由于教育的投入,孩子的差距也会越来越大<br>
+就像&lt;&lt;名侦探柯南&gt;&gt;里面有一集说的: 政治家的儿子依然是政治家, 企业家的孩子依然是企业家, 明星的孩子依旧是明星<br>
+日本已经经历过我过正在经历的阶段和遇到的诸多问题, 日本的现状我们能从中学到很多</p>
 <blockquote>
 <p>秦人不暇自哀，而后人哀之；后人哀之而不鉴之，亦使后人而复哀后人也。</p>
 </blockquote>
@@ -4318,52 +4394,55 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 
       
           <p>Google背后的索引计算工作是搜索引擎的核心之一, Google现有的搜索引擎是基于Caffeine的增量索引系统构建的,Google后续的一系列大数据计算引擎都是基于MapReduce的思想构建出来的</p>
-<h1 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h1><p>在2004年google发布了一篇论文, 描述了google内部针对大数据处理的一种通用模式:MapReduce</p>
+<h1 id="mapreduce"><a class="markdownIt-Anchor" href="#mapreduce"></a> MapReduce</h1>
+<p>在2004年google发布了一篇论文, 描述了google内部针对大数据处理的一种通用模式:MapReduce</p>
 <p>MapReduce是一种编程模型,主要用来对大量的数据进行分布式处理和计算,很多常见的数据处理任务都可以被拆分为符合mapreduce模型的编程过程,MapReduce主要过程分为Map和Reduce两个过程</p>
 <p>论文地址:<a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/mapreduce-osdi04.pdf" target="_blank" rel="noopener">MapReduce论文</a></p>
-<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>Map是一个将问题分解成多个小问题为后续的分发提供基础的技术</p>
+<h2 id="map"><a class="markdownIt-Anchor" href="#map"></a> Map</h2>
+<p>Map是一个将问题分解成多个小问题为后续的分发提供基础的技术</p>
 <p>Map的过程用函数来表示就是:</p>
 <figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">map</span>(k,v) = (k1,v1&lt;<span class="built_in">list</span>&gt;)</span><br><span class="line"><span class="comment">// map函数接收一对k,v键值对,返回一个(k1,v1&lt;list&gt;)</span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>map函数的目的是为了将任务分割方便后续的任务合成</p>
-<h2 id="Reduce"><a href="#Reduce" class="headerlink" title="Reduce"></a>Reduce</h2><p>Reduce是将多个k-v pair按照相同的k进行合并的过程</p>
+<h2 id="reduce"><a class="markdownIt-Anchor" href="#reduce"></a> Reduce</h2>
+<p>Reduce是将多个k-v pair按照相同的k进行合并的过程</p>
 <pre><code>reduce(k,v2&lt;list&gt;) = (v3&lt;list&gt;)
-// reduce函数接收一个k,v1&lt;list&gt;, 返回一个v2&lt;list&gt;</code></pre><blockquote>
+// reduce函数接收一个k,v1&lt;list&gt;, 返回一个v2&lt;list&gt;
+</code></pre>
+<blockquote>
 <p>ps:大多数情况下map的返回结果不能直接用于reduce函数,需要特殊处理一下</p>
 </blockquote>
-<h2 id="过程图"><a href="#过程图" class="headerlink" title="过程图"></a>过程图</h2><p>以下是一个很详细的对MongoDB中的MapReduce过程的解读图</p>
+<h2 id="过程图"><a class="markdownIt-Anchor" href="#过程图"></a> 过程图</h2>
+<p>以下是一个很详细的对MongoDB中的MapReduce过程的解读图</p>
 <p><img data-src="https://i.loli.net/2020/05/09/4lu5Ek2yZDi7doF.png" alt="map-reduce.png"></p>
 <p>我们可以看到map函数的输入是多个被查询过滤过的文档集合,返回值是一个map对应的值列表,我们可以认为map函数式对所有符合条件的数据进行一次简单的处理</p>
 <p>reduce则是将这个值列表按照key进行处理,即对map的结果进行最终结果操作</p>
-<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p>我们用一个实际的问题来描述MapReduce的思想</p>
-<p>假设我们有一个文件集合(C),里面包含M个文档,我们要对文件集合中的文档进行单词次数统计,统计在所有文档中的每个单词出现的次数</p>
+<h1 id="实例"><a class="markdownIt-Anchor" href="#实例"></a> 实例</h1>
+<p>我们用一个实际的问题来描述MapReduce的思想</p>
+<p>假设我们有一个文件集合©,里面包含M个文档,我们要对文件集合中的文档进行单词次数统计,统计在所有文档中的每个单词出现的次数</p>
 <p>可以用以下过程描述:</p>
 <figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">map</span>(String key, String value): <span class="comment">// key: document name</span></span><br><span class="line">    <span class="comment">// value: document contents for each word w in value:</span></span><br><span class="line">    EmitIntermediate(w, <span class="string">"1"</span>);<span class="comment">// 该函数返回一个[("to",1),("yours",12)]这样的列表数据</span></span><br><span class="line"></span><br><span class="line">reduce(String key, Iterator values): <span class="comment">// key: a word eg: "t1"</span></span><br><span class="line">    <span class="comment">// values: a list of counts 示例: [1,2,3]</span></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> each v in values:</span><br><span class="line">      result += ParseInt(v);</span><br><span class="line">    Emit(AsString(result)); <span class="comment">// 该函数同样返回一个[("to",1),("yours",12)]的数据</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="代码-单机版"><a href="#代码-单机版" class="headerlink" title="代码(单机版)"></a>代码(单机版)</h2><p>以下是使用mapreduce进行文档词频统计的示例代码</p>
+<h2 id="代码单机版"><a class="markdownIt-Anchor" href="#代码单机版"></a> 代码(单机版)</h2>
+<p>以下是使用mapreduce进行文档词频统计的示例代码</p>
 <p>其中的主要代码简单解释一下</p>
-<h3 id="MapReduce类"><a href="#MapReduce类" class="headerlink" title="MapReduce类"></a>MapReduce类</h3><p><code>MapReduce</code>类是一个通用的MapReduce框架,理论上任意MapReduce任务都可以套用这个框架</p>
+<h3 id="mapreduce类"><a class="markdownIt-Anchor" href="#mapreduce类"></a> MapReduce类</h3>
+<p><code>MapReduce</code>类是一个通用的MapReduce框架,理论上任意MapReduce任务都可以套用这个框架</p>
 <p>要处理不同的问题我们只需要修改对应的map和reduce函数即可</p>
 <p>MapReduce类接收3个参数</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i:       要处理的数据源,格式是一个普通的字典; </span><br><span class="line">mapper:  映射函数,该函接收一个kv键值对,根据需要对每个v值进行处理,返回一个(k,v&lt;list&gt;),此处的k值并不一定是传入的k值; </span><br><span class="line">reducer: 压缩函数,接收一个(k,v&lt;list&gt;),根据需求对数据进行压缩合并;</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="map函数"><a href="#map函数" class="headerlink" title="map函数"></a>map函数</h3><p>其中<code>get_most_common_from_text</code>使用了结巴分词插件</p>
+<h3 id="map函数"><a class="markdownIt-Anchor" href="#map函数"></a> map函数</h3>
+<p>其中<code>get_most_common_from_text</code>使用了结巴分词插件</p>
 <p>参数:</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">k:"a"</span><br><span class="line">v:"The quick brown fox jumped over the lazy grey dogs."</span><br></pre></td></tr></tbody></table></figure>
-
 <p>返回:</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  (<span class="string">"the"</span>,<span class="number">1</span>),</span><br><span class="line">  (<span class="string">"quick"</span>,<span class="number">1</span>),</span><br><span class="line">  (<span class="string">"fox"</span>,<span class="number">1</span>)</span><br><span class="line">]</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="reduce函数"><a href="#reduce函数" class="headerlink" title="reduce函数"></a>reduce函数</h3><p>参数:</p>
+<h3 id="reduce函数"><a class="markdownIt-Anchor" href="#reduce函数"></a> reduce函数</h3>
+<p>参数:</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">k:<span class="string">"the"</span></span><br><span class="line">v&lt;list&gt;:[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>返回: </p>
+<p>返回:</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[(<span class="string">"the"</span>,<span class="number">3</span>),(<span class="string">"quick"</span>:<span class="number">1</span>)...]</span><br></pre></td></tr></tbody></table></figure>
-
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MapReduce</span>:</span></span><br><span class="line">    __doc__ = <span class="string">'''提供map_reduce功能'''</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map_reduce</span><span class="params">(i, mapper, reducer)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        map_reduce方法</span></span><br><span class="line"><span class="string">        :param i: 需要MapReduce的集合</span></span><br><span class="line"><span class="string">        :param mapper: 自定义mapper方法</span></span><br><span class="line"><span class="string">        :param reducer: 自定义reducer方法</span></span><br><span class="line"><span class="string">        :return: 以自定义reducer方法的返回值为元素的一个列表</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        intermediate = []  <span class="comment"># 存放所有的(intermediate_key, intermediate_value)</span></span><br><span class="line">        <span class="keyword">for</span> (key, value) <span class="keyword">in</span> i.items():</span><br><span class="line">            intermediate.extend(mapper(key,value))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># sorted返回一个排序好的list，因为list中的元素是一个个的tuple，key设定按照tuple中第几个元素排序</span></span><br><span class="line">        <span class="comment"># groupby把迭代器中相邻的重复元素挑出来放在一起,key设定按照tuple中第几个元素为关键字来挑选重复元素</span></span><br><span class="line">        <span class="comment"># 下面的循环中groupby返回的key是intermediate_key，而group是个list，是1个或多个</span></span><br><span class="line">        <span class="comment"># 有着相同intermediate_key的(intermediate_key, intermediate_value)</span></span><br><span class="line">        groups = {}</span><br><span class="line">        <span class="keyword">for</span> key, group <span class="keyword">in</span> itertools.groupby(sorted(intermediate, key=<span class="keyword">lambda</span> im: im[<span class="number">0</span>]), key=<span class="keyword">lambda</span> x: x[<span class="number">0</span>]):</span><br><span class="line">            groups[key] = [y <span class="keyword">for</span> x, y <span class="keyword">in</span> group]</span><br><span class="line">        <span class="comment"># groups是一个字典，其key为上面说到的intermediate_key，value为所有对应intermediate_key的intermediate_value</span></span><br><span class="line">        <span class="comment"># 组成的一个列表</span></span><br><span class="line">        <span class="comment"># print(groups)</span></span><br><span class="line">        <span class="keyword">return</span> [reducer(intermediate_key, groups[intermediate_key]) <span class="keyword">for</span> intermediate_key <span class="keyword">in</span> groups]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_most_common_from_text</span><span class="params">(self,text,n = <span class="number">100</span>)</span>:</span></span><br><span class="line">        word_list = [x <span class="keyword">for</span> x <span class="keyword">in</span> jieba.cut(text) <span class="keyword">if</span> len(x) &gt;= <span class="number">2</span>]</span><br><span class="line">        <span class="keyword">return</span> Counter(word_list).most_common(n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:文档名, v:文档内容</span></span><br><span class="line">        <span class="keyword">return</span> self.get_most_common_from_text(v,<span class="number">10000</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reducer</span><span class="params">(self,k,v)</span>:</span> <span class="comment"># k:词  v:词出现的次数</span></span><br><span class="line">         <span class="keyword">return</span> k, sum(v)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        </span><br><span class="line">        i = {</span><br><span class="line">            <span class="string">"a"</span>:<span class="string">"The quick brown fox jumped over the lazy grey dogs."</span>,</span><br><span class="line">            <span class="string">"b"</span>:<span class="string">"That's one small step for a man, one giant leap for mankind."</span>,</span><br><span class="line">            <span class="string">"c"</span>:<span class="string">"　　Mary had a little lamb,Its fleece was white as snow;And everywhere that Mary went,The lamb was sure to go"</span>,</span><br><span class="line">            <span class="string">"d"</span>:<span class="string">"I pledge to honor and defend you and yours above all others"</span>,</span><br><span class="line">            <span class="string">"e"</span>:<span class="string">"To share in blessings and burdens, to be your advocate, your champion"</span></span><br><span class="line">        }</span><br><span class="line">        </span><br><span class="line">        t = MapReduce.map_reduce(i,self.map,self.reducer)</span><br><span class="line">        print(t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">m = test()</span><br><span class="line">m.run()</span><br></pre></td></tr></tbody></table></figure>
-
-
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>MapReduce其实就是我们常说的分而治之的思想</p>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>MapReduce其实就是我们常说的分而治之的思想</p>
 <p>不过这个过程中借助了中间存储</p>
 <p>统一了数据模型规范, 使之能适用于更广泛的数据计算</p>
 
@@ -4693,170 +4772,185 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="2018"><a href="#2018" class="headerlink" title="2018"></a>2018</h2><p>年度目标: <em>20本书以上</em></p>
-<h3 id="January"><a href="#January" class="headerlink" title="January"></a>January</h3><p>Done:</p>
+          <h2 id="2018"><a class="markdownIt-Anchor" href="#2018"></a> 2018</h2>
+<p>年度目标: <em>20本书以上</em></p>
+<h3 id="january"><a class="markdownIt-Anchor" href="#january"></a> January</h3>
+<p>Done:</p>
 <ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> HTML5游戏开发实战</li>
-<li><input checked="" disabled="" type="checkbox"> 刻意练习</li>
-<li><input disabled="" type="checkbox"> PRINCIPLES(原则)</li>
+<li>[x] HTML5游戏开发实战</li>
+<li>[x] 刻意练习</li>
+<li>[ ] PRINCIPLES(原则)</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 鬼途奇行录</li>
-<li><input disabled="" type="checkbox"> 紫罗兰的永恒花园</li>
-<li><input checked="" disabled="" type="checkbox"> 少年锦衣卫第二季</li>
-<li><input checked="" disabled="" type="checkbox"> 画江湖之换世门生</li>
-<li><input disabled="" type="checkbox"> 狐妖小狐娘</li>
+<li>[ ] 鬼途奇行录</li>
+<li>[ ] 紫罗兰的永恒花园</li>
+<li>[x] 少年锦衣卫第二季</li>
+<li>[x] 画江湖之换世门生</li>
+<li>[ ] 狐妖小狐娘</li>
 </ul>
 <p>Plan:</p>
 <ul>
-<li><input disabled="" type="checkbox"> 机器学习相关基础知识的学习</li>
+<li>[ ] 机器学习相关基础知识的学习</li>
 </ul>
-<h3 id="February"><a href="#February" class="headerlink" title="February"></a>February</h3><ul>
+<h3 id="february"><a class="markdownIt-Anchor" href="#february"></a> February</h3>
+<ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 计算机组成与操作系统</li>
-<li><input disabled="" type="checkbox"> 分布式服务架构</li>
-<li><input disabled="" type="checkbox"> 神经网络与深度学习</li>
-<li><input checked="" disabled="" type="checkbox"> 东方快车谋杀案</li>
+<li>[x] 计算机组成与操作系统</li>
+<li>[ ] 分布式服务架构</li>
+<li>[ ] 神经网络与深度学习</li>
+<li>[x] 东方快车谋杀案</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 冰菓</li>
-<li><input disabled="" type="checkbox"> 狐妖小红娘</li>
-<li><input disabled="" type="checkbox"> 紫罗兰的永恒花园</li>
-<li><input checked="" disabled="" type="checkbox"> Angel Beats</li>
-<li><input disabled="" type="checkbox"> 龙王的工作</li>
+<li>[x] 冰菓</li>
+<li>[ ] 狐妖小红娘</li>
+<li>[ ] 紫罗兰的永恒花园</li>
+<li>[x] Angel Beats</li>
+<li>[ ] 龙王的工作</li>
 </ul>
-<h3 id="March"><a href="#March" class="headerlink" title="March"></a>March</h3><ul>
+<h3 id="march"><a class="markdownIt-Anchor" href="#march"></a> March</h3>
+<ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 原则</li>
-<li><input disabled="" type="checkbox"> 月亮与六便士</li>
+<li>[ ] 原则</li>
+<li>[ ] 月亮与六便士</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 紫罗兰的永恒花园</li>
-<li><input disabled="" type="checkbox"> 鬼途奇行录</li>
-<li><input checked="" disabled="" type="checkbox"> 龙王的工作</li>
+<li>[ ] 紫罗兰的永恒花园</li>
+<li>[ ] 鬼途奇行录</li>
+<li>[x] 龙王的工作</li>
 </ul>
-<h3 id="April"><a href="#April" class="headerlink" title="April"></a>April</h3><ul>
+<h3 id="april"><a class="markdownIt-Anchor" href="#april"></a> April</h3>
+<ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 原则</li>
-<li><input disabled="" type="checkbox"> 神经网络与深度学习</li>
-<li><input disabled="" type="checkbox"> 大规模分布式存储系统</li>
+<li>[x] 原则</li>
+<li>[ ] 神经网络与深度学习</li>
+<li>[ ] 大规模分布式存储系统</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 紫罗兰永恒花园</li>
-<li><input disabled="" type="checkbox"> 鬼途奇行录</li>
-<li><input disabled="" type="checkbox"> 一人之下</li>
-<li><input disabled="" type="checkbox"> 狐妖小红娘</li>
+<li>[x] 紫罗兰永恒花园</li>
+<li>[ ] 鬼途奇行录</li>
+<li>[ ] 一人之下</li>
+<li>[ ] 狐妖小红娘</li>
 </ul>
-<h3 id="May"><a href="#May" class="headerlink" title="May"></a>May</h3><ul>
+<h3 id="may"><a class="markdownIt-Anchor" href="#may"></a> May</h3>
+<ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 大规模分布式存储系统</li>
-<li><input disabled="" type="checkbox"> 分布式实时处理系统</li>
-<li><input checked="" disabled="" type="checkbox"> 神经网络与深度学习</li>
-<li><input checked="" disabled="" type="checkbox"> 月亮与六便士</li>
+<li>[ ] 大规模分布式存储系统</li>
+<li>[ ] 分布式实时处理系统</li>
+<li>[x] 神经网络与深度学习</li>
+<li>[x] 月亮与六便士</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 鬼途奇行录</li>
-<li><input disabled="" type="checkbox"> 一人之下</li>
-<li><input disabled="" type="checkbox"> 没关系, 是爱情啊</li>
+<li>[ ] 鬼途奇行录</li>
+<li>[ ] 一人之下</li>
+<li>[ ] 没关系, 是爱情啊</li>
 </ul>
-<h3 id="June"><a href="#June" class="headerlink" title="June"></a>June</h3><ul>
+<h3 id="june"><a class="markdownIt-Anchor" href="#june"></a> June</h3>
+<ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 大规模分布式存储系统</li>
-<li><input disabled="" type="checkbox"> 大规模分布式系统架构与设计实战</li>
+<li>[x] 大规模分布式存储系统</li>
+<li>[ ] 大规模分布式系统架构与设计实战</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 鬼途奇行录</li>
+<li>[x] 鬼途奇行录</li>
 </ul>
-<h3 id="July"><a href="#July" class="headerlink" title="July"></a>July</h3><ul>
+<h3 id="july"><a class="markdownIt-Anchor" href="#july"></a> July</h3>
+<ul>
 <li>Books</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 国富论</li>
+<li>[ ] 国富论</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 海贼王</li>
+<li>[ ] 海贼王</li>
 </ul>
-<h3 id="August"><a href="#August" class="headerlink" title="August"></a>August</h3><ul>
+<h3 id="august"><a class="markdownIt-Anchor" href="#august"></a> August</h3>
+<ul>
 <li>Books</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 国富论</li>
+<li>[ ] 国富论</li>
 </ul>
 <ul>
 <li>Bangumi</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 工作细胞</li>
-<li><input disabled="" type="checkbox"> 魔道祖师</li>
+<li>[ ] 工作细胞</li>
+<li>[ ] 魔道祖师</li>
 </ul>
-<h3 id="Sep"><a href="#Sep" class="headerlink" title="Sep"></a>Sep</h3><ul>
+<h3 id="sep"><a class="markdownIt-Anchor" href="#sep"></a> Sep</h3>
+<ul>
 <li>Books</li>
 </ul>
 <ul>
-<li><input checked="" disabled="" type="checkbox"> 编码</li>
+<li>[x] 编码</li>
 </ul>
-<h3 id="Oct"><a href="#Oct" class="headerlink" title="Oct"></a>Oct</h3><ul>
+<h3 id="oct"><a class="markdownIt-Anchor" href="#oct"></a> Oct</h3>
+<ul>
 <li>Books</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 深入理解Java虚拟机</li>
+<li>[ ] 深入理解Java虚拟机</li>
 </ul>
-<h3 id="Nov"><a href="#Nov" class="headerlink" title="Nov"></a>Nov</h3><ul>
+<h3 id="nov"><a class="markdownIt-Anchor" href="#nov"></a> Nov</h3>
+<ul>
 <li>Books</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 深入理解Java虚拟机</li>
-<li><input checked="" disabled="" type="checkbox"> 大数据技术体系详解</li>
-<li><input disabled="" type="checkbox"> Designing Data-Intensive Application</li>
-<li><input checked="" disabled="" type="checkbox"> 走向分布式(Scalability)</li>
-<li><input disabled="" type="checkbox"> Spark大数据处理</li>
-<li><input checked="" disabled="" type="checkbox"> Spark编程指南</li>
+<li>[ ] 深入理解Java虚拟机</li>
+<li>[x] 大数据技术体系详解</li>
+<li>[ ] Designing Data-Intensive Application</li>
+<li>[x] 走向分布式(Scalability)</li>
+<li>[ ] Spark大数据处理</li>
+<li>[x] Spark编程指南</li>
 </ul>
-<h3 id="Dec"><a href="#Dec" class="headerlink" title="Dec"></a>Dec</h3><ul>
+<h3 id="dec"><a class="markdownIt-Anchor" href="#dec"></a> Dec</h3>
+<ul>
 <li>Book</li>
 </ul>
 <ul>
-<li><input disabled="" type="checkbox"> 深入理解Java虚拟机</li>
-<li><input disabled="" type="checkbox"> Designing Data-Intensive Application</li>
-<li><input checked="" disabled="" type="checkbox"> kafka权威指南</li>
-<li><input disabled="" type="checkbox"> Scala编程实战</li>
+<li>[ ] 深入理解Java虚拟机</li>
+<li>[ ] Designing Data-Intensive Application</li>
+<li>[x] kafka权威指南</li>
+<li>[ ] Scala编程实战</li>
 </ul>
-<h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><p>图书: </p>
-<p>读完: 11本(技术类7本, 其他4本)<br>未完: 6本</p>
+<h2 id="统计"><a class="markdownIt-Anchor" href="#统计"></a> 统计</h2>
+<p>图书:</p>
+<p>读完: 11本(技术类7本, 其他4本)<br>
+未完: 6本</p>
 
       
     </div>
@@ -4944,12 +5038,15 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="用户标签的存储方案"><a href="#用户标签的存储方案" class="headerlink" title="用户标签的存储方案"></a>用户标签的存储方案</h1><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>我们在日常的工作中经常遇到这种场景</p>
+          <h1 id="用户标签的存储方案"><a class="markdownIt-Anchor" href="#用户标签的存储方案"></a> 用户标签的存储方案</h1>
+<h1 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h1>
+<p>我们在日常的工作中经常遇到这种场景</p>
 <p>对一个用户添加许多的标签信息方便对用户身份进行搜索和精细化运营</p>
 <blockquote>
 <p>ps:本文我们不考虑用户身上的标签是怎么来的,只讨论用户已经拥有标签的情况下怎么进行存储</p>
 </blockquote>
-<h1 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h1><p>我们给用户做标签的目的是为了支持更加精细化的运营,算是用户画像的一部分,用户的标签来源可能跟消费,登录,浏览等记录都有关系</p>
+<h1 id="需求分析"><a class="markdownIt-Anchor" href="#需求分析"></a> 需求分析</h1>
+<p>我们给用户做标签的目的是为了支持更加精细化的运营,算是用户画像的一部分,用户的标签来源可能跟消费,登录,浏览等记录都有关系</p>
 <p>我们要做的是可以根据用户身上已经存在的标签,筛选出来符合我们需求的用户</p>
 <p>我们可以在大量的标签中查找具有某一些标签的用户,或者获取某用户身上的所有标签</p>
 <p>我们如果要满足以上的需求, 需要提供以下几个基本接口来方便进行数据查找</p>
@@ -4966,95 +5063,97 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <table>
 <thead>
 <tr>
-<th align="left">id</th>
-<th align="left">name</th>
-<th align="left">vip</th>
-<th align="left">mobile</th>
-<th align="left">email</th>
-<th align="left">male</th>
-<th align="left">mac</th>
-<th align="left">supervip</th>
-<th align="left">lost</th>
+<th style="text-align:left">id</th>
+<th style="text-align:left">name</th>
+<th style="text-align:left">vip</th>
+<th style="text-align:left">mobile</th>
+<th style="text-align:left">email</th>
+<th style="text-align:left">male</th>
+<th style="text-align:left">mac</th>
+<th style="text-align:left">supervip</th>
+<th style="text-align:left">lost</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">1</td>
-<td align="left">小明</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">0</td>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">小明</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">2</td>
-<td align="left">小花</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">1</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">小花</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">3</td>
-<td align="left">小江</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">1</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">小江</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">4</td>
-<td align="left">小红</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">1</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">小红</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">5</td>
-<td align="left">小九</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">0</td>
+<td style="text-align:left">5</td>
+<td style="text-align:left">小九</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">6</td>
-<td align="left">小七</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">0</td>
+<td style="text-align:left">6</td>
+<td style="text-align:left">小七</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">7</td>
-<td align="left">小四</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">1</td>
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">0</td>
-<td align="left">1</td>
+<td style="text-align:left">7</td>
+<td style="text-align:left">小四</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">1</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>或者是这样</p>
 <ol start="2">
 <li>使用记录标识标签信息</li>
@@ -5062,67 +5161,69 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <table>
 <thead>
 <tr>
-<th align="left">tag</th>
-<th align="left">uid</th>
-<th align="left">result</th>
+<th style="text-align:left">tag</th>
+<th style="text-align:left">uid</th>
+<th style="text-align:left">result</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">vip</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<tbody>
+<tr>
+<td style="text-align:left">vip</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">mobile</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td style="text-align:left">mobile</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">email</td>
-<td align="left">1</td>
-<td align="left">0</td>
+<td style="text-align:left">email</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">male</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td style="text-align:left">male</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">mac</td>
-<td align="left">1</td>
-<td align="left">0</td>
+<td style="text-align:left">mac</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">supervip</td>
-<td align="left">1</td>
-<td align="left">1</td>
+<td style="text-align:left">supervip</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">lost</td>
-<td align="left">1</td>
-<td align="left">0</td>
+<td style="text-align:left">lost</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">vip</td>
-<td align="left">2</td>
-<td align="left">0</td>
+<td style="text-align:left">vip</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">mobile</td>
-<td align="left">2</td>
-<td align="left">1</td>
+<td style="text-align:left">mobile</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">1</td>
 </tr>
 <tr>
-<td align="left">email</td>
-<td align="left">2</td>
-<td align="left">0</td>
+<td style="text-align:left">email</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">0</td>
 </tr>
 <tr>
-<td align="left">male</td>
-<td align="left">2</td>
-<td align="left">0</td>
+<td style="text-align:left">male</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">0</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>以上两种方式功能上都可以达到我们想要的效果,但第一种方式在标签数量非常多的时候明显是不合适的,我们不可能给每个标签都添加一个字段,那样性能和扩展性都损失非常大</p>
 <p>在上面的两个表中第二个表相当于对第一个表进行了拆分,增强了标签的扩展性.如果我们采用第二种方式存储,对于上面的需求 1,2,3 都能很好的满足</p>
 <p>但是方式2依然有两个可能遇到的问题</p>
@@ -5130,29 +5231,34 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <li>我们要查找在某一些标签的用户需要使用如下sql</li>
 </ol>
 <figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">    uid </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">    tag_table </span><br><span class="line"><span class="keyword">where</span> </span><br><span class="line">    <span class="keyword">result</span> = <span class="number">1</span> </span><br><span class="line"><span class="keyword">and</span> tag <span class="keyword">in</span> (<span class="string">'vip'</span>,<span class="string">'mobile'</span>,<span class="string">'email'</span>,<span class="string">'male'</span>,<span class="string">'supervip'</span>,<span class="string">'lost'</span>)</span><br></pre></td></tr></tbody></table></figure>
-
 <p>这样的语句在标签数万甚至数十万的时候对性能影响会非常大</p>
 <ol start="2">
 <li>存储: 因为每个行记录同时标明了用户,标签,和结果, 所以其中的重复数据非常的多,对数据库存储是个极大地浪费</li>
 </ol>
-<h1 id="Bitmap"><a href="#Bitmap" class="headerlink" title="Bitmap"></a>Bitmap</h1><h2 id="Bitmap的概念"><a href="#Bitmap的概念" class="headerlink" title="Bitmap的概念"></a>Bitmap的概念</h2><p>Bitmap 翻译做中文称为”位图”, 其核心里面是充分利用一部分数据本身就存在的元属性(空间/位置/容量)信息,我们这李主要是使用其中的每一位的位置信息,达到使用一个信息表达两种含义的作用</p>
+<h1 id="bitmap"><a class="markdownIt-Anchor" href="#bitmap"></a> Bitmap</h1>
+<h2 id="bitmap的概念"><a class="markdownIt-Anchor" href="#bitmap的概念"></a> Bitmap的概念</h2>
+<p>Bitmap 翻译做中文称为"位图", 其核心里面是充分利用一部分数据本身就存在的元属性(空间/位置/容量)信息,我们这李主要是使用其中的每一位的位置信息,达到使用一个信息表达两种含义的作用</p>
 <p>其实就也是一种特殊的编码(coding)过程(或者叫多工(multiplex))</p>
-<h2 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h2><p>bitmap可以用来有效解决两类问题</p>
+<h2 id="解决的问题"><a class="markdownIt-Anchor" href="#解决的问题"></a> 解决的问题</h2>
+<p>bitmap可以用来有效解决两类问题</p>
 <ol>
 <li>存储大量值可以用布尔值标识的数据</li>
 <li>部分有用到交,并,差等集合运算的数据</li>
 </ol>
 <p>第一个特性主要是利用位存储的节省空间的特性,第二个是利用计算机位运算比较快速的特性</p>
-<p>eg: </p>
+<p>eg:</p>
 <ol>
-<li><p>以前的搜索引擎爬虫在处理网页爬取的时候需要给已经爬取过的网页做标记,避免陷入死循环的重复爬取,当时的搜索网站的爬虫就有一些采用过bitmap来给爬取过的网页做标记,大致就是取页面的url取hash,然后处理成数字,把对应的数字位置为1</p>
+<li>
+<p>以前的搜索引擎爬虫在处理网页爬取的时候需要给已经爬取过的网页做标记,避免陷入死循环的重复爬取,当时的搜索网站的爬虫就有一些采用过bitmap来给爬取过的网页做标记,大致就是取页面的url取hash,然后处理成数字,把对应的数字位置为1</p>
 </li>
-<li><p>微博里面你关注的A也关注了B, 使用B的粉丝列表和你的关注列表进行交集运算就可以了,同样 购买这件商品的人也购买了M,也可以用 购买这件商品的用户列表里面取某个用户购买过的某个商品即可</p>
+<li>
+<p>微博里面你关注的A也关注了B, 使用B的粉丝列表和你的关注列表进行交集运算就可以了,同样 购买这件商品的人也购买了M,也可以用 购买这件商品的用户列表里面取某个用户购买过的某个商品即可</p>
 </li>
 </ol>
 <p>以上应用确实能有效的减少数据的存储容量和提高集合计算速度, 如果我们用这种方法来存储用户标签信息也能大量减少存储容量</p>
 <p>但是怎么把用户标签的表信息数据转换成bitmap形式的数据呢?</p>
-<h2 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h2><p>我们如果要记录一个用户对应的一个标签的信息,假如我们知道5号用户是小九,而她是一位超级会员用户(我们可以在上面的表中查到该信息)</p>
+<h2 id="数据处理"><a class="markdownIt-Anchor" href="#数据处理"></a> 数据处理</h2>
+<p>我们如果要记录一个用户对应的一个标签的信息,假如我们知道5号用户是小九,而她是一位超级会员用户(我们可以在上面的表中查到该信息)</p>
 <p>我们要如何使用bitmap来表示这条信息呢</p>
 <ul>
 <li>存储用户和标签的关系</li>
@@ -5165,9 +5271,11 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 </ol>
 <p>我们根据这个数据可以做到2点:</p>
 <ul>
-<li><p>我们可以根据该标签数据键的对应位置的二进制位的值来判断以该位置为id的用户的标签结果</p>
+<li>
+<p>我们可以根据该标签数据键的对应位置的二进制位的值来判断以该位置为id的用户的标签结果</p>
 </li>
-<li><p>也可以查询某个标签下的所有用户</p>
+<li>
+<p>也可以查询某个标签下的所有用户</p>
 </li>
 </ul>
 <p>这样我们存储上万个标签也只需要上万个键</p>
@@ -5177,7 +5285,9 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <p>但是我们如果需要查找不属于某个标签的用户怎么办啊,如果直接对上一个例子取反肯定是不行的</p>
 <p>为了解决这个问题我们需要一个存储所有用户的键</p>
 <p>我们知道了所有用户,知道了拥有某标签的用户</p>
-<pre><code>不含某标签的用户 = 总用户 - 含有某标签的用户</code></pre><p>用二进制的操作方法就是使用<code>异或</code>, 举例:</p>
+<pre><code>    不含某标签的用户 = 总用户 - 含有某标签的用户
+</code></pre>
+<p>用二进制的操作方法就是使用<code>异或</code>, 举例:</p>
 <p>我们有7个用户(编号1-7),5号用户是超级vip,我们要查找所有不是vip的用户可以使用下面的运算</p>
 <figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">01111111</span> ^ <span class="number">00001000</span> = <span class="number">01110111</span> <span class="comment">// 127 ^ 8 = 119</span></span><br><span class="line"><span class="comment">// 01111111:所有用户的二进制键  00001000:5号用户是超级会员的键 01110111:所有不是超级会员的用户</span></span><br></pre></td></tr></tbody></table></figure>
 <p>以上操作我们就能得到所有不是超级会员的用户</p>
@@ -5187,115 +5297,121 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <p>我们如果要获得用户的所有标签,也可以将用户拥有的标签id在用户标签键中所对应的位置置为1,这样每一个用户的表示所有标签的键的最大位长度就是固定的,比如:</p>
 <p>我们可以用如下方式存储用户的所有标签</p>
 <figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usertag:all:<span class="number">1</span> =&gt; <span class="number">01101010</span>  <span class="comment">// 1号用户的所有标签</span></span><br><span class="line">usertag:all:<span class="number">5</span> =&gt; <span class="number">00010110</span>  <span class="comment">// 5号用户的所有标签</span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>这样我们就能使用bitmap来满足以上基本查询需求</p>
 <p>同样我们也可以将所有标签存储成一个<code>usertag:alltag</code>键, 再使用异或运算计算某用户不含有的标签</p>
-<h2 id="实现方案"><a href="#实现方案" class="headerlink" title="实现方案"></a>实现方案</h2><p>我们如果自己来对位运算做管理就有点麻烦了,我们可以借助<code>redis</code></p>
+<h2 id="实现方案"><a class="markdownIt-Anchor" href="#实现方案"></a> 实现方案</h2>
+<p>我们如果自己来对位运算做管理就有点麻烦了,我们可以借助<code>redis</code></p>
 <p><code>redis</code>原生提供了可以对字符串进行位操作的命令,具体如下</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> SETBIT key pos value  // 将 key 的第 pos 位设为 value(只能取1/0)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> GETBIT key pos        // 获取 key 的第 pos 位的值</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP cmd key1 key2 key3 ... // 对 key2,key3 等执行 </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP AND destkey srckey1 srckey2 srckey3 ... srckeyN</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP OR destkey srckey1 srckey2 srckey3 ... srckeyN</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP XOR destkey srckey1 srckey2 srckey3 ... srckeyN</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITOP NOT destkey srckey</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITPOS key bit start end  // 将 key 的 strat 到 end 位全部设为 bit(0/1)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITCOUNT mykey 1 1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> BITFIELD mystring SET i8 <span class="comment">#0 100 i8 #1 200</span></span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>我们就直接使用<code>redis</code>来存储数据了,这样方便点</p>
-<h2 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h2><p>我们这边为了方便直接使用redis提供的<code>setbit</code>,<code>getbit</code>和<code>bitop</code>来进行字符串的位操作</p>
+<h2 id="预处理"><a class="markdownIt-Anchor" href="#预处理"></a> 预处理</h2>
+<p>我们这边为了方便直接使用redis提供的<code>setbit</code>,<code>getbit</code>和<code>bitop</code>来进行字符串的位操作</p>
 <p>因为我们要存储用户标签,所以我们首先需要对用户和标签进行编号,这样我们需要两个表</p>
 <p>用户表:</p>
 <table>
 <thead>
 <tr>
-<th align="left">uid</th>
-<th align="left">name</th>
+<th style="text-align:left">uid</th>
+<th style="text-align:left">name</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">1</td>
-<td align="left">小明</td>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">小明</td>
 </tr>
 <tr>
-<td align="left">2</td>
-<td align="left">小花</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">小花</td>
 </tr>
 <tr>
-<td align="left">3</td>
-<td align="left">小江</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">小江</td>
 </tr>
 <tr>
-<td align="left">4</td>
-<td align="left">小红</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">小红</td>
 </tr>
 <tr>
-<td align="left">5</td>
-<td align="left">小九</td>
+<td style="text-align:left">5</td>
+<td style="text-align:left">小九</td>
 </tr>
 <tr>
-<td align="left">6</td>
-<td align="left">小七</td>
+<td style="text-align:left">6</td>
+<td style="text-align:left">小七</td>
 </tr>
 <tr>
-<td align="left">7</td>
-<td align="left">小四</td>
+<td style="text-align:left">7</td>
+<td style="text-align:left">小四</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>标签表:</p>
 <table>
 <thead>
 <tr>
-<th align="left">tid</th>
-<th align="left">name</th>
-<th align="left">备注</th>
+<th style="text-align:left">tid</th>
+<th style="text-align:left">name</th>
+<th style="text-align:left">备注</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">1</td>
-<td align="left">vip</td>
-<td align="left">是否vip</td>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">vip</td>
+<td style="text-align:left">是否vip</td>
 </tr>
 <tr>
-<td align="left">2</td>
-<td align="left">mobile</td>
-<td align="left">是否绑定手机</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">mobile</td>
+<td style="text-align:left">是否绑定手机</td>
 </tr>
 <tr>
-<td align="left">3</td>
-<td align="left">email</td>
-<td align="left">是否绑定邮箱</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">email</td>
+<td style="text-align:left">是否绑定邮箱</td>
 </tr>
 <tr>
-<td align="left">4</td>
-<td align="left">male</td>
-<td align="left">是否男性</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">male</td>
+<td style="text-align:left">是否男性</td>
 </tr>
 <tr>
-<td align="left">5</td>
-<td align="left">mac</td>
-<td align="left">是否使用Mac</td>
+<td style="text-align:left">5</td>
+<td style="text-align:left">mac</td>
+<td style="text-align:left">是否使用Mac</td>
 </tr>
 <tr>
-<td align="left">6</td>
-<td align="left">supervip</td>
-<td align="left">是否年费会员</td>
+<td style="text-align:left">6</td>
+<td style="text-align:left">supervip</td>
+<td style="text-align:left">是否年费会员</td>
 </tr>
 <tr>
-<td align="left">7</td>
-<td align="left">lost</td>
-<td align="left">是否易流失用户</td>
+<td style="text-align:left">7</td>
+<td style="text-align:left">lost</td>
+<td style="text-align:left">是否易流失用户</td>
 </tr>
-</tbody></table>
-<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p>我们这里为了性能考虑使用redis来进行存储</p>
+</tbody>
+</table>
+<h2 id="存储"><a class="markdownIt-Anchor" href="#存储"></a> 存储</h2>
+<p>我们这里为了性能考虑使用redis来进行存储</p>
 <p>我们将最上面的表格数据转换成以下键值对</p>
 <figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    // 所有用户</span><br><span class="line">    "user:all":{</span><br><span class="line">        <span class="string">"01111111"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有vip用户</span><br><span class="line">    "user:vip":{</span><br><span class="line">        <span class="string">"01001001"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有绑定了手机的用户</span><br><span class="line">    "user:mobile":{</span><br><span class="line">        <span class="string">"01101010"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有绑定了邮箱的用户</span><br><span class="line">    "user:email":{</span><br><span class="line">        <span class="string">"00001010"</span></span><br><span class="line">    },</span><br><span class="line">    // 所有男性用户</span><br><span class="line">    "user:male":{</span><br><span class="line">        <span class="string">"01010011"</span></span><br><span class="line">    },</span><br><span class="line">    // 用户1的所有标签</span><br><span class="line">    "usertag:all:1":{</span><br><span class="line">        <span class="string">"01101010"</span></span><br><span class="line">    },</span><br><span class="line">    //用户2的所有标签</span><br><span class="line">    "usertag:all:2":{</span><br><span class="line">        <span class="string">"00100001"</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h2><p>我们可以使用redis的命令<code>getbit</code>来查询某个键的某个位置的值<br>比如,我们要查询5号用户是否具有vip标签,可以使用以下命令   </p>
+<h2 id="查询操作"><a class="markdownIt-Anchor" href="#查询操作"></a> 查询操作</h2>
+<p>我们可以使用redis的命令<code>getbit</code>来查询某个键的某个位置的值<br>
+比如,我们要查询5号用户是否具有vip标签,可以使用以下命令</p>
 <figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ getbit user:vip <span class="number">5</span> <span class="comment">// 返回 0</span></span><br></pre></td></tr></tbody></table></figure>
-<p>要查询某用户身上的所有标签可以使用如下   </p>
+<p>要查询某用户身上的所有标签可以使用如下</p>
 <figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ get usertag:all:<span class="number">1</span> <span class="comment">// 获取用户1的所有标签 返回'01101010'</span></span><br></pre></td></tr></tbody></table></figure>
-<p>我们如果要获取某标签下的所有用户可以使用如下命令   </p>
+<p>我们如果要获取某标签下的所有用户可以使用如下命令</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> get user:vip // 返回一个二进制字符串 类似 <span class="string">'01001001'</span></span></span><br></pre></td></tr></tbody></table></figure>
-<p>查询不具有某个标签的用户   </p>
+<p>查询不具有某个标签的用户</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> bitop xor user:not_vip user:all user:vip // 根据所有用户和具有标签的用户进行异或运算,得到不含有某标签的用户</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> get user:not_vip // 返回二进制字符串</span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>我们现在知道如何快速的获取我们想要的数据了,但是我们发现有时候我们获取到的都是二进制的数据例如 <code>00001000</code> 这种,而群殴们想从这样的数据中获取的是 <code>[5]</code> 这样的比较易读的信息</p>
 <p>我们需要有一个将二进制字符串 转化为对应位置为1的位置数组的形式</p>
-<p>如: function(<code>01001010</code>) =&gt; <code>[1,4,6]</code> </p>
-<h2 id="结果解析"><a href="#结果解析" class="headerlink" title="结果解析"></a>结果解析</h2><p>这里我们提供两个函数来进行这样的操作</p>
+<p>如: function(<code>01001010</code>) =&gt; <code>[1,4,6]</code></p>
+<h2 id="结果解析"><a class="markdownIt-Anchor" href="#结果解析"></a> 结果解析</h2>
+<p>这里我们提供两个函数来进行这样的操作</p>
 <ol>
 <li>遍历法</li>
 </ol>
@@ -5312,27 +5428,30 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 </blockquote>
 <p>贴下示例代码:</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_bit_table</span><span class="params">(self)</span>:</span>  <span class="comment"># 生成0-255的表</span></span><br><span class="line">    arr = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">256</span>):</span><br><span class="line">        tmp_arr = []</span><br><span class="line">        tstr = bin(i).replace(<span class="string">'0b'</span>, <span class="string">''</span>).zfill(<span class="number">8</span>)</span><br><span class="line">        n = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> tstr:</span><br><span class="line">            n = n + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> int(k) == <span class="number">1</span>:</span><br><span class="line">                tmp_arr.append(n)</span><br><span class="line">        arr.append(tmp_arr)</span><br><span class="line">    self.bit_table = arr</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">key2array</span><span class="params">(self, key)</span>:</span>  <span class="comment"># 查表法</span></span><br><span class="line">    arr = []</span><br><span class="line">    n = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> key:</span><br><span class="line">        pos = self.bit_table[i]</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> pos:</span><br><span class="line">            arr.append(n + k - <span class="number">1</span>)</span><br><span class="line">        n = n + <span class="number">8</span></span><br><span class="line">    <span class="keyword">return</span> (arr)</span><br></pre></td></tr></tbody></table></figure>
-
 <blockquote>
 <p>ps:jdk中的BitSet就是对bitmap的一种简单实现</p>
 </blockquote>
-<h1 id="如果标签过于稀疏会不会浪费空间"><a href="#如果标签过于稀疏会不会浪费空间" class="headerlink" title="如果标签过于稀疏会不会浪费空间?"></a>如果标签过于稀疏会不会浪费空间?</h1><p>如果我们在一个很长的bitmap中只存除了极少量的数据是不是会对空间造成浪费呢?</p>
+<h1 id="如果标签过于稀疏会不会浪费空间"><a class="markdownIt-Anchor" href="#如果标签过于稀疏会不会浪费空间"></a> 如果标签过于稀疏会不会浪费空间?</h1>
+<p>如果我们在一个很长的bitmap中只存除了极少量的数据是不是会对空间造成浪费呢?</p>
 <p>例如: 在bitmap的第40000位置为1,那存储的数据大概就类似: 00000000000…0000000001</p>
 <p>这样的数据前面的39999位都是0,不会浪费空间吗</p>
-<h2 id="Google的EWAHCompressedBitmap"><a href="#Google的EWAHCompressedBitmap" class="headerlink" title="Google的EWAHCompressedBitmap"></a>Google的EWAHCompressedBitmap</h2><p>Google的EWAHCompressedBitmap就对这种情况做了优化</p>
+<h2 id="google的ewahcompressedbitmap"><a class="markdownIt-Anchor" href="#google的ewahcompressedbitmap"></a> Google的EWAHCompressedBitmap</h2>
+<p>Google的EWAHCompressedBitmap就对这种情况做了优化</p>
 <p>EWAHCompressedBitmap 将整个的二进制数据分成每64位一个的word</p>
 <p>一个空的Bitmap默认拥有 4 个word 也就是 <code>4*64</code> 位</p>
 <p>其中 word0 存储bitmap的头信息</p>
 <p>当我们改变对应位置的比特位的值时 word 会跟着变化</p>
-<p>当我们插入的值非常大的时候(例如:40000), 算法会根据当前的值 创建两个新的word </p>
+<p>当我们插入的值非常大的时候(例如:40000), 算法会根据当前的值 创建两个新的word</p>
 <p>一个用于存储第40000个数据所在的word的信息(LW), 还有一个存储跨度信息(称为:跨度word /RLW )</p>
-<p>假如说我们给一个空的bitmap,我们插入40000的话正常情况下会有6个word,前4个是头信息word+3个空word,第6个中保存40000这个数字所在的位置信息,第5个word中保存从第 4-625 word的跨度信息,第626word中存储有 40000 这个数据 </p>
+<p>假如说我们给一个空的bitmap,我们插入40000的话正常情况下会有6个word,前4个是头信息word+3个空word,第6个中保存40000这个数字所在的位置信息,第5个word中保存从第 4-625 word的跨度信息,第626word中存储有 40000 这个数据</p>
 <blockquote>
-<p>ps: 第一个word存储头信息, 625 = floor( (40000 + 1) / 64 ) </p>
+<p>ps: 第一个word存储头信息, 625 = floor( (40000 + 1) / 64 )</p>
 </blockquote>
 <p>存储跨度信息的word和普通的存储数据的word虽然空间一样但是存储的内容不一样,存储跨度信息的word大概内容这样</p>
 <pre><code>前32位存储 `当前跨度word(RLW)横跨了多少空word`    
-后32位存储 `当前跨度word(RLW)后方有多少个连续的LW`</code></pre><p>当我们存储 位置在跨度word(RLW)之中的数据(例如:20000), RLW会进行分裂</p>
+后32位存储 `当前跨度word(RLW)后方有多少个连续的LW`
+</code></pre>
+<p>当我们存储 位置在跨度word(RLW)之中的数据(例如:20000), RLW会进行分裂</p>
 <p>变成3个word,中间一个存储20000所在的LW信息,前后各有一个RLW保存新的跨度信息</p>
 <p>EWAHCompressedBitmap对应的maven依赖如下：</p>
 <figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.googlecode.javaewah<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>JavaEWAH<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
@@ -5422,21 +5541,27 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>原作者： 王垠<br>原文： <a href="http://www.yinwang.org/blog-cn/2013/04/21/programming-languages-are-not-tools" target="_blank" rel="noopener">http://www.yinwang.org/blog-cn/2013/04/21/programming-languages-are-not-tools</a></p>
-<h1 id="程序语言不是工具"><a href="#程序语言不是工具" class="headerlink" title="程序语言不是工具"></a>程序语言不是工具</h1><p>在谈论到程序语言的好坏的时候，总是有人说：程序语言只是一种工具。只要你的算法好，不管用什么语言都能写出一样好的程序。在本科第一堂编程课上，我的教授就这么对我们说。可是现在我却发现，这是一个根本错误的说法。</p>
+          <p>原作者： 王垠<br>
+原文： <a href="http://www.yinwang.org/blog-cn/2013/04/21/programming-languages-are-not-tools" target="_blank" rel="noopener">http://www.yinwang.org/blog-cn/2013/04/21/programming-languages-are-not-tools</a></p>
+<h1 id="程序语言不是工具"><a class="markdownIt-Anchor" href="#程序语言不是工具"></a> 程序语言不是工具</h1>
+<p>在谈论到程序语言的好坏的时候，总是有人说：程序语言只是一种工具。只要你的算法好，不管用什么语言都能写出一样好的程序。在本科第一堂编程课上，我的教授就这么对我们说。可是现在我却发现，这是一个根本错误的说法。</p>
 <p>我不知道这种说法确切的来源，然而昨天在浏览网页的时候，偶然发现了 C++ 的设计者 Bjarne Stroustrup 的一些类似的说法。这些说法来自于 2007 年 MIT Technology Review 对 Stroustrup 的采访。</p>
 <blockquote>
-<p>问：一个好的语言是什么样的？<br>Stroustrup：所有能帮助人们表达他们的想法的东西都会让语言更好。一个语言在一个好的工匠手里应该能胜任每天的任务。语言是否优美是次要的问题。被认为是丑陋的语言开发出来的有用的系统，比优美的语言开发出来的系统要多得多。</p>
+<p>问：一个好的语言是什么样的？<br>
+Stroustrup：所有能帮助人们表达他们的想法的东西都会让语言更好。一个语言在一个好的工匠手里应该能胜任每天的任务。语言是否优美是次要的问题。被认为是丑陋的语言开发出来的有用的系统，比优美的语言开发出来的系统要多得多。</p>
 </blockquote>
 <blockquote>
-<p>问：优雅难道不重要吗？<br>Stroustrup：优雅很重要，可是你如何衡量”优雅”？可以表达问题答案的最少字数？我觉得我们应该看构造出来的应用程序的优雅程度，而不是语言自身的优雅程度。就像你不能把木工的一套复杂的工具（很多是危险的工具）叫做”优雅”一样。但是我的餐桌和椅子却真的很优雅，很美。当然，如果一个语言本身也很美，那当然最好。</p>
+<p>问：优雅难道不重要吗？<br>
+Stroustrup：优雅很重要，可是你如何衡量"优雅"？可以表达问题答案的最少字数？我觉得我们应该看构造出来的应用程序的优雅程度，而不是语言自身的优雅程度。就像你不能把木工的一套复杂的工具（很多是危险的工具）叫做"优雅"一样。但是我的餐桌和椅子却真的很优雅，很美。当然，如果一个语言本身也很美，那当然最好。</p>
 </blockquote>
-<h2 id="一些基本的错误"><a href="#一些基本的错误" class="headerlink" title="一些基本的错误"></a>一些基本的错误</h2><p>对这两个回答，我都不满意，我觉得这只是他对于 C++ 的恶劣设计的借口而已。下面我对其中几个说法进行质疑：</p>
+<h2 id="一些基本的错误"><a class="markdownIt-Anchor" href="#一些基本的错误"></a> 一些基本的错误</h2>
+<p>对这两个回答，我都不满意，我觉得这只是他对于 C++ 的恶劣设计的借口而已。下面我对其中几个说法进行质疑：</p>
 <p>所有能帮助人们表达他们的想法的东西都会让语言更好。</p>
 <p>作为一个程序语言，并不是好心想”帮助人”就可以说是好的。如果是这样的话，那么我就可以把所有国家的脏话都加到你的语言里面，因为它们可以帮助我们骂人。</p>
 <p>被认为是丑陋的语言开发出来的有用的系统，比优美的语言开发出来的系统要多得多。</p>
 <p>系统的数量再多也不能说明这个语言好。正好相反，众多的系统由于语言的一些设计失误，把人们的生命置于危险之中，这说明了这个语言的危害性之大。一种像炸药一样的语言，用的人越多越是危险。</p>
-<h2 id="语言不是工具，而是材料"><a href="#语言不是工具，而是材料" class="headerlink" title="语言不是工具，而是材料"></a>语言不是工具，而是材料</h2><p>我这篇文章想说的最关键的部分，其实是他所支持的”语言工具论”的错误。</p>
+<h2 id="语言不是工具而是材料"><a class="markdownIt-Anchor" href="#语言不是工具而是材料"></a> 语言不是工具，而是材料</h2>
+<p>我这篇文章想说的最关键的部分，其实是他所支持的”语言工具论”的错误。</p>
 <p>Stroustrup 说：</p>
 <p>我觉得我们应该看构造出来的应用程序的优雅程度，而不是语言自身的优雅程度。就像你不能把木工的一套复杂的工具（很多是危险的工具）叫做”优雅”一样。但是我的餐桌和椅子却很优雅，很美。</p>
 <p>他的言下之意就是把程序语言比作木工的工具，而餐桌也椅子就是这些工具做出来的产品。比方的威力是很大的，很多人一见到大牛给出这么形象的比方，想都不用想就接受了。如果你不仔细分析的话，这貌似一个恰当的比方，然而经过仔细推敲，这却是错误的比方。这是因为程序语言其实不是一种”工具”，而是一种”材料”。</p>
@@ -5532,7 +5657,10 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 
       
           <p>这个是写给组内成员的分布式知识简单分享</p>
-<h1 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h1><p>什么是集群? 什么是分布式?<br>集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题   </p>
+<h1 id="什么是分布式"><a class="markdownIt-Anchor" href="#什么是分布式"></a> 什么是分布式</h1>
+<p>什么是集群? 什么是分布式?<br>
+集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>
+分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题</p>
 <p>几个典型的分布式系统:</p>
 <table>
 <thead>
@@ -5545,7 +5673,8 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <th>节点类型</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>kafka</td>
 <td>消息系统</td>
 <td>broker-&gt;partition</td>
@@ -5585,48 +5714,73 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <td>file</td>
 <td>非对等节点</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <blockquote>
-<p> 节点类型：对等节点是说节点之间功能相似，非对等节点是说节点之间功能不同，无法互相取代</p>
+<p>节点类型：对等节点是说节点之间功能相似，非对等节点是说节点之间功能不同，无法互相取代</p>
 </blockquote>
-<h1 id="分布式要解决的常见问题"><a href="#分布式要解决的常见问题" class="headerlink" title="分布式要解决的常见问题"></a>分布式要解决的常见问题</h1><p>分布式要满足三个特性之二 CAP(C:一致性, P:分区容忍性, A:可用性)</p>
+<h1 id="分布式要解决的常见问题"><a class="markdownIt-Anchor" href="#分布式要解决的常见问题"></a> 分布式要解决的常见问题</h1>
+<p>分布式要满足三个特性之二 CAP(C:一致性, P:分区容忍性, A:可用性)</p>
 <ul>
 <li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否同样的值。（等同于所有节点访问同一份最新的数据副本），换句话就是说，任何时刻，所用的应用程序都能访问得到相同的数据。</li>
 <li>可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性），换句话就是说，任何时候，任何应用程序都可以读写数据。</li>
 <li>分区容错性（P）：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择，换句话说，系统可以跨网络分区线性的伸缩和扩展。</li>
 </ul>
-<p>CAP三个特性不可能同时满足, 只能同时满足两个特性<br>对大多数的分布式应用来说 CAP中的 P 是必不可少的<br>所以我们一般都会从CA中选取一个, 一般会选择CP 或者 AP   </p>
+<p>CAP三个特性不可能同时满足, 只能同时满足两个特性<br>
+对大多数的分布式应用来说 CAP中的 P 是必不可少的<br>
+所以我们一般都会从CA中选取一个, 一般会选择CP 或者 AP</p>
 <p>具体处理cap协议的方法如下图</p>
 <p><img data-src="https://i.loli.net/2020/05/09/bO1gZiWHtFBvKj2.jpg" alt="cap.jpg"></p>
-<h1 id="如何解决分区容忍性"><a href="#如何解决分区容忍性" class="headerlink" title="如何解决分区容忍性"></a>如何解决分区容忍性</h1><p>解决分区容忍性问题首先就是对数据进行分区或者叫分片</p>
-<p>分区手段有很多, 但大多分两种, hash分区和线性分区<br>系统将数据分为逻辑上的几个区块, 每个区块可以在多个机器上进行自由的部署和移动<br>这样就做到了将数据和机器进行隔离, 可以以分片为单位在不同机器上进行数据的移动和备份<br>但是这样在使用数据的时候就需要从多个分片同时获取数据进行合并<br>如果因为某些原因， 导致某些分片所在的节点出现故障， 此时我们就认为出现了网络分区，<br>分区容忍性要求在此种状况下，系统依然能对外提供有效服务 </p>
-<h2 id="Gossip"><a href="#Gossip" class="headerlink" title="Gossip"></a>Gossip</h2><p>使用者: Redis<br>Gossip协议是节点将自己的数据通知给集群内所有节点的协议, 但是不能做到数据一致性<br>Gossip只能保证可用性和分区容忍性</p>
-<p>如果对数据的分片进行备份, 同时将备份分布到多个不同的网络节点上, 这样即便部分数据分区不可用, 在可容忍的范围内只要不是该分区的所有数据分片都出问题, 还是能提供正常的数据服务  </p>
-<p>数据分片是分布式存储的基础, 数据分片好处很多    </p>
+<h1 id="如何解决分区容忍性"><a class="markdownIt-Anchor" href="#如何解决分区容忍性"></a> 如何解决分区容忍性</h1>
+<p>解决分区容忍性问题首先就是对数据进行分区或者叫分片</p>
+<p>分区手段有很多, 但大多分两种, hash分区和线性分区<br>
+系统将数据分为逻辑上的几个区块, 每个区块可以在多个机器上进行自由的部署和移动<br>
+这样就做到了将数据和机器进行隔离, 可以以分片为单位在不同机器上进行数据的移动和备份<br>
+但是这样在使用数据的时候就需要从多个分片同时获取数据进行合并<br>
+如果因为某些原因， 导致某些分片所在的节点出现故障， 此时我们就认为出现了网络分区，<br>
+分区容忍性要求在此种状况下，系统依然能对外提供有效服务</p>
+<h2 id="gossip"><a class="markdownIt-Anchor" href="#gossip"></a> Gossip</h2>
+<p>使用者: Redis<br>
+Gossip协议是节点将自己的数据通知给集群内所有节点的协议, 但是不能做到数据一致性<br>
+Gossip只能保证可用性和分区容忍性</p>
+<p>如果对数据的分片进行备份, 同时将备份分布到多个不同的网络节点上, 这样即便部分数据分区不可用, 在可容忍的范围内只要不是该分区的所有数据分片都出问题, 还是能提供正常的数据服务</p>
+<p>数据分片是分布式存储的基础, 数据分片好处很多</p>
 <ol>
 <li>对数据分片可以使数据不受单机存储制约</li>
 <li>对数据分片可以通过多分区共同协作并行处理提高性能</li>
 <li>对分区数据进行冗余可以提高系统可用性</li>
 </ol>
 <p>但是数据分片和副本会带来一致性问题</p>
-<h1 id="如何保证数据一致性"><a href="#如何保证数据一致性" class="headerlink" title="如何保证数据一致性"></a>如何保证数据一致性</h1><h2 id="单节点的数据一致性"><a href="#单节点的数据一致性" class="headerlink" title="单节点的数据一致性"></a>单节点的数据一致性</h2><p>单节点如何保证数据一致性和完整性</p>
-<p>比如: 数据库索引的更新, B树在分裂过程中出现问题怎么办, </p>
+<h1 id="如何保证数据一致性"><a class="markdownIt-Anchor" href="#如何保证数据一致性"></a> 如何保证数据一致性</h1>
+<h2 id="单节点的数据一致性"><a class="markdownIt-Anchor" href="#单节点的数据一致性"></a> 单节点的数据一致性</h2>
+<p>单节点如何保证数据一致性和完整性</p>
+<p>比如: 数据库索引的更新, B树在分裂过程中出现问题怎么办,</p>
 <p>一般处理单节点的一致性可以用 WAL(预写日志,或者叫redo日志) 或者 写时复制(copy on write)</p>
 <p>WAL就是先把操作追加到一个日志文件, 然后再对内存进行操作, lsm树中的memtable就是典型的使用这种方案</p>
 <p>写时复制就是先在其他地方把数据处理完毕, 最后直接修改数据引用, gfs的快照技术有使用类似的方案</p>
 <p>典型的例子是 修改B+树时预先生成一个小的B+树, 然后直接替换B+树上的节点指针</p>
-<h2 id="分布式的一致性"><a href="#分布式的一致性" class="headerlink" title="分布式的一致性"></a>分布式的一致性</h2><h3 id="主从一致性"><a href="#主从一致性" class="headerlink" title="主从一致性"></a>主从一致性</h3><p>目前业界的普遍做法是将分区的多个副本形成一个小组, 组内选举一个primary副本来执行写操作或确定写入顺序, 其他副本仅提供读操作或根本只提供备份功能, 这样对外部系统只有一个主副本做写入操作, 就可以保证数据写入的一致性</p>
+<h2 id="分布式的一致性"><a class="markdownIt-Anchor" href="#分布式的一致性"></a> 分布式的一致性</h2>
+<h3 id="主从一致性"><a class="markdownIt-Anchor" href="#主从一致性"></a> 主从一致性</h3>
+<p>目前业界的普遍做法是将分区的多个副本形成一个小组, 组内选举一个primary副本来执行写操作或确定写入顺序, 其他副本仅提供读操作或根本只提供备份功能, 这样对外部系统只有一个主副本做写入操作, 就可以保证数据写入的一致性</p>
 <p>如何从多个副本集合中选举主副本就涉及到共识算法（选主算法），常见的共识算法有 <code>Paxos</code>,<code>Raft</code>,<code>Zab协议</code>,<code>Bully</code> 等</p>
-<h3 id="NRW算法"><a href="#NRW算法" class="headerlink" title="NRW算法"></a>NRW算法</h3><p>NRW是一种特殊的保障一致性的算法, 通过饱和读取策略充分保证数据读取的一致性，具体详情如下:   </p>
-<pre><code>R(读取分片数) + W(写入分片数) &gt; N(节点总分片数)</code></pre><p>只要满足以上公式, 我们必然可以拿到一个正确分片的数据<br>举例: 我们对某个数据有5个分片, 我们只要保证 写入分片为3,读取分片为3,这样,我们必然可以保证读取的分片其中有一个含有最新的数据 </p>
-<h1 id="如何处理可用性"><a href="#如何处理可用性" class="headerlink" title="如何处理可用性"></a>如何处理可用性</h1><p>实现高可用一般都是通过节点或数据备份来实现, 采用主从或主备节点, 主节点或主分片不可用, 就采用副本分片或备份节点替代原有的服务</p>
-<h1 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h1><p>解决分布式事物要处理ACID 四个问题，常用如下方式</p>
+<h3 id="nrw算法"><a class="markdownIt-Anchor" href="#nrw算法"></a> NRW算法</h3>
+<p>NRW是一种特殊的保障一致性的算法, 通过饱和读取策略充分保证数据读取的一致性，具体详情如下:</p>
+<pre><code>R(读取分片数) + W(写入分片数) &gt; N(节点总分片数)
+</code></pre>
+<p>只要满足以上公式, 我们必然可以拿到一个正确分片的数据<br>
+举例: 我们对某个数据有5个分片, 我们只要保证 写入分片为3,读取分片为3,这样,我们必然可以保证读取的分片其中有一个含有最新的数据</p>
+<h1 id="如何处理可用性"><a class="markdownIt-Anchor" href="#如何处理可用性"></a> 如何处理可用性</h1>
+<p>实现高可用一般都是通过节点或数据备份来实现, 采用主从或主备节点, 主节点或主分片不可用, 就采用副本分片或备份节点替代原有的服务</p>
+<h1 id="分布式事务"><a class="markdownIt-Anchor" href="#分布式事务"></a> 分布式事务</h1>
+<p>解决分布式事物要处理ACID 四个问题，常用如下方式</p>
 <ol>
 <li>2PC, 使用者: mysql, 两阶段提交协议</li>
 <li>3PC, 三阶段提交协议, 二阶段提交协议的优化</li>
 <li>TCC  事务补偿</li>
 </ol>
-<h1 id="使用经验"><a href="#使用经验" class="headerlink" title="使用经验"></a>使用经验</h1><h3 id="如何设置合理的分区和副本数量"><a href="#如何设置合理的分区和副本数量" class="headerlink" title="如何设置合理的分区和副本数量"></a>如何设置合理的分区和副本数量</h3><ol>
+<h1 id="使用经验"><a class="markdownIt-Anchor" href="#使用经验"></a> 使用经验</h1>
+<h3 id="如何设置合理的分区和副本数量"><a class="markdownIt-Anchor" href="#如何设置合理的分区和副本数量"></a> 如何设置合理的分区和副本数量</h3>
+<ol>
 <li>其实对于副本数量的设置一般取决于副本的用途</li>
 </ol>
 <p>如果你副本只做备份，不对外提供读取服务，那设置3个是比较理想的情况，因为3个副本足以覆盖副本所有的可能状态（可用，不可用，升级中），也就是说只要有3个副本， 就一定有一个副本处于可用状态</p>

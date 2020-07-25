@@ -19,17 +19,17 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="网站限流随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加 到了一定时候我们就会希望可以对网站的流量进行一定程度的控制,因为我们的业务处理能力是有限的,我们需要优先保证关键业务的正常运转 技术人员一直以来都在致力于可以彻底的解决高并发问题,但是到目前为止也没有一种可以彻底解决的方案 我们只能尽量的提升业务处理的性能,做业务拆分,分布式,进行错峰处理等手段 其实我们可">
+  <meta name="description" content="网站限流 随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加 到了一定时候我们就会希望可以对网站的流量进行一定程度的控制,因为我们的业务处理能力是有限的,我们需要优先保证关键业务的正常运转 技术人员一直以来都在致力于可以彻底的解决高并发问题,但是到目前为止也没有一种可以彻底解决的方案 我们只能尽量的提升业务处理的性能,做业务拆分,分布式,进行错峰处理等手段 其实我">
 <meta property="og:type" content="article">
 <meta property="og:title" content="两种网站限流方案">
 <meta property="og:url" content="https://leriou.github.io/2017-03-03-rate-limit-method/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="网站限流随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加 到了一定时候我们就会希望可以对网站的流量进行一定程度的控制,因为我们的业务处理能力是有限的,我们需要优先保证关键业务的正常运转 技术人员一直以来都在致力于可以彻底的解决高并发问题,但是到目前为止也没有一种可以彻底解决的方案 我们只能尽量的提升业务处理的性能,做业务拆分,分布式,进行错峰处理等手段 其实我们可">
+<meta property="og:description" content="网站限流 随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加 到了一定时候我们就会希望可以对网站的流量进行一定程度的控制,因为我们的业务处理能力是有限的,我们需要优先保证关键业务的正常运转 技术人员一直以来都在致力于可以彻底的解决高并发问题,但是到目前为止也没有一种可以彻底解决的方案 我们只能尽量的提升业务处理的性能,做业务拆分,分布式,进行错峰处理等手段 其实我">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/EerPIDbnmcM92XB.png">
 <meta property="article:published_time" content="2017-03-03T07:06:47.000Z">
-<meta property="article:modified_time" content="2020-07-22T15:13:57.995Z">
+<meta property="article:modified_time" content="2020-07-25T14:33:54.456Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="漏桶算法">
 <meta property="article:tag" content="令牌桶算法">
@@ -1273,7 +1273,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cd8336;
+  background: #f10ae2;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3037,20 +3037,23 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="网站限流"><a href="#网站限流" class="headerlink" title="网站限流"></a>网站限流</h1><p>随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加</p>
+        <h1 id="网站限流"><a class="markdownIt-Anchor" href="#网站限流"></a> 网站限流</h1>
+<p>随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加</p>
 <p>到了一定时候我们就会希望可以对网站的流量进行一定程度的控制,因为我们的业务处理能力是有限的,我们需要优先保证关键业务的正常运转</p>
 <p>技术人员一直以来都在致力于可以彻底的解决高并发问题,但是到目前为止也没有一种可以彻底解决的方案</p>
 <p>我们只能尽量的提升业务处理的性能,做业务拆分,分布式,进行错峰处理等手段</p>
 <p>其实我们可以从一整个用户请求的过程中的每个阶段进行分析, 在不同的阶段采用不同的方案</p>
 <p>在用户请求刚刚进入的时候进行限流处理就是一种十分有效的手段</p>
-<h2 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h2><p>限流就是从用户访问出限制用户的请求,常用于秒杀等并发量极高的场景之下</p>
+<h2 id="限流"><a class="markdownIt-Anchor" href="#限流"></a> 限流</h2>
+<p>限流就是从用户访问出限制用户的请求,常用于秒杀等并发量极高的场景之下</p>
 <p>限流的核心思想就是人为的丢弃一部分用户请求, 不作处理, 这样相当于从最根源处就避免的用户后续的操作,虽然对用户体验来说影响非常大, 但是只要采用合适的丢弃策略,就能在有效保护系统的同时,尽量减少对用户体验的影响</p>
-<h2 id="漏桶算法"><a href="#漏桶算法" class="headerlink" title="漏桶算法"></a>漏桶算法</h2><p>漏桶算法就是一种有效的限流算法,顾名思义,就是像漏桶一样以固定的速率将用户请求控制在一个确定的范围之内</p>
+<h2 id="漏桶算法"><a class="markdownIt-Anchor" href="#漏桶算法"></a> 漏桶算法</h2>
+<p>漏桶算法就是一种有效的限流算法,顾名思义,就是像漏桶一样以固定的速率将用户请求控制在一个确定的范围之内</p>
 <p>漏桶有两个关键属性,一个是漏桶的大小(最大存储的请求容量),另一个是漏桶的开口(处理请求的速率)</p>
 <p>用户的请求过来之后可以认为会被放到一个漏桶内,然后桶本身以一定的速率处理请求,当用户的请求速率过快,桶内的请求数量过多就会造成请求溢出,这部分请求就会被视为无效的请求</p>
 <p>特点: 根据时间以固定速率允许请求通过</p>
 <p>缺点: 针对部分由突发场景的效率有点低</p>
-<p>流程图: </p>
+<p>流程图:</p>
 <p><img data-src="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png" alt="flow1.png">令牌桶算法</p>
 <p>另一种常用的限流算法叫令牌桶算法,令牌桶的思想跟漏桶有点不大一样,令牌桶是先假设了一个桶, 桶内装有令牌(token),系统以一定的时间往桶里添加令牌.请求过来以后需要使用桶里面的令牌才能执行,也就是说我们可以通过控制桶内令牌的数量来控制最大请求数,也能通过改变添加令牌的速率来调整请求的处理速率</p>
 <p>令牌桶也有关键参数,一个是桶的大小,一个是令牌的发放速率</p>
@@ -3062,7 +3065,8 @@ ul.breadcrumb li + li:last-child {
 <p>ps: 往令牌桶内添加令牌并不需要一个单独的程序来执行,只要在请求过来时候根据时间自动计算可用的令牌就行了</p>
 </blockquote>
 <p>虽然两种算法都能控制请求的处理速率, 但是这两者其实都受到之后请求处理速率的影响, 也就是说就算我们限流部分允许每秒2万的请求,但是后台业务的处理速度只有每秒1千,依然会造成严重的业务阻塞</p>
-<h2 id="RateLimiter"><a href="#RateLimiter" class="headerlink" title="RateLimiter"></a>RateLimiter</h2><p>Google开源工具包Guava提供了限流工具类RateLimiter,该类基于令牌桶算法(Token Bucket)来完成限流</p>
+<h2 id="ratelimiter"><a class="markdownIt-Anchor" href="#ratelimiter"></a> RateLimiter</h2>
+<p>Google开源工具包Guava提供了限流工具类RateLimiter,该类基于令牌桶算法(Token Bucket)来完成限流</p>
 
     </div>
 
@@ -3149,7 +3153,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网站限流"><span class="nav-number">1.</span> <span class="nav-text">网站限流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限流"><span class="nav-number">1.1.</span> <span class="nav-text">限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏桶算法"><span class="nav-number">1.2.</span> <span class="nav-text">漏桶算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RateLimiter"><span class="nav-number">1.3.</span> <span class="nav-text">RateLimiter</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网站限流"><span class="nav-number">1.</span> <span class="nav-text"> 网站限流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限流"><span class="nav-number">1.1.</span> <span class="nav-text"> 限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏桶算法"><span class="nav-number">1.2.</span> <span class="nav-text"> 漏桶算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ratelimiter"><span class="nav-number">1.3.</span> <span class="nav-text"> RateLimiter</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

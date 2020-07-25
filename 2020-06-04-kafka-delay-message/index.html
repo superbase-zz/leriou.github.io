@@ -27,7 +27,7 @@
 <meta property="og:description" content="背景 业务中有时候会用到延迟队列或者优先级队列之类的需求。 延迟队列和优先队列本质上是一个需求，延迟队列可以看成一个使用时间作为优先级的队列。Kafka这种基于日志的消息队列并没有自带延迟队列的功能。所以如果想在Kafka的基础上实现此类功能，需要我们自己动手处理。我现在可以想到的实现方法有两种  外存排序 消息分级 时间轮   消息分级 先说简单的消息分级机制，假如我们遇到需要根据用户会员等级">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-24T16:00:34.887Z">
+<meta property="article:modified_time" content="2020-07-25T14:33:54.442Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="架构设计">
 <meta name="twitter:card" content="summary">
@@ -1269,7 +1269,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cd8336;
+  background: #f10ae2;
   border-radius: 50%;
   content: ' ';
   display: inline-block;

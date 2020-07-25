@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cd8336;
+  background: #f10ae2;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3040,17 +3040,19 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="kafka分享"><a href="#kafka分享" class="headerlink" title="kafka分享"></a>kafka分享</h1><p>听闻kafka已经是很早之前的事情了</p>
+          <h1 id="kafka分享"><a class="markdownIt-Anchor" href="#kafka分享"></a> kafka分享</h1>
+<p>听闻kafka已经是很早之前的事情了</p>
 <p>在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p>
 <p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p>
 <p>后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)</p>
-<h2 id="消息传递在现代业务中的地位"><a href="#消息传递在现代业务中的地位" class="headerlink" title="消息传递在现代业务中的地位"></a>消息传递在现代业务中的地位</h2><p><strong>面向对象的程序 = 对象 + 消息传递</strong></p>
+<h2 id="消息传递在现代业务中的地位"><a class="markdownIt-Anchor" href="#消息传递在现代业务中的地位"></a> 消息传递在现代业务中的地位</h2>
+<p><strong>面向对象的程序 = 对象 + 消息传递</strong></p>
 <p>消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
 <p>我们通常会把许多实时性要求不那么高的任务处理通过消息系统进行解耦,以平衡数据处理的性能和功能</p>
 <p>例如: 用户下了一个订单,我们需要马上告诉用户下单成功, 但是之后的物流发货, 订单入账和商品信息更新等消息都可以通过一个消息系统进行拆分,这样不仅不会影响用户体验,也可以对之后触发的多个属于不同系统的业务进行并行处理,提升系统处理的性能</p>
-<h1 id="Kafka基础介绍"><a href="#Kafka基础介绍" class="headerlink" title="Kafka基础介绍"></a>Kafka基础介绍</h1><p>kafka作为一个消息平台, 其中有一些基础概念跟传统的消息队列服务对应</p>
+<h1 id="kafka基础介绍"><a class="markdownIt-Anchor" href="#kafka基础介绍"></a> Kafka基础介绍</h1>
+<p>kafka作为一个消息平台, 其中有一些基础概念跟传统的消息队列服务对应</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">broker(instance)    承载服务的实例</span><br><span class="line">topic (queue)  		逻辑上的消息通道</span><br><span class="line">paitition(sharding) 一个消息通道进行存储的区域(物理上的,本质是对应着一个文件序列)</span><br><span class="line">consumer       		消费者 (通常指客户端的使用者)</span><br><span class="line">producer       		生产者 (也是客户端的使用者)</span><br><span class="line">consumer group   	消费者组 (虚拟概念, 消费者的逻辑分组)</span><br></pre></td></tr></tbody></table></figure>
-
 <p><strong>broker</strong></p>
 <p>broker就相当于我们的kafka实例, 每个集群由多个broker组成, 每个broker具有完整的存储消息的功能, 多个broker可以组成broker集群, 但是这些实例不一定要分布在不同的机器上(虽然我们建议不要在同一个机器上部署多个broker)</p>
 <p>broker是链接<code>producer</code>和<code>consumer</code>的中间桥梁, 是消息真正的存储者, producer将消息发送给broker, broker对消息进行存储, 等待consumer消费和使用消息，kafka的性能, 很大程度上取决于broker参数配置</p>
@@ -3058,10 +3060,10 @@ ul.breadcrumb li + li:last-child {
 <p>topic就相当于其他消息队列中的queue, 我们发送消息需要指定topic, 读取消息也需要指定topic, 同一个topic可以有多个生产者和多个消费者</p>
 <p>topic是一个逻辑上的概念, 每个topic由至少一个或多个partition组成, 每个partition保存topic内的<code>一部分</code>消息。topic内的消息无法保证有序, 除非只有一个partition</p>
 <p><strong>partition</strong></p>
-<p>partition相当于是topic内部的一个分片 </p>
-<p>假如说我们有个topic其中有5个patition, 一个消息在每个topic中只会存储在一个patition中, 整个topic的消息等于该topic下所有partition的总和 </p>
-<p>每个partition至多只能有一个消费者, topic下的总消费者数量也受限于partition, 比如你topic有10个分片, 如果使用12个消费者就会有两个消费者永远获取不到数据  </p>
-<p>每个partition是一个文件集合, 集合内同一时刻只有一个文件可写入数据，单个partition里面的数据因为这个关系可以保持有序  </p>
+<p>partition相当于是topic内部的一个分片</p>
+<p>假如说我们有个topic其中有5个patition, 一个消息在每个topic中只会存储在一个patition中, 整个topic的消息等于该topic下所有partition的总和</p>
+<p>每个partition至多只能有一个消费者, topic下的总消费者数量也受限于partition, 比如你topic有10个分片, 如果使用12个消费者就会有两个消费者永远获取不到数据</p>
+<p>每个partition是一个文件集合, 集合内同一时刻只有一个文件可写入数据，单个partition里面的数据因为这个关系可以保持有序</p>
 <p>partition还可以有自己的replication，replication只有一个功能, 就是提供数据冗余, 防止partition出问题时造成数据丢失 。不过同一个partition的多个replication中同一时间只能有一个primary replication(通过选举得出)，由这个primary  replication来执行整个partition的数据操作</p>
 <p><strong>consumer</strong></p>
 <p>每个消费者可以消费一个topic的一个partition, 可以同时消费多个topic</p>
@@ -3073,31 +3075,45 @@ ul.breadcrumb li + li:last-child {
 <p>如果某个topic中的数据希望同时给多个业务方使用, 每个业务方应该使用一个单独的consumer group</p>
 <p><strong>producer</strong></p>
 <p>每个生产者可以为一个或多个topic生产数据, producer只负责将数据发送给broker, 后续操作通通由broker来负责</p>
-<h1 id="kafka的主要应用何特点"><a href="#kafka的主要应用何特点" class="headerlink" title="kafka的主要应用何特点"></a>kafka的主要应用何特点</h1><p><strong>常见应用场景</strong></p>
+<h1 id="kafka的主要应用何特点"><a class="markdownIt-Anchor" href="#kafka的主要应用何特点"></a> kafka的主要应用何特点</h1>
+<p><strong>常见应用场景</strong></p>
 <ol>
-<li>消息队列：kafka通常被用作消息队列, 这也是kafka的主要用途之一, 因为他可以一定程度上保证消息的可靠和有序</li>
-<li>日志/消息存储：kafka由于基于文件存储, 所以很适合用来存储日志信息, 通知消息等有序且数据巨大的信息</li>
-<li>数据总线：kafka还适合在不同的存储系统和业务之间做数据总线, 这样可以方便的把一份数据传递给多方公用</li>
+<li>
+<p>消息队列：kafka通常被用作消息队列, 这也是kafka的主要用途之一, 因为他可以一定程度上保证消息的可靠和有序</p>
+</li>
+<li>
+<p>日志/消息存储：kafka由于基于文件存储, 所以很适合用来存储日志信息, 通知消息等有序且数据巨大的信息</p>
+</li>
+<li>
+<p>数据总线：kafka还适合在不同的存储系统和业务之间做数据总线, 这样可以方便的把一份数据传递给多方公用<br>
+<strong>优点</strong></p>
+<ol>
+<li>增加了partition层, 高度解耦, 支持分布式, 支持副本, 扩展方便</li>
+<li>基于文件存储消息, 采用文件指针的读方式, 速度快, 且可重复读</li>
+<li>保证多消费者情况下消息的有序性</li>
+<li>在producer, broker, consumer三者做了大量性能优化,例如:<code>cache buff</code>和<code>sendfile()</code>等</li>
 </ol>
-<p><strong>优点</strong></p>
-<pre><code>1. 增加了partition层, 高度解耦, 支持分布式, 支持副本, 扩展方便
-2. 基于文件存储消息, 采用文件指针的读方式, 速度快, 且可重复读
-3. 保证多消费者情况下消息的有序性
-4. 在producer, broker, consumer三者做了大量性能优化,例如:`cache buff`和`sendfile()`等</code></pre><p>kafka的大部分分布式特性都得益于partition的设计,由于采用了文件集合来存储每一个partition,使得kafka在性能和有序性方面获得了巨大的优势</p>
+</li>
+</ol>
+<p>kafka的大部分分布式特性都得益于partition的设计,由于采用了文件集合来存储每一个partition,使得kafka在性能和有序性方面获得了巨大的优势</p>
 <p><strong>kafka作为消息队列的缺点</strong></p>
 <pre><code>1. 只有topic一个逻辑隔离级别
 2. 高并发依赖于partition数量限制, 扩展不是特别的方便
 3. 没有消息优先级机制
 4. 数据中心级别的数据同步不成熟
-5. 功能和数据存储系统没有隔离开</code></pre><p>同时也由于kafka的部分设计不可避免的有一些缺点</p>
+5. 功能和数据存储系统没有隔离开
+</code></pre>
+<p>同时也由于kafka的部分设计不可避免的有一些缺点</p>
 <p>由于partition的限制, 应对高并发场景, 如果需要加快一个topic的处理速度只能通过增加消费者的方式, 这个增加过程又不像其他内存式的消息队列来的方便</p>
 <p>相比于很多传统消息队列服务, kafka也没有消息优先级的机制</p>
 <p>kafka的竞争对手Apache Pulsar在后两点比kafka要更加优秀, 且在很多基础功能上提供了更多的选择性</p>
-<h1 id="kafka工作流程示意图"><a href="#kafka工作流程示意图" class="headerlink" title="kafka工作流程示意图"></a>kafka工作流程示意图</h1><p><img data-src="https://i.loli.net/2020/05/09/JaQFedmhsk175PS.png" alt="kafka1.png"></p>
+<h1 id="kafka工作流程示意图"><a class="markdownIt-Anchor" href="#kafka工作流程示意图"></a> kafka工作流程示意图</h1>
+<p><img data-src="https://i.loli.net/2020/05/09/JaQFedmhsk175PS.png" alt="kafka1.png"></p>
 <p>kafka中的一个完整的消息流程如上图所示</p>
 <p>Producer将消息发给broker中的topic,存储到topic下的某一个partition</p>
 <p>Consumer从partition中消费数据,将该消费者在该topic中的数据偏移标记为最新</p>
-<h1 id="kafka为什么这么快"><a href="#kafka为什么这么快" class="headerlink" title="kafka为什么这么快"></a>kafka为什么这么快</h1><ol>
+<h1 id="kafka为什么这么快"><a class="markdownIt-Anchor" href="#kafka为什么这么快"></a> kafka为什么这么快</h1>
+<ol>
 <li>吞吐量和延迟</li>
 </ol>
 <p>吞吐量和延迟是一个kafka的平衡选择</p>
@@ -3111,37 +3127,45 @@ ul.breadcrumb li + li:last-child {
 <ol start="3">
 <li>基于文件的追加方式</li>
 </ol>
-<p>kafka采用追加文件记录的形式来处理数据, 这种方式要比随机读写快上很多  </p>
+<p>kafka采用追加文件记录的形式来处理数据, 这种方式要比随机读写快上很多</p>
 <ol start="4">
 <li>buff发送</li>
 </ol>
 <p>对发送的文件进行了了缓冲区处理, 缓冲区满了以后或者到了一定时间才会发送数据</p>
 <p>相当于对发送信息做了批处理</p>
-<h2 id="kafka和ZooKeeper"><a href="#kafka和ZooKeeper" class="headerlink" title="kafka和ZooKeeper"></a>kafka和ZooKeeper</h2><p>kafka 使用zk存储一些关键配置信息</p>
+<h2 id="kafka和zookeeper"><a class="markdownIt-Anchor" href="#kafka和zookeeper"></a> kafka和ZooKeeper</h2>
+<p>kafka 使用zk存储一些关键配置信息</p>
 <p>如: 某个topic的消息总量, 每个partition的消费数据等信息,消费者消费的记录offset等都存储于zk</p>
 <p>许多的kafka监控应用也都是通过读取zk中的kafka数据来进行监控的</p>
 <blockquote>
 <p>ps: kafka新版本中已经允许客户端提交offset到kafka的topic中</p>
 </blockquote>
-<p>具体保存消息的节点路径如下图: </p>
+<p>具体保存消息的节点路径如下图:</p>
 <p><img data-src="https://i.loli.net/2020/05/09/8hymVr34eTK6ndq.jpg" alt="kafka_zk.jpeg"></p>
 <p><img data-src="https://i.loli.net/2020/05/09/md1eiYFCEnIVBst.jpg" alt="kafka_zk2.jpeg"></p>
-<h1 id="kafka数据存储"><a href="#kafka数据存储" class="headerlink" title="kafka数据存储"></a>kafka数据存储</h1><p>kafka的数据存储大致分为三层, broker, partition, segment</p>
+<h1 id="kafka数据存储"><a class="markdownIt-Anchor" href="#kafka数据存储"></a> kafka数据存储</h1>
+<p>kafka的数据存储大致分为三层, broker, partition, segment</p>
 <p>kafka配置文件中的 server.properties中的以下属性指明了kafka的数据存储位置</p>
 <p><code>log.dirs=/usr/local/var/lib/kafka-logs</code></p>
 <p>具体如下图:</p>
 <p><img data-src="https://i.loli.net/2020/05/09/2gVbKren4BGyxQ1.jpg" alt="kafka_store.jpeg"></p>
-<p>一个broker中虽然可以随处多个topic数据, 但是真正的存储还是要落实到 segment上<br>topic和partition只能决定存放segment的上层文件夹的名字</p>
-<h2 id="segment内的存储细节"><a href="#segment内的存储细节" class="headerlink" title="segment内的存储细节"></a>segment内的存储细节</h2><p><img data-src="https://i.loli.net/2020/05/09/AO3746RkVfgZiL2.jpg" alt="kafka_segment.jpeg"></p>
-<p>一个topic的一个partition拥有多个segment file, 每个segment file拥有多个部分 </p>
+<p>一个broker中虽然可以随处多个topic数据, 但是真正的存储还是要落实到 segment上<br>
+topic和partition只能决定存放segment的上层文件夹的名字</p>
+<h2 id="segment内的存储细节"><a class="markdownIt-Anchor" href="#segment内的存储细节"></a> segment内的存储细节</h2>
+<p><img data-src="https://i.loli.net/2020/05/09/AO3746RkVfgZiL2.jpg" alt="kafka_segment.jpeg"></p>
+<p>一个topic的一个partition拥有多个segment file, 每个segment file拥有多个部分</p>
 <p>一般由以下四个类型文件组成</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xxx.index  						//segment的索引文件</span><br><span class="line">xxx.log    						//segment的数据文件</span><br><span class="line">xxx.timeindex            		//segment的时间索引</span><br><span class="line">leader-epoch-checkpoint   		//检查点文件</span><br></pre></td></tr></tbody></table></figure>
-
-<h1 id="使用kafka遇到的问题"><a href="#使用kafka遇到的问题" class="headerlink" title="使用kafka遇到的问题"></a>使用kafka遇到的问题</h1><p><strong>1.kafka的topic不消费</strong><br>原因：<br>topic中的消息容量是有限制的,假如短时间内某topic中进入了大量的消息<br>消费者来不及消费可能导致消费者的消费offset小于当前topic的最小消息偏移</p>
-<p>举例:<br>假如我们topic最大可以存储200万消息,消费者每分钟消费30万的消息<br>现在有个入消息的接口每分钟入100万的消息,那topic, consumer就会产生如下问题</p>
+<h1 id="使用kafka遇到的问题"><a class="markdownIt-Anchor" href="#使用kafka遇到的问题"></a> 使用kafka遇到的问题</h1>
+<p><strong>1.kafka的topic不消费</strong><br>
+原因：<br>
+topic中的消息容量是有限制的,假如短时间内某topic中进入了大量的消息<br>
+消费者来不及消费可能导致消费者的消费offset小于当前topic的最小消息偏移</p>
+<p>举例:<br>
+假如我们topic最大可以存储200万消息,消费者每分钟消费30万的消息<br>
+现在有个入消息的接口每分钟入100万的消息,那topic, consumer就会产生如下问题</p>
 <figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">	<span class="string">"topic"</span>:{</span><br><span class="line">		<span class="string">"start"</span>: <span class="number">211450</span>, <span class="comment">// 当前topic消息最小值</span></span><br><span class="line">		<span class="string">"end"</span>: <span class="number">2211450</span>, <span class="comment">// 当前topic的消息最大值</span></span><br><span class="line">	},</span><br><span class="line">	<span class="string">"consumer"</span>:{</span><br><span class="line">		<span class="string">"topic1"</span>: <span class="number">311450</span>, <span class="comment">// 消费者在topic中的消费位置</span></span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"><span class="comment">// 然后等了一分钟</span></span><br><span class="line">{</span><br><span class="line">	<span class="string">"topic"</span>:{</span><br><span class="line">		<span class="string">"start"</span>:<span class="number">2211450</span>,<span class="comment">// 当前最小的消息值</span></span><br><span class="line">		<span class="string">"end"</span>:<span class="number">4211450</span>,<span class="comment">// 当前最大的消息值</span></span><br><span class="line">	},</span><br><span class="line">	<span class="string">"consumer"</span>:{</span><br><span class="line">		<span class="string">"topic1"</span>: <span class="number">461450</span>, <span class="comment">// 消费者当前的消费消息位置</span></span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>也就是说消费者的消费值在内存中的topic中找不到了.因为消息入得太快,消费者跟不上,当前消费消息,被”顶”出去了</p>
+<p>也就是说消费者的消费值在内存中的topic中找不到了.因为消息入得太快,消费者跟不上,当前消费消息,被"顶"出去了</p>
 <p>解决方案:</p>
 <ol>
 <li>可以手动设置消费者的消费位置,将其置为 当前topic中可以找到的消息偏移位置</li>
@@ -3150,30 +3174,41 @@ ul.breadcrumb li + li:last-child {
 <p><strong>2.kafka的topic不能直接删除</strong></p>
 <p>原因: 因为要删除一个topic必须符合两个条件</p>
 <ol>
-<li>无消费者消费  </li>
+<li>无消费者消费</li>
 <li>文件中无消息记录,普通的删除只能删除文件中的消息记录,无法删除消费者得消费信息</li>
 </ol>
 <p>方案: 将该topic的所有消费者消费偏移置为0 ,然后执行删除，或者使用kafka tool工具可以直接删除</p>
 <p><strong>3.kafka的分片数据分布不均匀</strong></p>
-<p>原因: kafka早期的算法会根据key的hash值来对消息进行分配<br>如果没有key可能会被分配至随机的一个固定的partition中<br>这样会导致topic中的消息分布不均匀,</p>
-<p>方案: 1. 可以更改分配算法 2. 使用时间戳作为key的结尾 </p>
+<p>原因: kafka早期的算法会根据key的hash值来对消息进行分配<br>
+如果没有key可能会被分配至随机的一个固定的partition中<br>
+这样会导致topic中的消息分布不均匀,</p>
+<p>方案: 1. 可以更改分配算法 2. 使用时间戳作为key的结尾</p>
 <p><strong>4.kafka的消费者分组的使用</strong></p>
-<p>描述: 由于每个消费者分组中的topic只能被消费一次<br>kafka可以通过消费者分组来对某一topic中的数据进行重复消费<br>我们可以通过给不同部门设置消费者分组来实现类似订阅的机制</p>
-<p>举例: 我们有一个订单消息队列, topic为 <code>order-topic</code><br>我们可以通过给 订单部门和 物流部门 分配不同的消费者分组<br>来对同一个topic中的消息进行重复消费</p>
-<h1 id="Kafka的高级特性和流处理"><a href="#Kafka的高级特性和流处理" class="headerlink" title="Kafka的高级特性和流处理"></a>Kafka的高级特性和流处理</h1><ul>
+<p>描述: 由于每个消费者分组中的topic只能被消费一次<br>
+kafka可以通过消费者分组来对某一topic中的数据进行重复消费<br>
+我们可以通过给不同部门设置消费者分组来实现类似订阅的机制</p>
+<p>举例: 我们有一个订单消息队列, topic为 <code>order-topic</code><br>
+我们可以通过给 订单部门和 物流部门 分配不同的消费者分组<br>
+来对同一个topic中的消息进行重复消费</p>
+<h1 id="kafka的高级特性和流处理"><a class="markdownIt-Anchor" href="#kafka的高级特性和流处理"></a> Kafka的高级特性和流处理</h1>
+<ul>
 <li>kafka事务</li>
 </ul>
 <p>kafka现在已经支持事务, 这个是kafka一致性保证的重大进步</p>
 <p>kafka的事务目前还有一定的限制, 实现方式是使用 事务ID和客户端id做幂等处理</p>
 <p>kafka事务流程：</p>
 <ol>
-<li><p>生产者发起事务请求</p>
+<li>
+<p>生产者发起事务请求</p>
 </li>
-<li><p>发送消息</p>
+<li>
+<p>发送消息</p>
 </li>
-<li><p>服务器接受数据,进行追加写入</p>
+<li>
+<p>服务器接受数据,进行追加写入</p>
 </li>
-<li><p>生产者结束事务</p>
+<li>
+<p>生产者结束事务</p>
 </li>
 </ol>
 <p>如果客户端没有结束事务, kafka虽然将数据写入到了broker,但是不会让其他消费者客户端读到这部分数据</p>
@@ -3200,9 +3235,9 @@ ul.breadcrumb li + li:last-child {
 <ul>
 <li>使用kafka streaming的一个场景</li>
 </ul>
-<p>例如在产品池项目中, 我们用 kafka stream 从canal的事件消息topic中接收数据  </p>
-<p>从中根据不同的消息内容将事件按照<code>库和表</code>发送给不同的后续topic, 达到了消息路由的功能  </p>
-<p>kafka stream将三个不同来源的topic中的待更新产品信息融合到同一个 待更新的产品信息Topic中  </p>
+<p>例如在产品池项目中, 我们用 kafka stream 从canal的事件消息topic中接收数据</p>
+<p>从中根据不同的消息内容将事件按照<code>库和表</code>发送给不同的后续topic, 达到了消息路由的功能</p>
+<p>kafka stream将三个不同来源的topic中的待更新产品信息融合到同一个 待更新的产品信息Topic中</p>
 <ul>
 <li>Kstream和Ktable</li>
 </ul>
@@ -3315,9 +3350,13 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="redis分享"><a href="#redis分享" class="headerlink" title="redis分享"></a>redis分享</h1><p>Author:   leriou lee       2017.10.12<br>本篇内容主要是针对团队成员的redis中间件分享</p>
-<p>目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解<br>已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案</p>
-<h1 id="redis基础"><a href="#redis基础" class="headerlink" title="redis基础"></a>redis基础</h1><ol>
+          <h1 id="redis分享"><a class="markdownIt-Anchor" href="#redis分享"></a> redis分享</h1>
+<p>Author:   leriou lee       2017.10.12<br>
+本篇内容主要是针对团队成员的redis中间件分享</p>
+<p>目的是帮助不熟悉redis的团队成员快速的了解redis，对redis大概有一个了解<br>
+已经使用过redis的能对其有进一步的了解，以及总结了一些遇到的业务问题和解决方案</p>
+<h1 id="redis基础"><a class="markdownIt-Anchor" href="#redis基础"></a> redis基础</h1>
+<ol>
 <li>redis是什么</li>
 </ol>
 <p><code>redis</code>是一个使用c语言开发的k-v存储系统,其实不仅仅作为缓存,由于<code>redis</code>内部的底层数据结构设计的非常完善</p>
@@ -3328,7 +3367,8 @@ ul.breadcrumb li + li:last-child {
 <p>ps: 现在5.0发布已经有6种了</p>
 </blockquote>
 <ol start="2">
-<li><p>redis的大致工作流程</p>
+<li>
+<p>redis的大致工作流程</p>
 <ol>
 <li>启用redis-server,使用socket服务监听端口(redis服务端)</li>
 <li>客户端启用socket连接到服务器,通过认证,服务器维护client的信息(使用链表持有)</li>
@@ -3336,7 +3376,8 @@ ul.breadcrumb li + li:last-child {
 <li>客户端解析服务器返回的结果</li>
 </ol>
 </li>
-<li><p>redis能做什么</p>
+<li>
+<p>redis能做什么</p>
 </li>
 </ol>
 <p>redis作为一个缓存中间件, 可以帮助我们解决很多业务中遇到的问题,由于redis内部功能机制比较丰富,其实不仅仅可以作为简单的缓存中间件使用</p>
@@ -3346,28 +3387,40 @@ ul.breadcrumb li + li:last-child {
 </ol>
 <p>redis可以帮助我们解决很多业务中的问题,下面简单列举一下</p>
 <ul>
-<li><p>作为服务间的共享空间或临时存储，解决数据共享问题 例如: 计数器,注册器/协调器,在分布式应用中做桥接</p>
-<p>  由于redis是一个独立的服务,不依赖任何其他的服务,同时又具有高效的存储功能<br>  我们可以用redis在不同的应用和系统服务之间进行简单的数据传递,或者存放部分中间数据<br>  相当于多个服务之间的共享内存,我们可以”使用共享内存来通信”</p>
+<li>
+<p>作为服务间的共享空间或临时存储，解决数据共享问题 例如: 计数器,注册器/协调器,在分布式应用中做桥接</p>
+<p>由于redis是一个独立的服务,不依赖任何其他的服务,同时又具有高效的存储功能<br>
+我们可以用redis在不同的应用和系统服务之间进行简单的数据传递,或者存放部分中间数据<br>
+相当于多个服务之间的共享内存,我们可以"使用共享内存来通信"</p>
 </li>
 </ul>
 <p>*为高读写要求的场景提供数据存储，解决性能问题  例如: 热点数据缓存/流量控制(漏桶和令牌桶)</p>
 <pre><code>redis由于是一个内存数据库,读写速度执行非常的快
 在一个最低配的的阿里云机器上可以达到8w/s的ops,非常适合用来处理一些对读写性能要求极高的场景
-比如:部分热点商品数据,秒杀活动,流量控制等</code></pre><p>*其他可以利用redis特性的场景，解决业务问题    例如: 搜索/bitmap/数据匹配/消息队列/发布订阅</p>
+比如:部分热点商品数据,秒杀活动,流量控制等
+</code></pre>
+<p>*其他可以利用redis特性的场景，解决业务问题    例如: 搜索/bitmap/数据匹配/消息队列/发布订阅</p>
 <pre><code>redis内部还有很多的特殊机制实现了比较丰富的功能, 如:发布订阅.
 我们也可以利用redis的一写数据结构特性来构建倒排索引,以实现简单的搜索功能 
-也可以利用list的数据结构的特性实现简单的消息队列</code></pre><h1 id="Redis的读写流程"><a href="#Redis的读写流程" class="headerlink" title="Redis的读写流程"></a>Redis的读写流程</h1><ul>
+也可以利用list的数据结构的特性实现简单的消息队列
+</code></pre>
+<h1 id="redis的读写流程"><a class="markdownIt-Anchor" href="#redis的读写流程"></a> Redis的读写流程</h1>
+<ul>
 <li>通信协议RESP</li>
 </ul>
 <p>RESP协议在Redis 1.2中引入，但它成为与Redis 2.0中的Redis服务器通信的标准方式。 这是每一个Redis客户端中应该实现的协议。</p>
-<p>RESP实际上是一个支持以下数据类型的序列化协议：单行字符串，错误信息，整型，多行字符串和数组。<br>RESP在Redis中用作请求 - 响应协议的方式如下：</p>
-<p>客户端将命令作为字符串数组发送到Redis服务器。<br>服务器根据命令实现回复一种RESP类型数据。<br>在 RESP 中, 一些数据的类型通过它的第一个字节进行判断：</p>
+<p>RESP实际上是一个支持以下数据类型的序列化协议：单行字符串，错误信息，整型，多行字符串和数组。<br>
+RESP在Redis中用作请求 - 响应协议的方式如下：</p>
+<p>客户端将命令作为字符串数组发送到Redis服务器。<br>
+服务器根据命令实现回复一种RESP类型数据。<br>
+在 RESP 中, 一些数据的类型通过它的第一个字节进行判断：</p>
 <p>单行回复：回复的第一个字节是 “+”</p>
 <p>错误信息：回复的第一个字节是 “-“</p>
 <p>整形数字：回复的第一个字节是 “:”</p>
 <p>多行字符串：回复的第一个字节是 “$”</p>
 <p>数组：回复的第一个字节是 “*”</p>
-<p>此外，RESP能够使用稍后指定的Bulk Strings或Array的特殊变体来表示Null值。<br>在RESP中，协议的不同部分始终以“\ r \ n”（CRLF）结束。</p>
+<p>此外，RESP能够使用稍后指定的Bulk Strings或Array的特殊变体来表示Null值。<br>
+在RESP中，协议的不同部分始终以“\ r \ n”（CRLF）结束。</p>
 <ul>
 <li>读写过程</li>
 </ul>
@@ -3379,11 +3432,12 @@ ul.breadcrumb li + li:last-child {
 <li>server端返回数据或信息, client端接受并解析</li>
 </ol>
 <p>其中细节颇多, 值得注意的就是 server端内部会进行很多检查工作</p>
-<p>比如: 检查键的订阅者, 是否有监听者(monitor), hash负载因子如何, 是否需要rehash, 主从同步等信息 </p>
+<p>比如: 检查键的订阅者, 是否有监听者(monitor), hash负载因子如何, 是否需要rehash, 主从同步等信息</p>
 <p>Redis在集群模式下, 会把<code>key</code>根据hash映射到 <code>16384</code>个槽其中的一个, 再根据槽所在的节点对客户端操作进行应答</p>
 <p>如果该<code>key</code>所在槽不归本节点维护, 服务器会返回<code>moved</code>错误</p>
 <p>而且cluster模式下不能使用Redis的pipeline功能, 除非你能保证pipeline操作的所有key都在同一节点上</p>
-<h1 id="Redis的特色功能"><a href="#Redis的特色功能" class="headerlink" title="Redis的特色功能"></a>Redis的特色功能</h1><ol>
+<h1 id="redis的特色功能"><a class="markdownIt-Anchor" href="#redis的特色功能"></a> Redis的特色功能</h1>
+<ol>
 <li>Redis的持久化</li>
 </ol>
 <p>redis有别于memcache的一个区别就是redis支持数据持久化,redis可以通过采用一定的策略将内存中的数据持久化到本地磁盘上面</p>
@@ -3399,25 +3453,43 @@ ul.breadcrumb li + li:last-child {
 <p><strong>AOF</strong></p>
 <p>AOF(append only file): AOF持久化是对redis的命令进行记录,恢复时按照命令重新执行一遍,以恢复数据库状态的持久化形式,有点类似于GFS里面的基于日志的恢复机制. AOF持久化对性能影响没有RDB那么大,每当redis执行一个命令,redis会根据AOF持久化的设置规则判断是否进行持久化,AOF可以根据命令执行时间和频率来执行持久化策略,比如: 3s执行100个命令则进行持久化,每个命令都持久化等</p>
 <p><strong>Rewrite AOF</strong></p>
-<p>AOF重写: 但是AOF也有一些缺点,有可能造成AOF文件非常的大,举个例子: 我先设置键a为10(set a 10),然后设置键a为5(set a 5),重新设置键a为10(set a 10), 这三条命令执行以后最终的数据状态中的表现结果是a=10,但是在AOF文件中会有3条命令.如果某个键的变动频率非常的高,就会消耗还多的数据命令来记录数据的变化,比如计数器. </p>
+<p>AOF重写: 但是AOF也有一些缺点,有可能造成AOF文件非常的大,举个例子: 我先设置键a为10(set a 10),然后设置键a为5(set a 5),重新设置键a为10(set a 10), 这三条命令执行以后最终的数据状态中的表现结果是a=10,但是在AOF文件中会有3条命令.如果某个键的变动频率非常的高,就会消耗还多的数据命令来记录数据的变化,比如计数器.</p>
 <p>redis提供了AOF重写功能来解决这种情况, AOF重写是对当前的内存数据库状态进行命令反向解析,比如,上面的例子,在进行AOF重写的时候,redis看到数据库中的键a的值是10 ,会反向生成一条命令 set a 10,将该命令写到重写文件中,这样就能有效的减小AOF文件的体积</p>
 <ol>
-<li><p>事务</p>
-<pre><code>redis中的事务基于链表实现,跟普通的数据库事务不同的是,redis的事务不支持回滚数据,执行失败了也不会进行通知
-redis在的事务其实相当于使用一个pipeline 将一系列的操作一起打包发给redisServer来执行</code></pre></li>
-<li><p>发布订阅</p>
-<pre><code>redis的发布订阅也是基于链表实现,redis的订阅相当于将某个客户端加入到订阅该模式的链表中,redis在执行发布消息的时候会沿着链表去检查所有订阅了符合该模式的所有客户端,将消息发送给他们.</code></pre></li>
-<li><p>监控(monitor)</p>
-<pre><code>监控功能也是基于链表实现,redis的监视器是一种特殊的redis客户端,服务器会在执行命令时候,将命令同时发送给所有监视器列表上面的客户端</code></pre></li>
-<li><p>哨兵(sentinal)</p>
-<pre><code>redis哨兵是官方的集群方案出来之前的一种分布式解决方案,哨兵可以监控服务器,并在服务器出问题时候采用选举策略将从服务器省纪委主服务器保证服务稳定</code></pre></li>
-<li><p>排序(内部实现)</p>
-<pre><code>redis的内部排序主要对set,sort set,list这三个数据结构起作用,旨在让用户可以用过自定义的方式对内部数据进行排序</code></pre></li>
+<li>
+<p>事务</p>
+<pre><code> redis中的事务基于链表实现,跟普通的数据库事务不同的是,redis的事务不支持回滚数据,执行失败了也不会进行通知
+ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起打包发给redisServer来执行
+</code></pre>
+</li>
+<li>
+<p>发布订阅</p>
+<pre><code> redis的发布订阅也是基于链表实现,redis的订阅相当于将某个客户端加入到订阅该模式的链表中,redis在执行发布消息的时候会沿着链表去检查所有订阅了符合该模式的所有客户端,将消息发送给他们.
+</code></pre>
+</li>
+<li>
+<p>监控(monitor)</p>
+<pre><code> 监控功能也是基于链表实现,redis的监视器是一种特殊的redis客户端,服务器会在执行命令时候,将命令同时发送给所有监视器列表上面的客户端
+</code></pre>
+</li>
+<li>
+<p>哨兵(sentinal)</p>
+<pre><code> redis哨兵是官方的集群方案出来之前的一种分布式解决方案,哨兵可以监控服务器,并在服务器出问题时候采用选举策略将从服务器省纪委主服务器保证服务稳定
+</code></pre>
+</li>
+<li>
+<p>排序(内部实现)</p>
+<pre><code> redis的内部排序主要对set,sort set,list这三个数据结构起作用,旨在让用户可以用过自定义的方式对内部数据进行排序
+</code></pre>
+</li>
 </ol>
-<h1 id="redis-Representation"><a href="#redis-Representation" class="headerlink" title="redis Representation"></a>redis Representation</h1><p>这里做了一个简单的redis的脑图, 着重描述了一下内部的基本数据结构的关系</p>
+<h1 id="redis-representation"><a class="markdownIt-Anchor" href="#redis-representation"></a> redis Representation</h1>
+<p>这里做了一个简单的redis的脑图, 着重描述了一下内部的基本数据结构的关系</p>
 <p><img data-src="https://i.loli.net/2020/05/09/BKtdElZifANIg8c.png" alt="redis.png"></p>
-<p>百度脑图地址:<br><a href="http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037" target="_blank" rel="noopener">http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037</a></p>
-<h1 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h1><p>redis的常见高可用部署方案</p>
+<p>百度脑图地址:<br>
+<a href="http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037" target="_blank" rel="noopener">http://naotu.baidu.com/file/ee2d1316a2eb6b2d4fc5b0c876c50685?token=cb284164f0989037</a></p>
+<h1 id="redis集群"><a class="markdownIt-Anchor" href="#redis集群"></a> Redis集群</h1>
+<p>redis的常见高可用部署方案</p>
 <ul>
 <li>keepalived(基于VRRP协议)</li>
 <li>哨兵(sentinal)</li>
@@ -3439,19 +3511,20 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>3个思路:</p>
 <ol>
 <li>后台定时检查,修改配置或将配置放入zk等,实例化客户端的时候从zk中实时获取配置信息</li>
-<li>客户端程序执行redis命令失败时,进行消息通知,检查当前的节点配置,修改配置 </li>
-<li>每次redis对象实例化之后检查集群状态,程序中动态修改配置 </li>
+<li>客户端程序执行redis命令失败时,进行消息通知,检查当前的节点配置,修改配置</li>
+<li>每次redis对象实例化之后检查集群状态,程序中动态修改配置</li>
 </ol>
 <p>以上思路都需要使用<code>cluster node</code>命令从集群中获取当前节点信息,解析出来当前的集群主节点,区别就是修改配置的方式和时间点不同</p>
 <figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cluster info <span class="comment">// 检查集群状态</span></span><br><span class="line">cluster info返回信息如下(redis3<span class="number">.2</span>):</span><br><span class="line"></span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:<span class="number">16384</span></span><br><span class="line">cluster_slots_ok:<span class="number">16384</span></span><br><span class="line">cluster_slots_pfail:<span class="number">0</span></span><br><span class="line">cluster_slots_fail:<span class="number">0</span></span><br><span class="line">cluster_known_nodes:<span class="number">6</span></span><br><span class="line">cluster_size:<span class="number">3</span></span><br><span class="line">cluster_current_epoch:<span class="number">9</span></span><br><span class="line">cluster_my_epoch:<span class="number">8</span></span><br><span class="line">cluster_stats_messages_sent:<span class="number">8625814</span></span><br><span class="line">cluster_stats_messages_received:<span class="number">8601220</span></span><br><span class="line"></span><br><span class="line">cluster nodes <span class="comment">// 检查集群节点的状态</span></span><br><span class="line">cluster nodes返回信息如下:</span><br><span class="line"></span><br><span class="line"><span class="number">634</span>f54bcec482a1a048f2604793c06acd47c93c6 <span class="number">10.113</span><span class="number">.1</span><span class="number">.231</span>:<span class="number">7001</span> slave c1eecd493eee0644a76bb9e691b6d13a31b25628 <span class="number">0</span> <span class="number">1510321448626</span> <span class="number">6</span> connected</span><br><span class="line"><span class="number">1</span>ed54647073d60118a35df253e9b04459cc30e49 <span class="number">10.113</span><span class="number">.2</span><span class="number">.82</span>:<span class="number">7001</span> slave c464639a33800da984875866391a549647af4a5a <span class="number">0</span> <span class="number">1510321447623</span> <span class="number">3</span> connected</span><br><span class="line"><span class="number">01334</span>b7a5802032461966cc382b2f97f004ab027 <span class="number">10.113</span><span class="number">.2</span><span class="number">.82</span>:<span class="number">7000</span> myself,master - <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> connected <span class="number">0</span><span class="number">-5460</span></span><br><span class="line">c1eecd493eee0644a76bb9e691b6d13a31b25628 <span class="number">10.113</span><span class="number">.1</span><span class="number">.231</span>:<span class="number">7000</span> master - <span class="number">0</span> <span class="number">1510321446623</span> <span class="number">5</span> connected <span class="number">10923</span><span class="number">-16383</span></span><br><span class="line">c464639a33800da984875866391a549647af4a5a <span class="number">10.113</span><span class="number">.1</span><span class="number">.42</span>:<span class="number">7000</span> master - <span class="number">0</span> <span class="number">1510321445622</span> <span class="number">3</span> connected <span class="number">5461</span><span class="number">-10922</span></span><br><span class="line"><span class="number">98</span>b58ef327f872dec466761cabae23bad74622db <span class="number">10.113</span><span class="number">.1</span><span class="number">.42</span>:<span class="number">7001</span> slave <span class="number">01334</span>b7a5802032461966cc382b2f97f004ab027 <span class="number">0</span> <span class="number">1510321450631</span> <span class="number">4</span> connected</span><br></pre></td></tr></tbody></table></figure>
-
 <p>其他问题:</p>
 <pre><code>1. 多主节点的槽分配导致的无法对复杂数据结构(例如hash)进行重命名操作
-2. pipeline的使用受节点限制</code></pre><h1 id="数据对象和底层数据结构"><a href="#数据对象和底层数据结构" class="headerlink" title="数据对象和底层数据结构"></a>数据对象和底层数据结构</h1><p><strong>redis基本数据对象在我们自己项目中的使用</strong></p>
+2. pipeline的使用受节点限制
+</code></pre>
+<h1 id="数据对象和底层数据结构"><a class="markdownIt-Anchor" href="#数据对象和底层数据结构"></a> 数据对象和底层数据结构</h1>
+<p><strong>redis基本数据对象在我们自己项目中的使用</strong></p>
 <p>redis提供了多种基本的数据对象,已经能满足我们的大部分业务需求</p>
 <p>以下是各种数据结构在我们业务中的使用示例</p>
 <figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">str:  适用于简单存储(临时标记,计数器等)          </span><br><span class="line">list: 适用于线性存储和类似场景(简单线性容器,vector,简单的消息队列)</span><br><span class="line">hash: 适用于对象存储(产品池,产品信息)</span><br><span class="line"><span class="keyword">set</span>:  适用于需要进行集合运算的场景(行政区服务,A和B都喜欢的产品,倒排索引等)</span><br><span class="line">zset: 适用于有排序需求的场景(360凤舞系统,消息系统中的优先级实现)</span><br><span class="line">stream:  流式对象, 类似于kafka中的topic  (5.0新增)</span><br></pre></td></tr></tbody></table></figure>
-
 <p>其他一些不建议的数据对象使用方法:</p>
 <figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1.</span> 使用str存储json对象</span><br><span class="line"></span><br><span class="line">	如: a:{<span class="string">"name"</span>:<span class="string">"xiaohua"</span>,<span class="string">"age"</span>:<span class="number">8</span>},像这种可以使用hash来存储</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 过度使用有序集合</span><br><span class="line"></span><br><span class="line">	集合和有序集合和list在部分特性上面比较类似,很多人时候问题都可以使用list替代而不必要使用集合,因为有序集合底层使用的跳跃表,性能方面比简单的列表稍微差点,但是集合和有序集合都可以方便的使用集合操作,交/并/差集等</span><br></pre></td></tr></tbody></table></figure>
 <p><strong>redis中的数据库键空间</strong></p>
@@ -3461,65 +3534,85 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <table>
 <thead>
 <tr>
-<th align="left">对象</th>
-<th align="left">省内存</th>
-<th align="left">常规</th>
+<th style="text-align:left">对象</th>
+<th style="text-align:left">省内存</th>
+<th style="text-align:left">常规</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">str</td>
-<td align="left">int/embstr</td>
-<td align="left">row</td>
+<tbody>
+<tr>
+<td style="text-align:left">str</td>
+<td style="text-align:left">int/embstr</td>
+<td style="text-align:left">row</td>
 </tr>
 <tr>
-<td align="left">list</td>
-<td align="left">ziplist(quicklist)</td>
-<td align="left">linkedlist(quicklist)</td>
+<td style="text-align:left">list</td>
+<td style="text-align:left">ziplist(quicklist)</td>
+<td style="text-align:left">linkedlist(quicklist)</td>
 </tr>
 <tr>
-<td align="left">hash</td>
-<td align="left">ziplist</td>
-<td align="left">hashtable</td>
+<td style="text-align:left">hash</td>
+<td style="text-align:left">ziplist</td>
+<td style="text-align:left">hashtable</td>
 </tr>
 <tr>
-<td align="left">set</td>
-<td align="left">intset</td>
-<td align="left">hashtable</td>
+<td style="text-align:left">set</td>
+<td style="text-align:left">intset</td>
+<td style="text-align:left">hashtable</td>
 </tr>
 <tr>
-<td align="left">zset</td>
-<td align="left">ziplist</td>
-<td align="left">skiplist</td>
+<td style="text-align:left">zset</td>
+<td style="text-align:left">ziplist</td>
+<td style="text-align:left">skiplist</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>redis在3.2之后使用quicklist替代了linkedlist作为列表对象的底层实现</p>
 <blockquote>
 <p>ps: 我还另外写过两篇稍微详细点的关于redis数据结构(<a href="https://leriou.github.io/post-redis-data-structure/">https://leriou.github.io/post-redis-data-structure/</a>)和数据对象的文章(<a href="https://leriou.github.io/post-redis-object/">https://leriou.github.io/post-redis-object/</a>)</p>
 </blockquote>
-<h1 id="生产问题实例"><a href="#生产问题实例" class="headerlink" title="生产问题实例"></a>生产问题实例</h1><ol>
+<h1 id="生产问题实例"><a class="markdownIt-Anchor" href="#生产问题实例"></a> 生产问题实例</h1>
+<ol>
 <li>使用redis注册器起到类似分布式锁的作用</li>
 </ol>
 <p>一个曾经的小问题,一段伪代码</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flag = get(redis_key)?redis_key:<span class="number">0</span></span><br><span class="line">res = DB.op(select * from table where id &gt; flag)</span><br><span class="line"><span class="keyword">while</span>(res) {</span><br><span class="line">	foreach(a in res) {</span><br><span class="line">		<span class="keyword">do</span>(a)</span><br><span class="line">	}</span><br><span class="line">	write(redis_key,flag)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
 <p>潜在的问题: 不支持多线程并发, 任务不能多线程同时进行</p>
 <p>解决方案:   借用redis作为注册器,实现类似乐观锁的机制</p>
-<p>具体方案:  </p>
+<p>具体方案:</p>
 <figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">redis中存储正在进行的处理进程:</span><br><span class="line">[<span class="number">2000</span>:<span class="number">1505290677</span>,<span class="number">3000</span>:<span class="number">1505287997</span>,<span class="number">5000</span>:<span class="number">1505287993</span>,<span class="number">6000</span>:<span class="number">1505287892</span>,<span class="number">8000</span>:<span class="number">1505287844</span>]</span><br><span class="line">流程:</span><br><span class="line"><span class="number">1.</span> 从注册器根据过期时间和处理范围获取当前应该处理的flag的值</span><br><span class="line"><span class="number">2.</span> 将自己的当前处理进度存入注册器列表,处理数据</span><br><span class="line"><span class="number">3.</span> 处理结束移除注册器中自己注册的进度和范围</span><br></pre></td></tr></tbody></table></figure>
 <p>以上这个程序的核心思想可以用以下流程来描述:</p>
 <ol>
-<li><p>第一步: 正常的数据处理流程   </p>
-<p>第一个进程来到向注册器索要自己处理的数据起始值,注册器发现当前没有进程在进行,<br>并且没有flag标记(程序处理到哪里了),给出起始值0,<br>并在注册器记录里面记录0:1505287993,意思是有程序正在执行从0开始的数据,<br>进程取1000条数据,将待处理的最大的数据的id设为flag = 1006,<br>处理完毕将删除注册器中的0:1505287993记录;</p>
+<li>
+<p>第一步: 正常的数据处理流程</p>
+<p>第一个进程来到向注册器索要自己处理的数据起始值,注册器发现当前没有进程在进行,<br>
+并且没有flag标记(程序处理到哪里了),给出起始值0,<br>
+并在注册器记录里面记录0:1505287993,意思是有程序正在执行从0开始的数据,<br>
+进程取1000条数据,将待处理的最大的数据的id设为flag = 1006,<br>
+处理完毕将删除注册器中的0:1505287993记录;</p>
 </li>
-<li><p>第二步: 有其他进程在执行时候的情况   </p>
-<p>然后第二个程序来执行的时候向注册器索要可以执行的起始值,<br>注册器查看记录发现0:1505287997并且时间没有过期,<br>说明0其实的数据已经有人在处理,并且没有过期的注册信息,<br>于是发放当前的flag给第二个程序,并想注册期记录1006:1505287997,<br>第二个程序取数据1000条,假设ID范围为1006-2390,将处理标记标记为flag = 2390,<br>处理完毕删除注册其中的自己的处理进度记录1006:1505287997;</p>
+<li>
+<p>第二步: 有其他进程在执行时候的情况</p>
+<p>然后第二个程序来执行的时候向注册器索要可以执行的起始值,<br>
+注册器查看记录发现0:1505287997并且时间没有过期,<br>
+说明0其实的数据已经有人在处理,并且没有过期的注册信息,<br>
+于是发放当前的flag给第二个程序,并想注册期记录1006:1505287997,<br>
+第二个程序取数据1000条,假设ID范围为1006-2390,将处理标记标记为flag = 2390,<br>
+处理完毕删除注册其中的自己的处理进度记录1006:1505287997;</p>
 </li>
-<li><p>第三步: 针对有部分进程断掉的情况   </p>
-<p> 如果第一个程序中间断掉,<br> 则不能删除自己的处理进度记录0:1505287993,<br> 此时新的程序向注册器索要起始值时,<br> 注册器会发送当前过期的(过期表示处理该记录的程序处理中断了)的程序起始值0,<br> 并标记当前处理的程序是二次处理,<br> 二次处理的程序不会更新flag,<br> 处理完毕删除自己的处理记录</p>
+<li>
+<p>第三步: 针对有部分进程断掉的情况</p>
+<p>如果第一个程序中间断掉,<br>
+则不能删除自己的处理进度记录0:1505287993,<br>
+此时新的程序向注册器索要起始值时,<br>
+注册器会发送当前过期的(过期表示处理该记录的程序处理中断了)的程序起始值0,<br>
+并标记当前处理的程序是二次处理,<br>
+二次处理的程序不会更新flag,<br>
+处理完毕删除自己的处理记录</p>
 </li>
 </ol>
 <blockquote>
-<p>ps: 整个流程有点类似于常见的”锁”的概念</p>
+<p>ps: 整个流程有点类似于常见的"锁"的概念</p>
 </blockquote>
 <p><strong>缺点</strong></p>
 <p>这个处理方案有个缺点, 要求数据的处理操作是<code>幂等</code>的,也就是无论操作多少次,操作结果都是一样的,或者不具有累加效应</p>
@@ -3626,67 +3719,83 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
       
           <p>我们在使用Redis集群的使用过程中发现了很多问题</p>
 <p>这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的</p>
-<h1 id="键分布导致的问题"><a href="#键分布导致的问题" class="headerlink" title="键分布导致的问题"></a>键分布导致的问题</h1><p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p>
+<h1 id="键分布导致的问题"><a class="markdownIt-Anchor" href="#键分布导致的问题"></a> 键分布导致的问题</h1>
+<p>当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误</p>
 <p><code>CROSSSLOT Keys in request don't hash to the same slot</code></p>
 <p>例如:</p>
 <p><code>hmget key1 key2</code></p>
 <p><code>rename key1 key2</code></p>
-<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><ul>
+<h2 id="错误类型"><a class="markdownIt-Anchor" href="#错误类型"></a> 错误类型</h2>
+<ul>
 <li>moved错误</li>
 </ul>
 <p>该错误表明当前键的落点槽不属于当前Node, 一般之后会跟着一个槽落点和节点地址</p>
 <p>例如:</p>
 <p><code>MOVED 1584 10.200.6.185:7001</code></p>
 <ol>
-<li><p>基于该错误可以调整客户端, 让不支持集群模式的客户端也能支持集群功能</p>
+<li>
+<p>基于该错误可以调整客户端, 让不支持集群模式的客户端也能支持集群功能</p>
 </li>
-<li><p>也可以提前计算好key, 直接去负责该key所在槽的服务器上取数据</p>
+<li>
+<p>也可以提前计算好key, 直接去负责该key所在槽的服务器上取数据</p>
 </li>
 </ol>
 <ul>
 <li>ASK错误</li>
 </ul>
 <p>该错误表明该key对应的数据正在做数据迁移, 槽迁移会引起该槽上的数据返回该错误</p>
-<h1 id="集群模式下不支持select-db"><a href="#集群模式下不支持select-db" class="headerlink" title="集群模式下不支持select db"></a>集群模式下不支持select db</h1><p>单机模式我们可以使用 <code>select 1</code> 来选择使用的数据库(redis默认提供16个数据库)</p>
+<h1 id="集群模式下不支持select-db"><a class="markdownIt-Anchor" href="#集群模式下不支持select-db"></a> 集群模式下不支持select db</h1>
+<p>单机模式我们可以使用 <code>select 1</code> 来选择使用的数据库(redis默认提供16个数据库)</p>
 <p>但是集群模式下redis不支持该功能</p>
 <p>如果不同的业务组之间需要做业务隔离最好采用不同redis集群的形式进行</p>
 <p>可以把多个redis集群组成redis组，多个redis组组成redis池进行资源的统一管理</p>
-<h1 id="cluster模式不支持使用Pipeline"><a href="#cluster模式不支持使用Pipeline" class="headerlink" title="cluster模式不支持使用Pipeline"></a>cluster模式不支持使用Pipeline</h1><p>在缓存的使用过程中，有时候我们会有快速获取一批k-v存储结果的需求，比如首页列表产品页，此时如果我们对每一个记录使用get操作在数据量较大的时候将会导致整个请求时间过长难以接受</p>
-<p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段，我们可以用pipeline一次性读取多个key的值 </p>
+<h1 id="cluster模式不支持使用pipeline"><a class="markdownIt-Anchor" href="#cluster模式不支持使用pipeline"></a> cluster模式不支持使用Pipeline</h1>
+<p>在缓存的使用过程中，有时候我们会有快速获取一批k-v存储结果的需求，比如首页列表产品页，此时如果我们对每一个记录使用get操作在数据量较大的时候将会导致整个请求时间过长难以接受</p>
+<p>Redis的<code>pipeline</code>是一种效果很明显的加快获取数据速度的手段，我们可以用pipeline一次性读取多个key的值</p>
 <p>像这样</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> batch </span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> get a</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> get b </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> get c</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ....</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">exec</span></span></span><br></pre></td></tr></tbody></table></figure>
-
 <p>但是有一个缺点, 我们一旦使用了Redis的Cluster集群, 就没有办法对整个集群使用Pipeline功能</p>
 <p><strong>原因</strong></p>
 <p>因为Redis的Pipeline的原理是在一个连接中持续的进行命令发送, 需要持有一个稳定的连接</p>
 <p>但是一旦使用了集群, 我们每个连接只能连接一个Node节点, 可是Pipeline中发送的数据键的数据落点未必会落到我们当前连接的集群节点上去</p>
 <p>那经过Pipeline发送过去的key就很明显不能正确的拿到内容</p>
-<h2 id="解决方案1"><a href="#解决方案1" class="headerlink" title="解决方案1"></a>解决方案1</h2><ul>
+<h2 id="解决方案1"><a class="markdownIt-Anchor" href="#解决方案1"></a> 解决方案1</h2>
+<ul>
 <li>我们先计算出来每个key的数据落点, 然后将key进行分组, 分组取数据</li>
 </ul>
 <p>步骤:</p>
 <ol>
-<li><p>实现集群节点选择方法, 给每个节点起一个名字, 例如 节点1, 节点2, 节点3</p>
+<li>
+<p>实现集群节点选择方法, 给每个节点起一个名字, 例如 节点1, 节点2, 节点3</p>
 </li>
-<li><p>查找每个节点上面的数据槽(slot)的范围</p>
+<li>
+<p>查找每个节点上面的数据槽(slot)的范围</p>
 </li>
-<li><p>对Pipeline中的每个key进行<code>crc16(key)&amp;16383</code>, 计算出来每个key的槽, 并找到槽对应的节点</p>
+<li>
+<p>对Pipeline中的每个key进行<code>crc16(key)&amp;16383</code>, 计算出来每个key的槽, 并找到槽对应的节点</p>
 </li>
-<li><p>将落到相同节点的key进行分组</p>
+<li>
+<p>将落到相同节点的key进行分组</p>
 </li>
-<li><p>对每一组key再进行Pipeline操作</p>
+<li>
+<p>对每一组key再进行Pipeline操作</p>
 </li>
 </ol>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>充分利用集群特性, 普适性好, 不会造成数据倾斜</p>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>按照节点计算key, 最大请求次数等于节点数, 节点太多的情况下不太合适, 适合小规模集群</p>
-<h2 id="解决方案2"><a href="#解决方案2" class="headerlink" title="解决方案2"></a>解决方案2</h2><ul>
+<h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
+<p>充分利用集群特性, 普适性好, 不会造成数据倾斜</p>
+<h3 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h3>
+<p>按照节点计算key, 最大请求次数等于节点数, 节点太多的情况下不太合适, 适合小规模集群</p>
+<h2 id="解决方案2"><a class="markdownIt-Anchor" href="#解决方案2"></a> 解决方案2</h2>
+<ul>
 <li>存储时候就把key存到一起</li>
 </ul>
 <p>使用<code>{}</code>来对key进行标记</p>
-<p>例如: <code>{user}:name:3</code>, <code>{user}:name</code>,<code>{user}:age</code> </p>
+<p>例如: <code>{user}:name:3</code>, <code>{user}:name</code>,<code>{user}:age</code></p>
 <p>这三个key因为{}部分都相同所以会落到同一个slot上面, 数据自然就落到同一台redis机器上面了</p>
-<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><p>不受集群规模和节点数量的影响</p>
-<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>但是这种方法限制很大, 没办法充分利用Redis的集群特性, 仅仅适合使用比较频繁的小数据量</p>
+<h3 id="优点-2"><a class="markdownIt-Anchor" href="#优点-2"></a> 优点</h3>
+<p>不受集群规模和节点数量的影响</p>
+<h3 id="缺点-2"><a class="markdownIt-Anchor" href="#缺点-2"></a> 缺点</h3>
+<p>但是这种方法限制很大, 没办法充分利用Redis的集群特性, 仅仅适合使用比较频繁的小数据量</p>
 <p>数据量太大会导致大量数据存储在同一个槽内, 造成数据倾斜</p>
 
       
@@ -3775,13 +3884,15 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>说起来惭愧,最近才有幸拜读中国古代小说的巅峰之作&lt;红楼梦&gt;</p>
+          <h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
+<p>说起来惭愧,最近才有幸拜读中国古代小说的巅峰之作&lt;红楼梦&gt;</p>
 <p>从很早之前打算好好看一下了, 遗憾的是一直以来都没有时间</p>
 <p>最近才抽出一部分时间将曹雪芹所写的前八十回看完</p>
 <p>之所以只看前八十回</p>
 <p>是因为我个人并不认同后四十回的高鹗/程伟元续写的版本</p>
 <p>所以只说前八十回的内容</p>
-<h1 id="关于全书"><a href="#关于全书" class="headerlink" title="关于全书"></a>关于全书</h1><p>&lt;红楼梦&gt;原著全本因为各种原因,现在已经寻不见了 </p>
+<h1 id="关于全书"><a class="markdownIt-Anchor" href="#关于全书"></a> 关于全书</h1>
+<p>&lt;红楼梦&gt;原著全本因为各种原因,现在已经寻不见了</p>
 <p>现在流传的大多是经过后人补全或者修改的,不过版本太多了</p>
 <p>但是大多数版本都已被后人篡改太多内容,目前看来脂砚斋重批版本的应该是最符合原书原意的</p>
 <p>脂砚斋在批注中剧透了大量后面的故事情节对于解读红楼原意非常有帮助,也是解读红楼最重要的依据之一</p>
@@ -3793,10 +3904,12 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <blockquote>
 <p>ps: 清朝的富察明义看过全本的红楼梦, 这在他的诗集&lt;绿烟琐窗集&gt;里面有记载</p>
 </blockquote>
-<h1 id="关于87版电视剧"><a href="#关于87版电视剧" class="headerlink" title="关于87版电视剧"></a>关于87版电视剧</h1><p>如果是没看过红楼梦的书的人, 非常不建议直接去看电视剧</p>
+<h1 id="关于87版电视剧"><a class="markdownIt-Anchor" href="#关于87版电视剧"></a> 关于87版电视剧</h1>
+<p>如果是没看过红楼梦的书的人, 非常不建议直接去看电视剧</p>
 <p>因为电视剧里面其实是演的一个一个的书中的片段,而且后面几集被删减的内容太多,连续性不强</p>
 <p>还是建议先把书读一遍,然后再去看电视剧</p>
-<h2 id="电视剧中的一些非常好的点"><a href="#电视剧中的一些非常好的点" class="headerlink" title="电视剧中的一些非常好的点"></a>电视剧中的一些非常好的点</h2><ol>
+<h2 id="电视剧中的一些非常好的点"><a class="markdownIt-Anchor" href="#电视剧中的一些非常好的点"></a> 电视剧中的一些非常好的点</h2>
+<ol>
 <li>服饰</li>
 </ol>
 <p>剧中的服饰非常讲究,林黛玉的各种服饰造型既符合传统,又完全没有传统汉朝服饰那种笨,糙的感觉</p>
@@ -3809,25 +3922,37 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <li>音乐</li>
 </ol>
 <p>剧中的词曲甚多, 也有人专门对此进行研究,剧中的&lt;枉凝眉&gt;简直好听到爆</p>
-<h2 id="其他相关"><a href="#其他相关" class="headerlink" title="其他相关"></a>其他相关</h2><p>87版的红楼梦毫无疑问是最经典的版本, 而其中的林黛玉毫无疑问是表演非常非常好的一个角色</p>
+<h2 id="其他相关"><a class="markdownIt-Anchor" href="#其他相关"></a> 其他相关</h2>
+<p>87版的红楼梦毫无疑问是最经典的版本, 而其中的林黛玉毫无疑问是表演非常非常好的一个角色</p>
 <p>我其实看书的时候并没有那么喜欢林黛玉, 但是后来看了陈晓旭的林黛玉, 越看越喜欢</p>
 <p>其实我个人觉得87版的陈晓旭老师的林黛玉演得好绝非是因为长得好看</p>
 <p>就纯粹的长相而言,剧中的林黛玉绝对算不上顶尖的美女,但是架不住里面各种俏皮的小动作, 实在是太可爱了</p>
 <p>我现在依然记得几个经典的片段</p>
 <blockquote>
-<p>part1: 贾宝玉用老鼠偷香芋的故事编排黛玉的时候<br>part2: 史湘云第一次出场,黛玉笑湘云说话咬字,被湘云反过来调戏的时候,生气追湘云被宝玉拦下来的时候<br>part3: 凤姐调笑黛玉吃了我家的茶怎么还不给我们家做媳妇的时候,黛玉生气的样子<br>part4: 宝玉被魇好了以后,黛玉向菩萨祈愿,被宝钗调笑<br>part5: 探宝钗黛玉半含酸<br>part6: 蘅芜君兰言解疑癖<br>part7: 以及湘云刚出场, 黛玉问宝玉去处<br>part8: 宝玉跟黛玉一块哭, 黛玉把手帕递给他<br>part9: 惊呆雁片段</p>
+<p>part1: 贾宝玉用老鼠偷香芋的故事编排黛玉的时候<br>
+part2: 史湘云第一次出场,黛玉笑湘云说话咬字,被湘云反过来调戏的时候,生气追湘云被宝玉拦下来的时候<br>
+part3: 凤姐调笑黛玉吃了我家的茶怎么还不给我们家做媳妇的时候,黛玉生气的样子<br>
+part4: 宝玉被魇好了以后,黛玉向菩萨祈愿,被宝钗调笑<br>
+part5: 探宝钗黛玉半含酸<br>
+part6: 蘅芜君兰言解疑癖<br>
+part7: 以及湘云刚出场, 黛玉问宝玉去处<br>
+part8: 宝玉跟黛玉一块哭, 黛玉把手帕递给他<br>
+part9: 惊呆雁片段</p>
 </blockquote>
 <p>以上几个片段我也读过书, 分明就有好多小动作是陈晓旭自己加上去的</p>
 <p>而且看之后的而采访时候也听扮演贾宝玉的欧阳奋强说,片场的陈晓旭十分鬼灵</p>
 <p>陈晓旭老师真的是把林黛玉身上那种俏皮可爱,表现的淋漓尽致</p>
 <p>陈晓旭老师自己都说她就是林黛玉,我觉得此言非虚</p>
-<h2 id="跟10版的对比"><a href="#跟10版的对比" class="headerlink" title="跟10版的对比"></a>跟10版的对比</h2><p>我之前老是听人说红楼梦是一部伟大的现实主义作品, 但是我个人其实并不是很同意这个说法</p>
+<h2 id="跟10版的对比"><a class="markdownIt-Anchor" href="#跟10版的对比"></a> 跟10版的对比</h2>
+<p>我之前老是听人说红楼梦是一部伟大的现实主义作品, 但是我个人其实并不是很同意这个说法</p>
 <p>10版就是认为应该写实, 结果拍出来跟那啥一样</p>
 <p>&lt;红楼梦&gt;中浪漫主义的体现非常之多</p>
 <p>贾宝玉的玉的来历,贾宝玉性格,薛宝钗吃的药,很多地方都说明红楼梦不是完完全全的写实主义, 反而是浪漫主义偏多</p>
 <p>书中人物性格之所以那么明显, 不就是因为各种戏剧化事件的推动吗</p>
 <p>所以我很喜欢87版偏浪漫主义的拍摄</p>
-<h1 id="关于人物"><a href="#关于人物" class="headerlink" title="关于人物"></a>关于人物</h1><h2 id="薛宝钗"><a href="#薛宝钗" class="headerlink" title="薛宝钗"></a>薛宝钗</h2><p>在我还没有看过红楼梦的时候我就听过好多人说喜欢薛宝钗而不喜欢林黛玉, 因为宝钗明显更符合传统的封建礼教的那一套大家闺秀的形象,通古博今,待人友善,同时又很少干涉他人私事,王熙凤说她”不关己事不开口,一问摇头三不知”</p>
+<h1 id="关于人物"><a class="markdownIt-Anchor" href="#关于人物"></a> 关于人物</h1>
+<h2 id="薛宝钗"><a class="markdownIt-Anchor" href="#薛宝钗"></a> 薛宝钗</h2>
+<p>在我还没有看过红楼梦的时候我就听过好多人说喜欢薛宝钗而不喜欢林黛玉, 因为宝钗明显更符合传统的封建礼教的那一套大家闺秀的形象,通古博今,待人友善,同时又很少干涉他人私事,王熙凤说她"不关己事不开口,一问摇头三不知"</p>
 <p>书中的宝钗是个脾气极好的人,好像除了清虚观那一段发过脾气外就再也没有发过脾气了,刘心武说宝钗那一段时间心情不好是因为选秀失败了,结合宝玉把她比作杨妃,宝钗生气说出的话来看,确实有一定的道理</p>
 <p>而且宝钗在元春省亲时候的态度和所说的话,明显看得出宝钗是很崇拜元春的,可能因为她也想当娘娘</p>
 <p>宝钗一出场,气场就与众不同,日常吃的冷香丸的配方看似普通,实则需要极强的机缘与运气.</p>
@@ -3836,30 +3961,33 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>宝钗到底才情到什么地步,书中并没有直接描写,不过能跟黛玉并列金陵十二钗之首,才情可想而知</p>
 <p>黛玉跟宝玉一起看过牡丹亭和西厢记, 然而宝钗早就看过, 惜春会画画, 然而宝钗给她列画画需要的物品列表时候如数家珍, 你猜宝钗会不会画画?后来还给湘云出主意办螃蟹宴,细想以上几件事情,件件执行者都不是宝钗,但宝钗却都在以上几件事情上扮演了极为重要的角色</p>
 <p>总体而言,宝钗给人的感觉是比黛玉和宝玉高一个level的,宝钗完全明白宝玉在想什么但是宝玉却猜不透宝钗所想,两人在感情地位上实际上是有点不平等的</p>
-<h2 id="林黛玉"><a href="#林黛玉" class="headerlink" title="林黛玉"></a>林黛玉</h2><p>相比宝钗,黛玉和宝玉才是真正的互为知己,宝玉懂黛玉,理解黛玉</p>
+<h2 id="林黛玉"><a class="markdownIt-Anchor" href="#林黛玉"></a> 林黛玉</h2>
+<p>相比宝钗,黛玉和宝玉才是真正的互为知己,宝玉懂黛玉,理解黛玉</p>
 <blockquote>
 <p>“林妹妹有说过那混账话吗,林妹妹压根就不说那混账话”</p>
 </blockquote>
 <p>一句话就表明了宝玉和黛玉互为知己到什么地步</p>
 <p>两人互相理解互相关心</p>
 <p>宝玉偷偷吊祭金钏儿,黛玉不问而知</p>
-<p>宝玉有什么好东西第一个想到的一定是林妹妹,”西厢记妙词通戏语”基本上已经是明写两人的感情了</p>
+<p>宝玉有什么好东西第一个想到的一定是林妹妹,"西厢记妙词通戏语"基本上已经是明写两人的感情了</p>
 <blockquote>
 <p>“你我既为知己,又何必来一宝钗”</p>
 </blockquote>
 <p>可惜宝玉身在花丛中,为此,林黛玉还吃醋, 开始吃宝钗的醋, 湘云来了吃湘云的醋, 后来宝琴来了倒没见有什么大的反应</p>
 <p>从书中看,黛玉是极为关心宝玉的, 宝玉被魇和挨打那两次,黛玉都十分的担心</p>
-<p>“慧紫鹃情辞试莽玉”一回, 听说宝玉的状况, 说出了”你倒是找个绳子勒死我才是正经”</p>
+<p>“慧紫鹃情辞试莽玉"一回, 听说宝玉的状况, 说出了"你倒是找个绳子勒死我才是正经”</p>
 <blockquote>
 <p>“仙杖香桃芍药花”</p>
 </blockquote>
 <p>可惜因为寄人篱下,只能把自己的希望寄予贾母身上,仙杖是不是就是指贾母啊</p>
-<h2 id="贾探春"><a href="#贾探春" class="headerlink" title="贾探春"></a>贾探春</h2><p>探春其实是个十分有才气的人, “才自精明志自高”, 从探春兴利除弊就能看出来,她对家族的一些问题早就看在眼里,并早就在思考解决方案. 据说也是曹雪芹寄托自己精神的一个人物, 可惜为家族和身份所累</p>
+<h2 id="贾探春"><a class="markdownIt-Anchor" href="#贾探春"></a> 贾探春</h2>
+<p>探春其实是个十分有才气的人, “才自精明志自高”, 从探春兴利除弊就能看出来,她对家族的一些问题早就看在眼里,并早就在思考解决方案. 据说也是曹雪芹寄托自己精神的一个人物, 可惜为家族和身份所累</p>
 <p>书中的探春毫无疑问是三春之冠,在十二钗排名中排第四,据说书中的四春分别对应 琴棋书画, 探春也确实工于书法,屋里陈设也有很明显的体现</p>
 <p>书中<code>抄检大观园</code>一段,探春的表现使的这个人物形象无比的丰满,一个片段就有如此的威力</p>
-<h2 id="史湘云"><a href="#史湘云" class="headerlink" title="史湘云"></a>史湘云</h2><p>湘云是十分可爱的一个角色,说话咬字,天天爱哥哥的, 黛玉打趣她,她也不生气, 书中的史湘云十分可爱, 然而也免不了成为封建制度的牺牲品.</p>
-<p>湘云才情不下于宝黛, 擅长对联, 在书中有一段把黛钗都给比下去了, 也就宝琴能跟她比比,还和黛玉对出了”寒塘渡鹤影,冷月葬花魂”这样的句子.</p>
-<p>黛玉其实是懂世故而不世故, 但是湘云是真的没心机,所以叫”憨湘云”</p>
+<h2 id="史湘云"><a class="markdownIt-Anchor" href="#史湘云"></a> 史湘云</h2>
+<p>湘云是十分可爱的一个角色,说话咬字,天天爱哥哥的, 黛玉打趣她,她也不生气, 书中的史湘云十分可爱, 然而也免不了成为封建制度的牺牲品.</p>
+<p>湘云才情不下于宝黛, 擅长对联, 在书中有一段把黛钗都给比下去了, 也就宝琴能跟她比比,还和黛玉对出了"寒塘渡鹤影,冷月葬花魂"这样的句子.</p>
+<p>黛玉其实是懂世故而不世故, 但是湘云是真的没心机,所以叫"憨湘云"</p>
 
       
     </div>
@@ -3947,21 +4075,26 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>我们有时候可能会遇到这样的情况</p>
+          <h1 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h1>
+<p>我们有时候可能会遇到这样的情况</p>
 <p>公司部署了一个gitlab服务器</p>
 <p>我们自己也有在github上面使用仓库</p>
 <p>但是这两个服务器上面的账号是不一样的</p>
 <p>我们需要在公司的项目中使用公司的git账号,私人项目使用私人的git账号</p>
 <p>这时候就需要在同一台电脑上面使用多个git账号</p>
-<h2 id="生成两个ssh-key"><a href="#生成两个ssh-key" class="headerlink" title="生成两个ssh-key"></a>生成两个ssh-key</h2><p>现在大家普遍使用ssh-key来作为授权验证的工具.</p>
+<h2 id="生成两个ssh-key"><a class="markdownIt-Anchor" href="#生成两个ssh-key"></a> 生成两个ssh-key</h2>
+<p>现在大家普遍使用ssh-key来作为授权验证的工具.</p>
 <p>大多数的git服务器也使用这样的方式</p>
 <p>那我们就需要生成两个对应的ssh-key, 一个用于私人项目,一个用于公司项目</p>
-<h2 id="获取服务器项目权限"><a href="#获取服务器项目权限" class="headerlink" title="获取服务器项目权限"></a>获取服务器项目权限</h2><p>首先我们要拥有对应服务器(github/gitlab/coding等)的权限</p>
+<h2 id="获取服务器项目权限"><a class="markdownIt-Anchor" href="#获取服务器项目权限"></a> 获取服务器项目权限</h2>
+<p>首先我们要拥有对应服务器(github/gitlab/coding等)的权限</p>
 <p>一般去的权限的方法是</p>
 <ol>
-<li><p>注册github/gitlab/coding账号</p>
+<li>
+<p>注册github/gitlab/coding账号</p>
 </li>
-<li><p>生成ssh-key</p>
+<li>
+<p>生成ssh-key</p>
 </li>
 </ol>
 <p><code>ssh-keygen -t rsa -C "youremail@example.com"</code> 生成ssh-key</p>
@@ -3970,22 +4103,24 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 </ol>
 <p>此时我们的电脑实际上已经获得了往对应的平台中的账户下面的仓库中推送代码的权利, git推送代码是只认机器不认人</p>
 <p>此时机器已经可以推送代码了,但是服务器还无法针对不同的服务使用不同的ssh-key设置</p>
-<h2 id="在ssh中增加config文件"><a href="#在ssh中增加config文件" class="headerlink" title="在ssh中增加config文件"></a>在ssh中增加config文件</h2><p>可以通过配置.ssh文件夹下的config文件,通知ssh对不同的服务器使用不同的ssh-key</p>
+<h2 id="在ssh中增加config文件"><a class="markdownIt-Anchor" href="#在ssh中增加config文件"></a> 在ssh中增加config文件</h2>
+<p>可以通过配置.ssh文件夹下的config文件,通知ssh对不同的服务器使用不同的ssh-key</p>
 <p>例如,config内容:</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># github</span></span><br><span class="line">Host github.com    <span class="comment"># 指定主机地址</span></span><br><span class="line">    HostName github.com   <span class="comment"># 主机名, 选填</span></span><br><span class="line">    User 111@qq.com      <span class="comment"># 用户名</span></span><br><span class="line">    PreferredAuthentications publickey  <span class="comment"># 授权方式</span></span><br><span class="line">    IdentityFile ~/.ssh/id1_rsa     <span class="comment"># 该服务器上使用的ssh-key</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># gitlab</span></span><br><span class="line">Host gitlab.com</span><br><span class="line">    HostName gitlab.com</span><br><span class="line">    User 222@qq.com</span><br><span class="line">    PreferredAuthentications publickey</span><br><span class="line">    IdentityFile ~/.ssh/id2_rsa</span><br></pre></td></tr></tbody></table></figure>
-
-<p>以上内容就是 对github.com 使用 id1_rsa这份公钥,对gitlab.com使用 id2_rsa公钥,配置好了以后ssh就可以的对不同的服务器使用不同的公钥了</p>
+<p>以上内容就是 <a href="http://xn--github-o27k.com" target="_blank" rel="noopener">对github.com</a> 使用 id1_rsa这份公钥,对gitlab.com使用 id2_rsa公钥,配置好了以后ssh就可以的对不同的服务器使用不同的公钥了</p>
 <blockquote>
 <p>ps: 没有域名host可以直接设置为服务器ip</p>
 </blockquote>
 <p>但是此时我们可能推送代码的用户标识可能不正确</p>
 <p>例如:  你的私人用户名叫A ,公司账号叫B, 此时你推送代码到公司账户但是却显示推送者是A</p>
-<h2 id="在目标项目中使用git-config设置用户"><a href="#在目标项目中使用git-config设置用户" class="headerlink" title="在目标项目中使用git config设置用户"></a>在目标项目中使用git config设置用户</h2><p>git中的配置分为全局配置和项目配置,默认使用全局配置,如果要在特定项目中使用特定的用户名,需要在项目的git配置中进行指定</p>
+<h2 id="在目标项目中使用git-config设置用户"><a class="markdownIt-Anchor" href="#在目标项目中使用git-config设置用户"></a> 在目标项目中使用git config设置用户</h2>
+<p>git中的配置分为全局配置和项目配置,默认使用全局配置,如果要在特定项目中使用特定的用户名,需要在项目的git配置中进行指定</p>
 <p>可以在项目目录中执行以下命令,指定需要使用的用户名和邮箱</p>
 <p><code>git config user.email "aaa@qq.com"</code>: 设置项目用户邮箱</p>
 <p><code>git config user.name "aaa"</code>: 设置项目用户名</p>
 <p>也可以手动修改<code>项目名/.git/config</code>文件中的user标签下的内容</p>
-<h2 id="ssh-T-测试"><a href="#ssh-T-测试" class="headerlink" title="ssh-T 测试"></a>ssh-T 测试</h2><p>使用如下命令可以测试配置结果,需要测试@ 后面的服务器地址可以自己修改</p>
+<h2 id="ssh-t-测试"><a class="markdownIt-Anchor" href="#ssh-t-测试"></a> ssh-T 测试</h2>
+<p>使用如下命令可以测试配置结果,需要测试@ 后面的服务器地址可以自己修改</p>
 <p><code>ssh -T git@github.com</code></p>
 
       
@@ -4231,20 +4366,23 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="网站限流"><a href="#网站限流" class="headerlink" title="网站限流"></a>网站限流</h1><p>随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加</p>
+          <h1 id="网站限流"><a class="markdownIt-Anchor" href="#网站限流"></a> 网站限流</h1>
+<p>随着网站用户规模的增加,业务的扩张, 我们网站所承受的流量规模和并发数也会不断增加</p>
 <p>到了一定时候我们就会希望可以对网站的流量进行一定程度的控制,因为我们的业务处理能力是有限的,我们需要优先保证关键业务的正常运转</p>
 <p>技术人员一直以来都在致力于可以彻底的解决高并发问题,但是到目前为止也没有一种可以彻底解决的方案</p>
 <p>我们只能尽量的提升业务处理的性能,做业务拆分,分布式,进行错峰处理等手段</p>
 <p>其实我们可以从一整个用户请求的过程中的每个阶段进行分析, 在不同的阶段采用不同的方案</p>
 <p>在用户请求刚刚进入的时候进行限流处理就是一种十分有效的手段</p>
-<h2 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h2><p>限流就是从用户访问出限制用户的请求,常用于秒杀等并发量极高的场景之下</p>
+<h2 id="限流"><a class="markdownIt-Anchor" href="#限流"></a> 限流</h2>
+<p>限流就是从用户访问出限制用户的请求,常用于秒杀等并发量极高的场景之下</p>
 <p>限流的核心思想就是人为的丢弃一部分用户请求, 不作处理, 这样相当于从最根源处就避免的用户后续的操作,虽然对用户体验来说影响非常大, 但是只要采用合适的丢弃策略,就能在有效保护系统的同时,尽量减少对用户体验的影响</p>
-<h2 id="漏桶算法"><a href="#漏桶算法" class="headerlink" title="漏桶算法"></a>漏桶算法</h2><p>漏桶算法就是一种有效的限流算法,顾名思义,就是像漏桶一样以固定的速率将用户请求控制在一个确定的范围之内</p>
+<h2 id="漏桶算法"><a class="markdownIt-Anchor" href="#漏桶算法"></a> 漏桶算法</h2>
+<p>漏桶算法就是一种有效的限流算法,顾名思义,就是像漏桶一样以固定的速率将用户请求控制在一个确定的范围之内</p>
 <p>漏桶有两个关键属性,一个是漏桶的大小(最大存储的请求容量),另一个是漏桶的开口(处理请求的速率)</p>
 <p>用户的请求过来之后可以认为会被放到一个漏桶内,然后桶本身以一定的速率处理请求,当用户的请求速率过快,桶内的请求数量过多就会造成请求溢出,这部分请求就会被视为无效的请求</p>
 <p>特点: 根据时间以固定速率允许请求通过</p>
 <p>缺点: 针对部分由突发场景的效率有点低</p>
-<p>流程图: </p>
+<p>流程图:</p>
 <p><img data-src="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png" alt="flow1.png">令牌桶算法</p>
 <p>另一种常用的限流算法叫令牌桶算法,令牌桶的思想跟漏桶有点不大一样,令牌桶是先假设了一个桶, 桶内装有令牌(token),系统以一定的时间往桶里添加令牌.请求过来以后需要使用桶里面的令牌才能执行,也就是说我们可以通过控制桶内令牌的数量来控制最大请求数,也能通过改变添加令牌的速率来调整请求的处理速率</p>
 <p>令牌桶也有关键参数,一个是桶的大小,一个是令牌的发放速率</p>
@@ -4256,7 +4394,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>ps: 往令牌桶内添加令牌并不需要一个单独的程序来执行,只要在请求过来时候根据时间自动计算可用的令牌就行了</p>
 </blockquote>
 <p>虽然两种算法都能控制请求的处理速率, 但是这两者其实都受到之后请求处理速率的影响, 也就是说就算我们限流部分允许每秒2万的请求,但是后台业务的处理速度只有每秒1千,依然会造成严重的业务阻塞</p>
-<h2 id="RateLimiter"><a href="#RateLimiter" class="headerlink" title="RateLimiter"></a>RateLimiter</h2><p>Google开源工具包Guava提供了限流工具类RateLimiter,该类基于令牌桶算法(Token Bucket)来完成限流</p>
+<h2 id="ratelimiter"><a class="markdownIt-Anchor" href="#ratelimiter"></a> RateLimiter</h2>
+<p>Google开源工具包Guava提供了限流工具类RateLimiter,该类基于令牌桶算法(Token Bucket)来完成限流</p>
 
       
     </div>
@@ -4434,32 +4573,39 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="redis的AOF和RDB持久化"><a href="#redis的AOF和RDB持久化" class="headerlink" title="redis的AOF和RDB持久化"></a>redis的AOF和RDB持久化</h1><p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式</p>
-<h2 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h2><p>特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态</p>
+          <h1 id="redis的aof和rdb持久化"><a class="markdownIt-Anchor" href="#redis的aof和rdb持久化"></a> redis的AOF和RDB持久化</h1>
+<p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式</p>
+<h2 id="rdb持久化"><a class="markdownIt-Anchor" href="#rdb持久化"></a> RDB持久化</h2>
+<p>特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态</p>
 <p>例如:</p>
 <figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">	<span class="attr">"age"</span>:<span class="number">1</span>,</span><br><span class="line">	<span class="attr">"name"</span>:<span class="string">"zhangsan"</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据</p>
 <p>拥有持久化的能力使得redis在服务重启时能保留大部分的内存数据</p>
 <p>RDB文件在redis主从同步时候会被发送给从节点,从节点使用RDB进行全量的数据恢复</p>
-<h3 id="主动触发保存"><a href="#主动触发保存" class="headerlink" title="主动触发保存"></a>主动触发保存</h3><ol>
-<li><p>使用 <code>save</code> 命令可以手动对redis进行保存, 该命令会阻塞redis主进程</p>
+<h3 id="主动触发保存"><a class="markdownIt-Anchor" href="#主动触发保存"></a> 主动触发保存</h3>
+<ol>
+<li>
+<p>使用 <code>save</code> 命令可以手动对redis进行保存, 该命令会阻塞redis主进程</p>
 </li>
-<li><p>使用<code>bgsave</code>会在后台创建子线程来进行存储, 此时要求redis节点有1倍以上的空闲内存 </p>
+<li>
+<p>使用<code>bgsave</code>会在后台创建子线程来进行存储, 此时要求redis节点有1倍以上的空闲内存</p>
 </li>
 </ol>
 <p>比如:  机器内存有32G, 此时Redis里面数据20G, 使用 <code>bgsave</code> 就不可以,必须保证空闲内存大于20G才能使用</p>
-<h2 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a>AOF持久化</h2><p>特点: 对写命令进行备份,一般是再有写命令的时候吧命令追加到AOF文件中,客户端每进行一次操作,服务器吧命令写入AOF文件,数据恢复就是从AOF文件中读取命令并执行</p>
+<h2 id="aof持久化"><a class="markdownIt-Anchor" href="#aof持久化"></a> AOF持久化</h2>
+<p>特点: 对写命令进行备份,一般是再有写命令的时候吧命令追加到AOF文件中,客户端每进行一次操作,服务器吧命令写入AOF文件,数据恢复就是从AOF文件中读取命令并执行</p>
 <p>但是会出现这么一种情况(ABA):</p>
 <p>对某个命令的写命令太多的话,有可能会出现这种情况</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 18 </span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 20</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>这种情况下a的值实际最终还是10,不过因为aof对所有操作的命令都会记录,导致大量的命令对数据最终的状态来说其实都是”无效”的</p>
+<p>这种情况下a的值实际最终还是10,不过因为aof对所有操作的命令都会记录,导致大量的命令对数据最终的状态来说其实都是"无效"的</p>
 <p>这种情况还会引起效率问题,为了减小AOF文件的大小,这个时候需要对AOF进行重写</p>
-<h3 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h3><p>为了应对命令有冗余,提高数据备份效率,会对数据库进行AOF重写,重写是通过对当前的数据库数据进行读取并进行反向的命令解析来进行的</p>
+<h3 id="aof重写"><a class="markdownIt-Anchor" href="#aof重写"></a> AOF重写</h3>
+<p>为了应对命令有冗余,提高数据备份效率,会对数据库进行AOF重写,重写是通过对当前的数据库数据进行读取并进行反向的命令解析来进行的</p>
 <p>某种意义上来讲AOF重写和RDB有部分类似,都是针对当前数据库状态进行的备份</p>
 <p>只不过aof会把所有数据反向解析成操作命令保存起来</p>
 <p>AOF重写可以使用命令 <code>BGREWRITEAOF</code></p>
-<h3 id="AOF保存的格式"><a href="#AOF保存的格式" class="headerlink" title="AOF保存的格式"></a>AOF保存的格式</h3><p>redis的命令会被以RESP(redis的客户端通信协议)的格式保存到 *.aof的文件中</p>
+<h3 id="aof保存的格式"><a class="markdownIt-Anchor" href="#aof保存的格式"></a> AOF保存的格式</h3>
+<p>redis的命令会被以RESP(redis的客户端通信协议)的格式保存到 *.aof的文件中</p>
 
       
     </div>
@@ -4547,7 +4693,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="常用软件分享"><a href="#常用软件分享" class="headerlink" title="常用软件分享"></a>常用软件分享</h1><p>仅仅列举了常用的完整APP程序,终端服务应用不在此列</p>
+          <h1 id="常用软件分享"><a class="markdownIt-Anchor" href="#常用软件分享"></a> 常用软件分享</h1>
+<p>仅仅列举了常用的完整APP程序,终端服务应用不在此列</p>
           <!--noindex-->
           <!--/noindex-->
         
@@ -4637,7 +4784,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="分布式唯一ID"><a href="#分布式唯一ID" class="headerlink" title="分布式唯一ID"></a>分布式唯一ID</h1><p>我们在工作中经常需要用到唯一id 来对信息和记录进行唯一性标识</p>
+          <h1 id="分布式唯一id"><a class="markdownIt-Anchor" href="#分布式唯一id"></a> 分布式唯一ID</h1>
+<p>我们在工作中经常需要用到唯一id 来对信息和记录进行唯一性标识</p>
 <p>因为许多数据库的特性, 我们对唯一id还有一个趋势增长的要求</p>
 <p>所以核心要点就两个</p>
 <ol>
@@ -4645,7 +4793,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <li>趋势有序</li>
 </ol>
 <p>下面介绍几种常用的方法</p>
-<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p>最常见的方式。利用数据库创建一张表，全数据库唯一。</p>
+<h1 id="数据库"><a class="markdownIt-Anchor" href="#数据库"></a> 数据库</h1>
+<p>最常见的方式。利用数据库创建一张表，全数据库唯一。</p>
 <p>优点：</p>
 <ol>
 <li>简单，代码方便，性能可以接受。</li>
@@ -4662,9 +4811,12 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>优化方案：</p>
 <p>针对主库单点，如果有多个Master库，则每个Master库设置的起始数字不一样，步长一样，可以是Master的个数。</p>
 <p>比如：</p>
-<p>Master1生成的是  1,4,7,10<br>Master2生成的是  2,5,8,11<br>Master3生成的是  3,6,9,12</p>
+<p>Master1生成的是  1,4,7,10<br>
+Master2生成的是  2,5,8,11<br>
+Master3生成的是  3,6,9,12</p>
 <p>这样就可以有效生成集群中的唯一ID，也可以大大降低ID生成数据库操作的负载。</p>
-<h1 id="使用redis"><a href="#使用redis" class="headerlink" title="使用redis"></a>使用redis</h1><p>当使用数据库来生成ID性能不够要求的时候，我们可以尝试使用redis来生成ID。</p>
+<h1 id="使用redis"><a class="markdownIt-Anchor" href="#使用redis"></a> 使用redis</h1>
+<p>当使用数据库来生成ID性能不够要求的时候，我们可以尝试使用redis来生成ID。</p>
 <p>这主要依赖于redis是单线程的，所以也可以用生成全局唯一的ID。可以用redis的原子操作 INCR和INCRBY来实现。</p>
 <p>可以使用redis集群来获取更高的吞吐量。假如一个集群中有5台redis。可以初始化每台redis的值分别是1,2,3,4,5，然后步长都是5。各个redis生成的ID为：</p>
 <p>A：1,6,11,16,21</p>
@@ -4686,7 +4838,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <li>如果系统中没有redis，还需要引入新的组件，增加系统复杂度。</li>
 <li>需要编码和配置的工作量比较大。</li>
 </ol>
-<h1 id="twitter"><a href="#twitter" class="headerlink" title="twitter"></a>twitter</h1><p>twitter在把存储系统从MySQL迁移到Cassandra的过程中由于Cassandra没有顺序ID生成机制，于是自己开发了一套全局唯一ID生成服务:<code>Snowflake</code>。</p>
+<h1 id="twitter"><a class="markdownIt-Anchor" href="#twitter"></a> twitter</h1>
+<p>twitter在把存储系统从MySQL迁移到Cassandra的过程中由于Cassandra没有顺序ID生成机制，于是自己开发了一套全局唯一ID生成服务:<code>Snowflake</code>。</p>
 <p>Snowflake使用二进制计数,讲一个完整的UUID分为不同部分,依据不同的规则生成</p>
 <ol>
 <li>41位的时间序列（精确到毫秒，41位的长度可以使用69年）</li>
@@ -4697,7 +4850,7 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <p>优点：</p>
 <ol>
 <li>高性能，低延迟；独立的应用;</li>
-<li>按时间有序。 </li>
+<li>按时间有序。</li>
 </ol>
 <p>缺点:</p>
 <ol>
@@ -4705,7 +4858,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <li>强依赖时钟,如果主机时间回拨,则会造成重复ID,会产生</li>
 <li>ID虽然有序,但是不连续</li>
 </ol>
-<h1 id="mongodb"><a href="#mongodb" class="headerlink" title="mongodb"></a>mongodb</h1><p>MongoDB的ObjectId和snowflake算法类似。</p>
+<h1 id="mongodb"><a class="markdownIt-Anchor" href="#mongodb"></a> mongodb</h1>
+<p>MongoDB的ObjectId和snowflake算法类似。</p>
 <p>它设计成轻量型的，不同的机器都能用全局唯一的同种方法方便地生成它。</p>
 <p>MongoDB 从一开始就设计用来作为分布式数据库，处理多个节点是一个核心要求。</p>
 <p>使其在分片环境中要容易生成得多</p>
@@ -4715,26 +4869,31 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <table>
 <thead>
 <tr>
-<th align="left">0-1-2-3</th>
-<th align="left">4-5-6</th>
-<th align="left">7-8</th>
-<th align="left">9-10-11</th>
+<th style="text-align:left">0-1-2-3</th>
+<th style="text-align:left">4-5-6</th>
+<th style="text-align:left">7-8</th>
+<th style="text-align:left">9-10-11</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">时间戳</td>
-<td align="left">机器ID</td>
-<td align="left">PID</td>
-<td align="left">计数器</td>
+<tbody>
+<tr>
+<td style="text-align:left">时间戳</td>
+<td style="text-align:left">机器ID</td>
+<td style="text-align:left">PID</td>
+<td style="text-align:left">计数器</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>前四个字节时间戳是从标准纪元开始的时间戳，单位为秒，有如下特性：</p>
-<p> 1 时间戳与后边5个字节一块，保证秒级别的唯一性；<br> 2 保证插入顺序大致按时间排序；<br> 3 隐含了文档创建时间；<br> 4 时间戳的实际值并不重要，不需要对服务器之间的时间进行同步（因为加上机器ID和进程ID已保证此值唯一，唯一性是ObjectId的最终诉求）。</p>
+<p>1 时间戳与后边5个字节一块，保证秒级别的唯一性；<br>
+2 保证插入顺序大致按时间排序；<br>
+3 隐含了文档创建时间；<br>
+4 时间戳的实际值并不重要，不需要对服务器之间的时间进行同步（因为加上机器ID和进程ID已保证此值唯一，唯一性是ObjectId的最终诉求）。</p>
 <p>机器ID是服务器主机标识，通常是机器主机名的散列值。</p>
 <p>同一台机器上可以运行多个mongod实例，因此也需要加入进程标识符PID。</p>
 <p>前9个字节保证了同一秒钟不同机器不同进程产生的ObjectId的唯一性。后三个字节是一个自动增加的计数器（一个mongod进程需要一个全局的计数器），保证同一秒的ObjectId是唯一的。同一秒钟最多允许每个进程拥有（256^3 = 16777216）个不同的ObjectId。</p>
 <p>如: “5a3fa45b421aa93195b92d67”</p>
-<p>优点: </p>
+<p>优点:</p>
 <ol>
 <li>时间戳保证秒级唯一</li>
 <li>机器ID保证设计时考虑分布式</li>
@@ -4747,7 +4906,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <ol>
 <li>需要独立实现和部署</li>
 </ol>
-<h1 id="携程的方案"><a href="#携程的方案" class="headerlink" title="携程的方案"></a>携程的方案</h1><p>携程采用了另一种解决方案</p>
+<h1 id="携程的方案"><a class="markdownIt-Anchor" href="#携程的方案"></a> 携程的方案</h1>
+<p>携程采用了另一种解决方案</p>
 <p>也是基于数据库</p>
 <p>先在数据库中创建一个表</p>
 <table>
@@ -4757,7 +4917,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <th>server</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>1</td>
 <td>192.168.8.1</td>
 </tr>
@@ -4765,7 +4926,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <td>2</td>
 <td>192.168.8.2</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>要获取id的时候先使用 replace into 更新自己服务器的记录, 然后在查询自己服务器的当前值</p>
 <blockquote>
 <p>ps: replace into 会先尝试insert into 如果已经存在会进行对当前记录删除,然后重新插入</p>
@@ -4789,7 +4951,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
 <li>需要单独实现</li>
 <li>当缓存服务器数据丢失的话,会造成id段浪费</li>
 </ol>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总体而言，分布式唯一ID需要满足以下条件：</p>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>总体而言，分布式唯一ID需要满足以下条件：</p>
 <p>高可用性：不能有单点故障。</p>
 <p>全局唯一性：不能出现重复的ID号，既然是唯一标识，这是最基本的要求。</p>
 <p>趋势递增：在MySQL InnoDB引擎中使用的是聚集索引，由于多数RDBMS使用B-tree的数据结构来存储索引数据，在主键的选择上面我们应该尽量使用有序的主键保证写入性能。</p>
@@ -4885,7 +5048,8 @@ redis在的事务其实相当于使用一个pipeline 将一系列的操作一起
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="redis对象"><a href="#redis对象" class="headerlink" title="redis对象"></a>redis对象</h1><p>redis中有五种常用对象</p>
+          <h1 id="redis对象"><a class="markdownIt-Anchor" href="#redis对象"></a> redis对象</h1>
+<p>redis中有五种常用对象</p>
 <p>我们所说的对象的类型大多是值的类型,键的类型大多是字符串对象,值得类型大概有以下几种,但是无论哪种都是基于redisObject实现的</p>
           <!--noindex-->
           <!--/noindex-->

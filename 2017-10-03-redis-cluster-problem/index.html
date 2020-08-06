@@ -27,7 +27,7 @@
 <meta property="og:description" content="我们在使用Redis集群的使用过程中发现了很多问题 这些问题产生的原因归根到底都是因为redis将数据映射到槽(slot)上面, 而不同的键分布在不同的Node节点上面导致的  键分布导致的问题 当在集群模式下进行多键操作, 同时操作的键中有部分不在该节点时,会报如下错误 CROSSSLOT Keys in request don't hash to the same slot 例如: hmget">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-10-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-25T14:33:54.450Z">
+<meta property="article:modified_time" content="2020-08-06T11:53:56.791Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
@@ -1269,7 +1269,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #aae9dd;
+  background: #7eddff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3228,13 +3228,13 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">51</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -3296,7 +3296,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
-  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>

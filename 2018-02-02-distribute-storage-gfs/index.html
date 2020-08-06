@@ -19,17 +19,17 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="GFS是谷歌的底层文件系统 本文试图解释如下问题  GFS是什么，做什么用的，要解决什么问题 GFS是怎么解决这些问题的 GFS的设计有什么优点和缺点   GFS简介 GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务。 GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GF">
+  <meta name="description" content="本文试图解释如下问题  GFS是什么，做什么用的，要解决什么问题 GFS是怎么解决这些问题的 GFS的设计有什么优点和缺点   GFS简介 GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务。 GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GFS的读写基本都是其他应用的大">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式文件系统-GFS学习总结">
 <meta property="og:url" content="https://leriou.github.io/2018-02-02-distribute-storage-gfs/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="GFS是谷歌的底层文件系统 本文试图解释如下问题  GFS是什么，做什么用的，要解决什么问题 GFS是怎么解决这些问题的 GFS的设计有什么优点和缺点   GFS简介 GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务。 GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GF">
+<meta property="og:description" content="本文试图解释如下问题  GFS是什么，做什么用的，要解决什么问题 GFS是怎么解决这些问题的 GFS的设计有什么优点和缺点   GFS简介 GFS(Google File System)是谷歌开发的一个分布式文件系统, 目的是提供一个基于众多廉价服务器工作的基础层分布式的文件存储服务。 GFS服务的是上层的Bigtable, Megastore等上层数据库应用，所以GFS的读写基本都是其他应用的大">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/J5EbuqjnQHvRUIf.jpg">
 <meta property="article:published_time" content="2018-02-02T03:07:44.000Z">
-<meta property="article:modified_time" content="2020-07-25T14:33:54.465Z">
+<meta property="article:modified_time" content="2020-08-06T11:53:56.804Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="GFS">
 <meta name="twitter:card" content="summary">
@@ -1272,7 +1272,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #aae9dd;
+  background: #7eddff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3009,7 +3009,7 @@ ul.breadcrumb li + li:last-child {
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">编程工具</span></a>
+                  <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/" itemprop="url" rel="index"><span itemprop="name">分布式存储</span></a>
                 </span>
             </span>
 
@@ -3045,8 +3045,7 @@ ul.breadcrumb li + li:last-child {
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>GFS是谷歌的底层文件系统</p>
-<p>本文试图解释如下问题</p>
+        <p>本文试图解释如下问题</p>
 <ol>
 <li>GFS是什么，做什么用的，要解决什么问题</li>
 <li>GFS是怎么解决这些问题的</li>
@@ -3304,13 +3303,13 @@ ul.breadcrumb li + li:last-child {
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">51</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -3372,7 +3371,7 @@ ul.breadcrumb li + li:last-child {
 
   
   
-  
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>

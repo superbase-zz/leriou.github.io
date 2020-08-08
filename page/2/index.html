@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #5ff;
+  background: #ff2849;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2968,6 +2968,177 @@ ul.breadcrumb li + li:last-child {
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2019-06-01-recommended-system-ranking-system-md/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="哎呀是太阳嘛">
+      <meta itemprop="description" content="君子生非异也, 善假于物也">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leriou's Tavern">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019-06-01-recommended-system-ranking-system-md/" class="post-title-link" itemprop="url">排行榜系统设计</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-01 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-01T00:00:00+08:00">2019-06-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">系统设计</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2019-06-01-recommended-system-ranking-system-md/" class="post-meta-item leancloud_visitors" data-flag-title="排行榜系统设计" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019-06-01-recommended-system-ranking-system-md/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019-06-01-recommended-system-ranking-system-md/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="为啥需要排行榜"><a class="markdownIt-Anchor" href="#为啥需要排行榜"></a> 为啥需要排行榜</h1>
+<p>推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。</p>
+<p>此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题</p>
+<ol>
+<li>最新内容：平台的最近发布的比较新鲜的资源</li>
+<li>热门内容：平台上最近一段时间发布的比较热门的资源</li>
+<li>实时基于用户属性进行分群，基于用户群进行推荐（比如，上海地区用户，女性用户，30-40岁用户）</li>
+</ol>
+<p>其中的热门内容就需要排行榜系统的支持</p>
+<h1 id="排行榜系统"><a class="markdownIt-Anchor" href="#排行榜系统"></a> 排行榜系统</h1>
+<p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
+<h2 id="固定时间范围的排行榜"><a class="markdownIt-Anchor" href="#固定时间范围的排行榜"></a> 固定时间范围的排行榜</h2>
+<p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
+<p>针对“本月最火歌曲”这种需求的排行榜，处理起来相对简单</p>
+<p>只要统计从本月从1号到现在的所有歌曲的播放数据就可以了，如果数据量不大且要求不高，可以定时每一段时间计算一次， 计算方法如下</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">id</span>) <span class="keyword">from</span> play_record <span class="keyword">where</span> play_time &gt; <span class="string">"2019-05-01"</span> <span class="keyword">group</span> <span class="keyword">by</span> itemid;</span><br></pre></td></tr></tbody></table></figure>
+<p>如果实时性要求较高， 也可以使用基于事件的实时增量统计的方式，同时每天处理一次批量统计，做数据矫正。</p>
+<figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">add-score</span> video_10086_play_times <span class="number">1</span>)</span><br></pre></td></tr></tbody></table></figure>
+<p>具体就是每天计算一个排行榜之后， 使用流处理系统，当有新的播放事件，在榜单现有基础上做incr操作即可</p>
+<p>这种排行榜相对来说实现比较简单， 缺点也很明显</p>
+<p>比如今天如果是本月的1号， 那你的排行榜数据就由于样本数据有限，误差较大，无法起到排行榜真正的作用</p>
+<p>处理这种问题就需要“最近30天最火的歌曲”这种滚动排行榜</p>
+<h2 id="滚动排行榜"><a class="markdownIt-Anchor" href="#滚动排行榜"></a> 滚动排行榜</h2>
+<p>滚动排行榜是指基于最近一段时间范围的数据获得的排行榜统计结果</p>
+<p>拿最近3天排行榜为例， 假设现在是是10号的10点钟， 那滚动排行榜覆盖的区间就是前推3天的数据</p>
+<p><code>7号从10点以后的数据 + 8，9号全天数据 + 10号截至目前的数据 的统计结果</code></p>
+<p>滚动排行榜相对来说难度增加了很多</p>
+<p>如果数据量不大，对实时性要求不高的话， 也可以采用每一段时间计算一次最近3天的播放量的批量的方式</p>
+<p>但是如果数据量较大或者对实时性有要求较高，那就需要设计一个实时的滚动排行榜</p>
+<h3 id="实时的滚动排行榜"><a class="markdownIt-Anchor" href="#实时的滚动排行榜"></a> 实时的滚动排行榜</h3>
+<p>假如我要做3天的滚动歌曲榜单， 我就需要获取最近72小时的播放记录进行统计</p>
+<p>拿数据举例来说</p>
+<p>假设有如下的播放记录, 当前日期是 2019-04-04 13:00， 排行榜统计区间应该是 <code>04-01 13:00 ～ 04-04 13:00</code></p>
+<table>
+<thead>
+<tr>
+<th>歌曲id</th>
+<th>播放时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1009</td>
+<td>2019-04-01  9:00</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>2019-04-01 14:00</td>
+</tr>
+<tr>
+<td>1020</td>
+<td>2019-04-02  8:00</td>
+</tr>
+<tr>
+<td>1089</td>
+<td>2019-04-03 10:00</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>2019-04-04  9:00</td>
+</tr>
+<tr>
+<td>1023</td>
+<td>2019-04-04 12:00</td>
+</tr>
+</tbody>
+</table>
+<p>那我们获取到的3天榜单应该是这样(1009的播放记录已经过期)</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//  歌曲id:播放次数</span><br><span class="line">{</span><br><span class="line">     1023:1,</span><br><span class="line">     1010:2，</span><br><span class="line">     1089:1，</span><br><span class="line">     1020:1</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>排行榜处理过程最关键的有两点</p>
+<ol>
+<li>
+<p>对一个元素加分时，加当日周期榜、滚动榜；<br>
+还需根据其在今日滚动榜中的分数s、及n-1天日榜中的分数r，计算出其在明日滚动榜中的初始分数s-r写入明日滚动榜中；<br>
+即3个写操作；</p>
+</li>
+<li>
+<p>如果一个元素在当日没有任何加分操作，那么不会触发写入初始分数操作，所以还需要一个离线工具补齐。<br>
+该离线工具可提前一天运行，即当日运行离线工具补齐次日的滚动榜数据即可。</p>
+</li>
+</ol>
+<p>R：每日的统计数据  S： 每日的滚动排行榜数据</p>
+<p>s-r &gt; 0 才进行写入操作</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">以3天滚动榜为例，次日滚动榜初始态为当日滚动榜减去n-2天的日榜数据。</span><br><span class="line">     +-------------------------------------------+</span><br><span class="line">     |                                           |</span><br><span class="line">+----+---+   +--------+   +--------+             |</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |             |</span><br><span class="line">+----+---+   +----+---+   +---+----+             |</span><br><span class="line">     |            |           |                  |</span><br><span class="line">     |            |           v+                 v-</span><br><span class="line">     |            |</span><br><span class="line">     |            |    +  +--------+        +--------+</span><br><span class="line">     |            +-----&gt; |        |     +  |        |</span><br><span class="line">     |                 +  |  S(i)  | +---+&gt; | S(i+1) |</span><br><span class="line">     +-----------------+&gt; |        |        |        |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line"></span><br><span class="line">分数变化</span><br><span class="line">                                +--------------+</span><br><span class="line">                                |   AddScore   |</span><br><span class="line">                                +-+----+-----+-+</span><br><span class="line">                                  |+   |     |</span><br><span class="line">                                  v    |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |+</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |   |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |</span><br><span class="line">                                       |     v</span><br><span class="line">                          +--------+   |    +--------+</span><br><span class="line">                          |  S(i)  |&lt;--+    | S(i+1) |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line">                                                 ^</span><br><span class="line">                                                 |+</span><br><span class="line">                                          +------------+</span><br><span class="line">                                          |    Tool    |</span><br><span class="line">                                          +------------+</span><br></pre></td></tr></tbody></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -5583,225 +5754,6 @@ Stroustrup：优雅很重要，可是你如何衡量"优雅"？可以表达问�
   
   
 
-      
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://leriou.github.io/2017-11-02-distribute-database-share-in-group/">
-
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="哎呀是太阳嘛">
-      <meta itemprop="description" content="君子生非异也, 善假于物也">
-    </span>
-
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leriou's Tavern">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017-11-02-distribute-database-share-in-group/" class="post-title-link" itemprop="url">分布式服务组内分享</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2017-11-02 00:00:00" itemprop="dateCreated datePublished" datetime="2017-11-02T00:00:00+08:00">2017-11-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">计算机编程</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2017-11-02-distribute-database-share-in-group/" class="post-meta-item leancloud_visitors" data-flag-title="分布式服务组内分享" title="Views">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">Views: </span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2017-11-02-distribute-database-share-in-group/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2017-11-02-distribute-database-share-in-group/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这个是写给组内成员的分布式知识简单分享</p>
-<h1 id="什么是分布式"><a class="markdownIt-Anchor" href="#什么是分布式"></a> 什么是分布式</h1>
-<p>什么是集群? 什么是分布式?<br>
-集群:   一个任务多个人可以做(实际是一个人做), 集群的主要目的是高可用, 通过冗余解决单点故障问题<br>
-分布式: 一个任务拆分成多个部分由多个机器来做, 解决业务解耦, 水平扩展和性能问题</p>
-<p>几个典型的分布式系统:</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>类型</th>
-<th>数据分布方式</th>
-<th>故障转移</th>
-<th>节点类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>kafka</td>
-<td>消息系统</td>
-<td>broker-&gt;partition</td>
-<td>partition选举</td>
-<td>对等节点</td>
-</tr>
-<tr>
-<td>redis</td>
-<td>缓存</td>
-<td>instance-&gt;shard</td>
-<td>sentinal选举</td>
-<td>对等节点</td>
-</tr>
-<tr>
-<td>es</td>
-<td>搜索服务</td>
-<td>node-&gt;shard</td>
-<td>master选举和partition选举</td>
-<td>对等节点</td>
-</tr>
-<tr>
-<td>Tidb</td>
-<td>数据库</td>
-<td>TiDB+TiKV+PD</td>
-<td>node选举</td>
-<td>非对等节点</td>
-</tr>
-<tr>
-<td>hdfs</td>
-<td>文件系统</td>
-<td>namenode+datanode</td>
-<td>主从</td>
-<td>非对等节点</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>节点类型：对等节点是说节点之间功能相似，非对等节点是说节点之间功能不同，无法互相取代</p>
-</blockquote>
-<h1 id="分布式要解决的常见问题"><a class="markdownIt-Anchor" href="#分布式要解决的常见问题"></a> 分布式要解决的常见问题</h1>
-<p>分布式要满足三个特性之二 CAP(C:一致性, P:分区容忍性, A:可用性)</p>
-<ul>
-<li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否同样的值。（等同于所有节点访问同一份最新的数据副本），换句话就是说，任何时刻，所用的应用程序都能访问得到相同的数据。</li>
-<li>可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性），换句话就是说，任何时候，任何应用程序都可以读写数据。</li>
-<li>分区容错性（P）：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择，换句话说，系统可以跨网络分区线性的伸缩和扩展。</li>
-</ul>
-<p>CAP三个特性不可能同时满足, 只能同时满足两个特性<br>
-对大多数的分布式应用来说 CAP中的 P 是必不可少的<br>
-所以我们一般都会从CA中选取一个, 一般会选择CP 或者 AP</p>
-<p>具体处理cap协议的方法如下图</p>
-<p><img data-src="https://i.loli.net/2020/05/09/bO1gZiWHtFBvKj2.jpg" alt="cap.jpg"></p>
-<h1 id="如何解决分区容忍性"><a class="markdownIt-Anchor" href="#如何解决分区容忍性"></a> 如何解决分区容忍性</h1>
-<p>解决分区容忍性问题首先就是对数据进行分区或者叫分片</p>
-<p>分区手段有很多, 但大多分两种, hash分区和线性分区 ，系统将数据分为逻辑上的几个区块, 每个区块可以在多个机器上进行自由的部署和移动。<br>
-这样就做到了将数据和机器进行隔离, 可以以分片为单位在不同机器上进行数据的移动和备份，但是这样在使用数据的时候就需要从多个分片同时获取数据进行合并。<br>
-如果因为某些原因， 导致某些分片所在的节点出现故障， 此时我们就认为出现了网络分区， 分区容忍性要求在此种状况下，系统依然能对外提供有效服务 。</p>
-<h2 id="gossip"><a class="markdownIt-Anchor" href="#gossip"></a> Gossip</h2>
-<p>使用者: Redis<br>
-Gossip协议是节点将自己的数据通知给集群内所有节点的协议, 但是不能做到数据一致性<br>
-Gossip只能保证可用性和分区容忍性</p>
-<p>如果对数据的分片进行备份, 同时将备份分布到多个不同的网络节点上, 这样即便部分数据分区不可用, 在可容忍的范围内只要不是该分区的所有数据分片都出问题, 还是能提供正常的数据服务</p>
-<p>数据分片是分布式存储的基础, 数据分片好处很多</p>
-<ol>
-<li>对数据分片可以使数据不受单机存储制约</li>
-<li>对数据分片可以通过多分区共同协作并行处理提高性能</li>
-<li>对分区数据进行冗余可以提高系统可用性</li>
-</ol>
-<p>但是数据分片和副本会带来一致性问题</p>
-<h1 id="如何保证数据一致性"><a class="markdownIt-Anchor" href="#如何保证数据一致性"></a> 如何保证数据一致性</h1>
-<h2 id="单节点的数据一致性"><a class="markdownIt-Anchor" href="#单节点的数据一致性"></a> 单节点的数据一致性</h2>
-<p>单节点如何保证数据一致性和完整性</p>
-<p>比如: 数据库索引的更新, B树在分裂过程中出现问题怎么办,</p>
-<p>一般处理单节点的一致性可以用 WAL(预写日志,或者叫redo日志) 或者 写时复制(copy on write)</p>
-<p>WAL就是先把操作追加到一个日志文件, 然后再对内存进行操作, lsm树中的memtable就是典型的使用这种方案</p>
-<p>写时复制就是先在其他地方把数据处理完毕, 最后直接修改数据引用, gfs的快照技术有使用类似的方案</p>
-<p>典型的例子是 修改B+树时预先生成一个小的B+树, 然后直接替换B+树上的节点指针</p>
-<h2 id="分布式的一致性"><a class="markdownIt-Anchor" href="#分布式的一致性"></a> 分布式的一致性</h2>
-<h3 id="主从一致性"><a class="markdownIt-Anchor" href="#主从一致性"></a> 主从一致性</h3>
-<p>目前业界的普遍做法是将分区的多个副本形成一个小组, 组内选举一个primary副本来执行写操作或确定写入顺序, 其他副本仅提供读操作或根本只提供备份功能, 这样对外部系统只有一个主副本做写入操作, 就可以保证数据写入的一致性</p>
-<p>如何从多个副本集合中选举主副本就涉及到共识算法（选主算法），常见的共识算法有 <code>Paxos</code>,<code>Raft</code>,<code>Zab协议</code>,<code>Bully</code> 等</p>
-<h3 id="nrw算法"><a class="markdownIt-Anchor" href="#nrw算法"></a> NRW算法</h3>
-<p>NRW是一种特殊的保障一致性的算法, 通过饱和读取策略充分保证数据读取的一致性，具体详情如下:</p>
-<pre><code>R(读取分片数) + W(写入分片数) &gt; N(节点总分片数)
-</code></pre>
-<p>只要满足以上公式, 我们必然可以拿到一个正确分片的数据<br>
-举例: 我们对某个数据有5个分片, 我们只要保证 写入分片为3,读取分片为3,这样,我们必然可以保证读取的分片其中有一个含有最新的数据</p>
-<h1 id="如何处理可用性"><a class="markdownIt-Anchor" href="#如何处理可用性"></a> 如何处理可用性</h1>
-<p>实现高可用一般都是通过节点或数据备份来实现, 采用主从或主备节点, 主节点或主分片不可用, 就采用副本分片或备份节点替代原有的服务</p>
-<h1 id="分布式事务"><a class="markdownIt-Anchor" href="#分布式事务"></a> 分布式事务</h1>
-<p>解决分布式事物要处理ACID 四个问题，常用如下方式</p>
-<ol>
-<li>2PC, 使用者: mysql, 两阶段提交协议</li>
-<li>3PC, 三阶段提交协议, 二阶段提交协议的优化</li>
-<li>TCC  事务补偿</li>
-</ol>
-<h1 id="使用经验"><a class="markdownIt-Anchor" href="#使用经验"></a> 使用经验</h1>
-<h3 id="如何设置合理的分区和副本数量"><a class="markdownIt-Anchor" href="#如何设置合理的分区和副本数量"></a> 如何设置合理的分区和副本数量</h3>
-<ol>
-<li>其实对于副本数量的设置一般取决于副本的用途</li>
-</ol>
-<p>如果你副本只做备份，不对外提供读取服务，那设置3个是比较理想的情况，因为3个副本足以覆盖副本所有的可能状态（可用，不可用，升级中），也就是说只要有3个副本， 就一定有一个副本处于可用状态</p>
-<p>如果副本同时提供读功能， 那可以根据情况酌情增加副本数量</p>
-<ol start="2">
-<li>分片的设置</li>
-</ol>
-<p>其实针对不同的系统，不通的分片方式，分片设置有各自的考虑，不过一般受以下因素影响</p>
-<ul>
-<li>数据量</li>
-<li>分布节点数量</li>
-<li>使用者数量</li>
-<li>数据同步和网络开销</li>
-</ul>
-<p>我们以一个服务于全国的500万用户的15个节点的存储容量为5TB的es集群来举例子。<br>
-我们可以设置 3个副本，15-30个分片。副本数太多会增加集群同步的成本，副本数太少会导致数据不安全，读性能较差，分片太多会增加后期数据合并的成本，分片太少会导致单个分片数据量过大。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -5871,20 +5823,20 @@ Gossip只能保证可用性和分区容忍性</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">52</span>
+        <span class="site-state-item-count">55</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffffac;
+  background: #c36770;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3124,6 +3124,25 @@ ul.breadcrumb li + li:last-child {
 <p>R：每日的统计数据  S： 每日的滚动排行榜数据</p>
 <p>s-r &gt; 0 才进行写入操作</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">以3天滚动榜为例，次日滚动榜初始态为当日滚动榜减去n-2天的日榜数据。</span><br><span class="line">     +-------------------------------------------+</span><br><span class="line">     |                                           |</span><br><span class="line">+----+---+   +--------+   +--------+             |</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |             |</span><br><span class="line">+----+---+   +----+---+   +---+----+             |</span><br><span class="line">     |            |           |                  |</span><br><span class="line">     |            |           v+                 v-</span><br><span class="line">     |            |</span><br><span class="line">     |            |    +  +--------+        +--------+</span><br><span class="line">     |            +-----&gt; |        |     +  |        |</span><br><span class="line">     |                 +  |  S(i)  | +---+&gt; | S(i+1) |</span><br><span class="line">     +-----------------+&gt; |        |        |        |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line"></span><br><span class="line">分数变化</span><br><span class="line">                                +--------------+</span><br><span class="line">                                |   AddScore   |</span><br><span class="line">                                +-+----+-----+-+</span><br><span class="line">                                  |+   |     |</span><br><span class="line">                                  v    |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |+</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |   |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |</span><br><span class="line">                                       |     v</span><br><span class="line">                          +--------+   |    +--------+</span><br><span class="line">                          |  S(i)  |&lt;--+    | S(i+1) |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line">                                                 ^</span><br><span class="line">                                                 |+</span><br><span class="line">                                          +------------+</span><br><span class="line">                                          |    Tool    |</span><br><span class="line">                                          +------------+</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="概率模型hyperloglog"><a class="markdownIt-Anchor" href="#概率模型hyperloglog"></a> 概率模型HyperLogLog</h2>
+<p>上面我们提到基于自然时间的统计也可以通过给时间分区间对数据进行统计， 但是在某些情况下，比如统计本月的月活，小公司还好，想阿里这种公司都是数亿的日活， 这种级别的数据统计，如果采用redis的hash或者 bitmap也是一种超级大的开销。</p>
+<p>如果在极大的数据量下可以允许一定的误差， 就可以采用HyperLogLog这种概率模型来进行日活用户这种统计</p>
+<p>HyperLogLog能达到在极大的用户登陆记录中快速做到类似<code>distinct</code>的效果,比如我们有100多亿的用户登陆记录，我们想统计其中一共有多少用户，传统的方案就需要<code>select distinct(userid) from A</code></p>
+<h3 id="基本使用"><a class="markdownIt-Anchor" href="#基本使用"></a> 基本使用</h3>
+<p>由于redis已经实现了HyperLogLog,所以我们可以直接使用redis来进行操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pfadd 2020:06:active:users  user1 user2 user3 user1</span></span><br><span class="line">1</span><br><span class="line"><span class="meta">$</span><span class="bash"> pfcount 2020:06:active:users</span></span><br><span class="line">3</span><br></pre></td></tr></tbody></table></figure>
+<p>也可以合并两个HyperLogLog的结果</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">; 将6月和5月的日活合并统计</span><br><span class="line"><span class="meta">$</span><span class="bash"> pfmerge 2020:06:active:users 2020:05:active:users</span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="基本原理"><a class="markdownIt-Anchor" href="#基本原理"></a> 基本原理</h3>
+<p>HyperLogLog是一种基于概率模型</p>
+<p>基本原理大概是如下流程</p>
+<ol>
+<li>先对要计数的值进行hash，得到一个64bit的hash结果</li>
+<li>hash结果的后14位转为10进制数字m，前50位从低到高第一个1出现的位置记为n，可知<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mo>&lt;</mo><mo>=</mo><mi>m</mi><mo>&lt;</mo><mn>16384</mn><mo separator="true">,</mo><mn>1</mn><mo>&lt;</mo><mo>=</mo><mi>n</mi><mo>&lt;</mo><mn>50</mn></mrow><annotation encoding="application/x-tex">0&lt;=m&lt;16384,1&lt;=n&lt;50</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">m</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord">6</span><span class="mord">3</span><span class="mord">8</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span><span class="mord">0</span></span></span></span></li>
+<li>然后创造一个拥有16384个桶，每个桶有6位，一共长度为 16384 * 6的12kb的数组</li>
+<li>将第m个桶的值置为n</li>
+<li>查询总量时，对所有桶求调和平均值</li>
+</ol>
 
       
     </div>
@@ -5836,7 +5855,7 @@ Stroustrup：优雅很重要，可是你如何衡量"优雅"？可以表达问�
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

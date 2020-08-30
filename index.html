@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #8e7aff;
+  background: #ffff65;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3359,7 +3359,7 @@ ul.breadcrumb li + li:last-child {
 <p>数据分流 + 用户分流：我们生成的50个红包可以分成N份，存储到不同的key上, 使用key_0-key_N存储数据会均匀的分配到redis的各个节点上。</p>
 <p>用户在获取红包时，随机请求其中的一份红包数据，这样用户的请求可以有效打散到各个redis节点上， 同时能处理的请求数据可以随节点数量扩展， 但是这种方法的缺点也很明显， 一个是实现复杂，一个是会对用户造成一定程度上不公平的体验。解决数据分布可以使用本地缓存采用节点的方式来减轻这种不公平现象。</p>
 <hr>
-<p>具体流程如下</p>
+<p><strong>具体的红包发放流程</strong></p>
 <p>播主端红包生成和分发：</p>
 <p>播主发红包 -&gt; 红包生成算法 -&gt; 在线人数检测 -&gt; 红包分流 -&gt; 标记红包分流key -&gt; web服务感知到有热点key进行同步</p>
 <p>用户端抢红包：</p>
@@ -4561,6 +4561,9 @@ ul.breadcrumb li + li:last-child {
 </li>
 <li>
 <p>[x] 设计数据密集型应用(2 round)</p>
+</li>
+<li>
+<p>[x] Java并发编程之美</p>
 </li>
 </ul>
 

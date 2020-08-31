@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/J5EbuqjnQHvRUIf.jpg">
 <meta property="article:published_time" content="2018-02-02T03:07:44.000Z">
-<meta property="article:modified_time" content="2020-08-06T11:53:56.804Z">
+<meta property="article:modified_time" content="2020-08-31T15:05:14.589Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="GFS">
 <meta name="twitter:card" content="summary">
@@ -1272,7 +1272,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffff65;
+  background: #59eb1c;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3066,13 +3066,13 @@ ul.breadcrumb li + li:last-child {
 <p>GFS的核心服务分为三个部分，client, master 和chunkserver。</p>
 <ol>
 <li>
-<p>Client               -&gt;  Client就是各种应用中使用GFS的客户端,以库文件的形式提供</p>
+<p><strong>Client</strong>      Client就是各种应用中使用GFS的客户端,以库文件的形式提供</p>
 </li>
 <li>
-<p>MasterServer  -&gt;   MasterServer相当于对ChunkServer数据进行管理的管理者,存储整个文件传统的目录结构和文件元信息(包括Chunk分片信息和分片位置),Client从Master获取到具体的文件所在的ChunkServer的地址,然后直接与ChunkServer通信进行数据操作</p>
+<p>**MasterServer **    MasterServer相当于对ChunkServer数据进行管理的管理者,存储整个文件传统的目录结构和文件元信息(包括Chunk分片信息和分片位置),Client从Master获取到具体的文件所在的ChunkServer的地址,然后直接与ChunkServer通信进行数据操作</p>
 </li>
 <li>
-<p>ChunkServer  -&gt;   存储具体文件数据的服务器</p>
+<p><strong>ChunkServer</strong>     存储具体文件数据的服务器</p>
 </li>
 </ol>
 <p><img data-src="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg" alt="1334712344_6225.jpg"></p>

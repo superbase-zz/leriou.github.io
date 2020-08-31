@@ -27,7 +27,7 @@
 <meta property="og:description" content="为啥需要排行榜 推荐系统有一个避不开的问题就是冷启动问题。也就是新用户第一次进入应用的推荐，此时我们没有任何的用户行为信息，无法根据用户行为进行推荐， 根据用户基础信息的推荐也极有可能没有构建完成或者因为基础数据不完善导致效果不够好。 此时就需要一种针对所有用户通用的推荐策略，防止推荐系统出现“开天窗” 。我们一般使用以下策略来处理冷启动问题  最新内容：平台的最近发布的比较新鲜的资源 热门内容">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-05-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-12T12:35:00.433Z">
+<meta property="article:modified_time" content="2020-08-31T15:05:14.553Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
 <meta property="article:tag" content="HyperLogLog">
@@ -1270,7 +1270,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffff65;
+  background: #59eb1c;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3128,7 +3128,7 @@ ul.breadcrumb li + li:last-child {
 <p>s-r &gt; 0 才进行写入操作</p>
 <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">以3天滚动榜为例，次日滚动榜初始态为当日滚动榜减去n-2天的日榜数据。</span><br><span class="line">     +-------------------------------------------+</span><br><span class="line">     |                                           |</span><br><span class="line">+----+---+   +--------+   +--------+             |</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |             |</span><br><span class="line">+----+---+   +----+---+   +---+----+             |</span><br><span class="line">     |            |           |                  |</span><br><span class="line">     |            |           v+                 v-</span><br><span class="line">     |            |</span><br><span class="line">     |            |    +  +--------+        +--------+</span><br><span class="line">     |            +-----&gt; |        |     +  |        |</span><br><span class="line">     |                 +  |  S(i)  | +---+&gt; | S(i+1) |</span><br><span class="line">     +-----------------+&gt; |        |        |        |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line"></span><br><span class="line">分数变化</span><br><span class="line">                                +--------------+</span><br><span class="line">                                |   AddScore   |</span><br><span class="line">                                +-+----+-----+-+</span><br><span class="line">                                  |+   |     |</span><br><span class="line">                                  v    |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |+</span><br><span class="line">| R(i-2) |   | R(i-1) |   |  R(i)  |   |     |</span><br><span class="line">+--------+   +--------+   +--------+   |     |</span><br><span class="line">                                       |     v</span><br><span class="line">                          +--------+   |    +--------+</span><br><span class="line">                          |  S(i)  |&lt;--+    | S(i+1) |</span><br><span class="line">                          +--------+        +--------+</span><br><span class="line">                                                 ^</span><br><span class="line">                                                 |+</span><br><span class="line">                                          +------------+</span><br><span class="line">                                          |    Tool    |</span><br><span class="line">                                          +------------+</span><br></pre></td></tr></tbody></table></figure>
 <h2 id="概率模型hyperloglog"><a class="markdownIt-Anchor" href="#概率模型hyperloglog"></a> 概率模型HyperLogLog</h2>
-<p>上面我们提到基于自然时间的统计也可以通过给时间分区间对数据进行统计， 但是在某些情况下，比如统计本月的月活，小公司还好，想阿里这种公司都是数亿的日活， 这种级别的数据统计，如果采用redis的hash或者 bitmap也是一种超级大的开销。</p>
+<p>上面我们提到基于自然时间的统计也可以通过给时间分区间对数据进行统计， 但是在某些情况下，比如统计本月的月活，小公司还好，像阿里这种公司都是数亿的日活， 这种级别的数据统计，如果采用redis的hash或者 bitmap也是一种超级大的开销。</p>
 <p>如果在极大的数据量下可以允许一定的误差， 就可以采用HyperLogLog这种概率模型来进行日活用户这种统计</p>
 <p>HyperLogLog能达到在极大的用户登陆记录中快速做到类似<code>distinct</code>的效果,比如我们有100多亿的用户登陆记录，我们想统计其中一共有多少用户，传统的方案就需要<code>select distinct(userid) from A</code></p>
 <h3 id="基本使用"><a class="markdownIt-Anchor" href="#基本使用"></a> 基本使用</h3>

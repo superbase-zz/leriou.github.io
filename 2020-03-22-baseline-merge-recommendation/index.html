@@ -19,15 +19,15 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="推荐系统的排序策略 排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推结果内容 返回结果应平衡多种来源的密度分布 根据排版要求进行精排序   问题和需求描述 假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个 新内容约 2000 个 热门内容约 200 个  我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行推">
+  <meta name="description" content="推荐系统的排序策略 排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推荐结果内容 返回结果应平衡多种来源的密度分布 根据排版要求进行精排序   问题和需求描述 假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个 新内容约 2000 个 热门内容约 200 个  我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基线融合排序算法">
 <meta property="og:url" content="https://leriou.github.io/2020-03-22-baseline-merge-recommendation/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="推荐系统的排序策略 排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推结果内容 返回结果应平衡多种来源的密度分布 根据排版要求进行精排序   问题和需求描述 假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个 新内容约 2000 个 热门内容约 200 个  我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行推">
+<meta property="og:description" content="推荐系统的排序策略 排序策略起到的作用  将多种召回集的结果进行融合，挑出少量的推荐结果内容 返回结果应平衡多种来源的密度分布 根据排版要求进行精排序   问题和需求描述 假设我们现在拥有3个召回策略的来源的数据分别为  个性化内容约 200 个 新内容约 2000 个 热门内容约 200 个  我们希望达到如下目标  从这么多用户可能感兴趣的内容中挑出来10个内容返回 用户已经推荐过的不再进行">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-03-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-06T11:53:56.810Z">
+<meta property="article:modified_time" content="2020-11-02T15:49:46.997Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="推荐系统">
 <meta property="article:tag" content="多资源排序">
@@ -1270,7 +1270,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #988aff;
+  background: #ffe0b8;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3046,7 +3046,7 @@ ul.breadcrumb li + li:last-child {
         <h1 id="推荐系统的排序策略"><a class="markdownIt-Anchor" href="#推荐系统的排序策略"></a> 推荐系统的排序策略</h1>
 <p>排序策略起到的作用</p>
 <ol>
-<li>将多种召回集的结果进行融合，挑出少量的推结果内容</li>
+<li>将多种召回集的结果进行融合，挑出少量的推荐结果内容</li>
 <li>返回结果应平衡多种来源的密度分布</li>
 <li>根据排版要求进行精排序</li>
 </ol>
@@ -3082,7 +3082,8 @@ ul.breadcrumb li + li:last-child {
 <p>由于我们要满足 3:4:3的概率所以我们要求在原来的40个新内容的范围里面，均匀混进去30个热门和30个个性化内容，这样比例就满足了</p>
 <p>也就是说我们要满足如下公式， 由于内容密度要满足一定条件（3:4:3）</p>
 <p>计算热门内容的分数范围的公示如下</p>
-<p>x = 0.02 * 200 / 30  = 0.133</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi><mo>=</mo><mn>0.02</mn><mo>∗</mo><mfrac><mn>200</mn><mn>30</mn></mfrac><mo>=</mo><mn>0.133</mn></mrow><annotation encoding="application/x-tex">x = 0.02 *\frac{200}{30}= 0.133
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mord">0</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">0</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mord">3</span><span class="mord">3</span></span></span></span></span></p>
 <p>也就是说热门内容分布的边界范围应该为 [1，0.867]</p>
 <figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 热门内容</span></span><br><span class="line">       第30个         第100个         第200个</span><br><span class="line">  ｜     ｜            ｜              ｜      </span><br><span class="line">  <span class="number">1.0</span>   <span class="number">0.98</span>         <span class="number">0.935</span>          <span class="number">0.867</span></span><br></pre></td></tr></tbody></table></figure>
 <p>个性化内容也是同理<br>

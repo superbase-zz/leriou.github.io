@@ -27,7 +27,7 @@
 <meta property="og:description" content="背景 业务中有时候会有延迟队列或者优先级队列之类的需求。 延迟队列和优先队列本质上是一个需求，延迟队列可以看成一个使用时间作为优先级的队列。Kafka这种基于日志的消息队列并没有自带延迟队列的功能。所以如果想在Kafka的基础上实现此类功能，需要我们自己动手处理。我现在可以想到的实现方法有两种  外存排序 消息分级 时间轮   消息分级 先说简单的消息分级机制，假如我们遇到需要根据用户会员等级对">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-08-12T12:35:00.431Z">
+<meta property="article:modified_time" content="2020-11-02T15:49:46.968Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="延迟队列">
 <meta property="article:tag" content="kafka">
@@ -1271,7 +1271,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #988aff;
+  background: #ffe0b8;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3064,14 +3064,14 @@ ul.breadcrumb li + li:last-child {
 <h3 id="如何在2g内存的机器上对100g文件进行排序"><a class="markdownIt-Anchor" href="#如何在2g内存的机器上对100g文件进行排序"></a> 如何在2G内存的机器上对100G文件进行排序</h3>
 <p>假设我们要对100G的内容在2G内存的机器上进行排序， 我们可以执行如下操作</p>
 <ol>
-<li>使用split命令把100G文件分割成50个2G的小文件，并对每个分割后的文件使用sort排序</li>
-<li>使用split取50个小文件的前40m数据，读取到内存进行排序，排序后的数据的前40M就是全局最小的40M内容</li>
-<li>将内存排序后的前40M内容输出到磁盘上，内存中剩余的1960M内容放回到磁盘，此时磁盘有51个1960M的有序文件</li>
+<li>使用split命令把100G文件分割成50个2G的小文件，并对每个分割后的文件使用sort排序（此时的问题已经变成对50个有序的2G文件在2G内存的机器上进行排序）</li>
+<li>使用split取50个小文件的前40M数据，读取到内存进行排序，排序后的数据的前40M就是全局最小的40M内容</li>
+<li>将内存排序后的前40M内容输出到磁盘上，内存中剩余的1960M内容放回到磁盘，此时磁盘有51个1960M的有序文件（此时问题等价于对51个有序的1960M的文件在2G内存的机器上进行排序）</li>
 <li>仿照上面的方法， 从51个文件每个读取35M内容进行排序，找出全局最小的35M内容</li>
 <li>循环2-4步骤，直至所有内容都被排序成功</li>
 </ol>
 <blockquote>
-<p>ps: sort，split 均为linux自带的命令可以对文件进行排序和分割</p>
+<p>ps: sort，split 均为linux自带的命令可以对文件进行排序和分割,这个算法本质上还是多路归并排序， 但是相当于对归并排序做了一些优化：优化1，每段已排序数据一次取一批数据；优化2，没有采用记录文件指针的形式而是直接分割文件，操作更简单</p>
 </blockquote>
 <hr>
 <p>如果我们可以在Kafka的broker中实现实时的基于某字段的内容排序， 我们就可以实现这种优先级功能。不过这种实现方法缺点也很明显。首先是延迟时间受受到严重制约，其次也会丧失Kafka的基于日志的复制优势，吞吐量会受到严重影响。</p>

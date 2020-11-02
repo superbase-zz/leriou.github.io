@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #988aff;
+  background: #ffe0b8;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3224,14 +3224,14 @@ ul.breadcrumb li + li:last-child {
 <h3 id="如何在2g内存的机器上对100g文件进行排序"><a class="markdownIt-Anchor" href="#如何在2g内存的机器上对100g文件进行排序"></a> 如何在2G内存的机器上对100G文件进行排序</h3>
 <p>假设我们要对100G的内容在2G内存的机器上进行排序， 我们可以执行如下操作</p>
 <ol>
-<li>使用split命令把100G文件分割成50个2G的小文件，并对每个分割后的文件使用sort排序</li>
-<li>使用split取50个小文件的前40m数据，读取到内存进行排序，排序后的数据的前40M就是全局最小的40M内容</li>
-<li>将内存排序后的前40M内容输出到磁盘上，内存中剩余的1960M内容放回到磁盘，此时磁盘有51个1960M的有序文件</li>
+<li>使用split命令把100G文件分割成50个2G的小文件，并对每个分割后的文件使用sort排序（此时的问题已经变成对50个有序的2G文件在2G内存的机器上进行排序）</li>
+<li>使用split取50个小文件的前40M数据，读取到内存进行排序，排序后的数据的前40M就是全局最小的40M内容</li>
+<li>将内存排序后的前40M内容输出到磁盘上，内存中剩余的1960M内容放回到磁盘，此时磁盘有51个1960M的有序文件（此时问题等价于对51个有序的1960M的文件在2G内存的机器上进行排序）</li>
 <li>仿照上面的方法， 从51个文件每个读取35M内容进行排序，找出全局最小的35M内容</li>
 <li>循环2-4步骤，直至所有内容都被排序成功</li>
 </ol>
 <blockquote>
-<p>ps: sort，split 均为linux自带的命令可以对文件进行排序和分割</p>
+<p>ps: sort，split 均为linux自带的命令可以对文件进行排序和分割,这个算法本质上还是多路归并排序， 但是相当于对归并排序做了一些优化：优化1，每段已排序数据一次取一批数据；优化2，没有采用记录文件指针的形式而是直接分割文件，操作更简单</p>
 </blockquote>
 <hr>
 <p>如果我们可以在Kafka的broker中实现实时的基于某字段的内容排序， 我们就可以实现这种优先级功能。不过这种实现方法缺点也很明显。首先是延迟时间受受到严重制约，其次也会丧失Kafka的基于日志的复制优势，吞吐量会受到严重影响。</p>
@@ -4020,7 +4020,7 @@ ul.breadcrumb li + li:last-child {
           <h1 id="推荐系统的排序策略"><a class="markdownIt-Anchor" href="#推荐系统的排序策略"></a> 推荐系统的排序策略</h1>
 <p>排序策略起到的作用</p>
 <ol>
-<li>将多种召回集的结果进行融合，挑出少量的推结果内容</li>
+<li>将多种召回集的结果进行融合，挑出少量的推荐结果内容</li>
 <li>返回结果应平衡多种来源的密度分布</li>
 <li>根据排版要求进行精排序</li>
 </ol>
@@ -4056,7 +4056,8 @@ ul.breadcrumb li + li:last-child {
 <p>由于我们要满足 3:4:3的概率所以我们要求在原来的40个新内容的范围里面，均匀混进去30个热门和30个个性化内容，这样比例就满足了</p>
 <p>也就是说我们要满足如下公式， 由于内容密度要满足一定条件（3:4:3）</p>
 <p>计算热门内容的分数范围的公示如下</p>
-<p>x = 0.02 * 200 / 30  = 0.133</p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi><mo>=</mo><mn>0.02</mn><mo>∗</mo><mfrac><mn>200</mn><mn>30</mn></mfrac><mo>=</mo><mn>0.133</mn></mrow><annotation encoding="application/x-tex">x = 0.02 *\frac{200}{30}= 0.133
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">0</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mord">0</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord">0</span><span class="mord">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mord">3</span><span class="mord">3</span></span></span></span></span></p>
 <p>也就是说热门内容分布的边界范围应该为 [1，0.867]</p>
 <figure class="highlight scheme"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; 热门内容</span></span><br><span class="line">       第30个         第100个         第200个</span><br><span class="line">  ｜     ｜            ｜              ｜      </span><br><span class="line">  <span class="number">1.0</span>   <span class="number">0.98</span>         <span class="number">0.935</span>          <span class="number">0.867</span></span><br></pre></td></tr></tbody></table></figure>
 <p>个性化内容也是同理<br>
@@ -4408,23 +4409,24 @@ ul.breadcrumb li + li:last-child {
 <h2 id="停机重启方案"><a class="markdownIt-Anchor" href="#停机重启方案"></a> 停机重启方案</h2>
 <p>最简单的方案就是对数据库停机， 然后copy旧数据到新的数据库</p>
 <p>这种数据同步方案非常简单，但是有个致命的问题就是业务要中断，所以肯定会被否掉</p>
-<h2 id="不停机方案-双写机制"><a class="markdownIt-Anchor" href="#不停机方案-双写机制"></a> 不停机方案-双写机制</h2>
+<h2 id="不停机方案"><a class="markdownIt-Anchor" href="#不停机方案"></a> 不停机方案</h2>
+<h3 id="双写机制"><a class="markdownIt-Anchor" href="#双写机制"></a> 双写机制</h3>
 <p>这种方案过程如下</p>
 <ol>
 <li>先对存量数据进行不停机的迁移</li>
 <li>改造我们的数据写入端， 使数据同时写入旧数据库和新数据库</li>
-<li>等到双写服务运行一段时间，再次进行旧数据和新数据的完全同步、</li>
+<li>等到双写服务运行一段时间，再次进行旧数据和新数据的完全同步</li>
 <li>完全切换读取的数据源为新数据库， 关闭旧数据库的写入和读取，下线旧数据库</li>
 </ol>
 <p>该方案比较复杂： 适合业务要求高的事务型数据库的迁移(我们前东家在做oracle到mysql的迁移就采用类似的方案)</p>
-<h2 id="不停机方案-渐进式双读"><a class="markdownIt-Anchor" href="#不停机方案-渐进式双读"></a> 不停机方案-渐进式双读</h2>
+<h3 id="渐进式双读"><a class="markdownIt-Anchor" href="#渐进式双读"></a> 渐进式双读</h3>
 <p>这种方案我们采用渐进式的双读方案</p>
 <ol>
 <li>所有新写入的数据都完全写到新数据库</li>
 <li>读取程序先读新数据库，新数据库中不存在的再读取老数据库， 如果老库存在就把老的库的数据迁移到新的数据库中</li>
 <li>等到老的数据库中数据量变为0， 或者到达一个非常低的阈值， 就进行老数据库的完全迁移和下线</li>
 </ol>
-<p>该方案适合读取内容相对简单的k-v数据库之间的迁移（redis中的rehash就是采用这种机制）</p>
+<p>该方案适合读取内容相对简单的k-v数据库之间的迁移（redis中的渐进式rehash就是采用这种机制）</p>
 
       
     </div>
@@ -4582,6 +4584,12 @@ ul.breadcrumb li + li:last-child {
 <p>Books:</p>
 <ul>
 <li>[ ] 领域驱动设计</li>
+</ul>
+<h1 id="11月"><a class="markdownIt-Anchor" href="#11月"></a> 11月</h1>
+<p>Books：</p>
+<ul>
+<li>[ ] 领域驱动设计</li>
+<li>[ ] 认识商业</li>
 </ul>
 
       

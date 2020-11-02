@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/05/09/jB41UqSaMQwFWZc.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/J5EbuqjnQHvRUIf.jpg">
 <meta property="article:published_time" content="2018-02-02T03:07:44.000Z">
-<meta property="article:modified_time" content="2020-08-31T15:05:14.589Z">
+<meta property="article:modified_time" content="2020-11-02T16:21:48.085Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="GFS">
 <meta name="twitter:card" content="summary">
@@ -1272,7 +1272,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffc7a1;
+  background: #50d9ab;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3086,11 +3086,10 @@ ul.breadcrumb li + li:last-child {
 <li>Chunk副本的位置信息,默认每个Chunk使用3个副本</li>
 </ol>
 <p>由于MasterServer采用中心化的单节点管理，所以MasterServer的内存使用和性能都是我们要关注的点:</p>
-<pre><code>假设要存储1Pb的数据 MasterServer的内存使用为 
-    
-(1P * 64b * 3) / 64Mb = 3Gb
-    
-1P  : 是总数据大小
+<p><strong>假设要存储1Pb的数据，则MasterServer的内存使用为</strong></p>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mn>1</mn><mi>P</mi><mo>∗</mo><mn>64</mn><mi>b</mi><mo>∗</mo><mn>3</mn></mrow><mrow><mn>64</mn><mi>M</mi><mi>b</mi></mrow></mfrac><mo>=</mo><mn>3</mn><mi>G</mi><mi>b</mi></mrow><annotation encoding="application/x-tex">\cfrac{1P * 64b * 3}{64Mb}=3Gb
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span><span class="mord">4</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">b</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mord mathdefault">b</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord mathdefault">G</span><span class="mord mathdefault">b</span></span></span></span></span></p>
+<pre><code>1P  : 是总数据大小
 64Mb: 是每个Chunk的容量
 3   : 是Chunk备份数量,默认为3
 64b : 是每个Chunk的元属性所占的空间

@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffc7a1;
+  background: #50d9ab;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3149,7 +3149,7 @@ Gossip只能保证可用性和分区容忍性</p>
 <h1 id="分布式事务"><a class="markdownIt-Anchor" href="#分布式事务"></a> 分布式事务</h1>
 <p>解决分布式事物要处理ACID 四个问题，常用如下方式</p>
 <ol>
-<li>2PC, 使用者: mysql, 两阶段提交协议</li>
+<li>2PC, 使用者: mysql/flink, 两阶段提交协议</li>
 <li>3PC, 三阶段提交协议, 二阶段提交协议的优化</li>
 <li>TCC  事务补偿</li>
 </ol>

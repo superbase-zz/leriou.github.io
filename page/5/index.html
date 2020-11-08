@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3056,9 +3056,7 @@ head: 版本指针
 
 branch: 分支
 </code></pre>
-<p>Git的相关配置有两份一份在项目中的<code>.git</code>文件价中</p>
-<p>一份全局的位于用户目录下的<code>.git</code>目录中</p>
-<p>项目配置优先于全局配置, 会覆盖掉全局中的配置</p>
+<p>Git的相关配置有两份一份在项目中的<code>.git</code>文件夹中，一份全局的位于用户目录下的<code>.git</code>目录中。项目配置优先于全局配置， 会覆盖掉全局中的配置，所以我们修改配置要注意一下修改的位置</p>
 <h2 id="获取项目"><a class="markdownIt-Anchor" href="#获取项目"></a> 获取项目</h2>
 <ol>
 <li>新建仓库</li>
@@ -3084,10 +3082,8 @@ branch: 分支
 <p><code>ssh-keygen -t rsa -C "youremail@example.com"</code></p>
 <p>使用ssh生成ssh-key</p>
 <p>生成的ssh-key位于用户目录下的.ssh目录中, 一共有两个一个公钥, 一个私钥</p>
-<p>将<code>xxx.pub</code>中的公钥copy到git服务器中,再检查用户名和密码,就可以用ssh登录git了</p>
-<ol start="3">
-<li>获取更新</li>
-</ol>
+<p>将<code>xxx.pub</code>中的公钥copy到git服务器中,再检查用户名和密码,就可以用ssh登录git了<br>
+3. 获取更新</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master   //origin代表当前版本库,master是远端分支名,如果要更新dev分支就是 git pull origin dev </span><br><span class="line"></span><br><span class="line">或者简化版</span><br><span class="line"></span><br><span class="line">git pull  //这种方式有时候默认拉下来的不是master分支,需要自己手动切换一下</span><br></pre></td></tr></tbody></table></figure>
 <p>此命令等同<code>git fetch</code>+ <code>git merge</code>, 对应svn命令:<code>svn update</code></p>
 <h2 id="提交代码"><a class="markdownIt-Anchor" href="#提交代码"></a> 提交代码</h2>

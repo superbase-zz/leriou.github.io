@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3260,13 +3260,10 @@ Gossip只能保证可用性和分区容忍性</p>
 
       
           <h1 id="kafka分享"><a class="markdownIt-Anchor" href="#kafka分享"></a> kafka分享</h1>
-<p>听闻kafka已经是很早之前的事情了</p>
-<p>在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p>
-<p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p>
-<p>后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)</p>
+<p>听闻kafka已经是很早之前的事情了，在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统。不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务，后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)。</p>
 <h2 id="消息传递在现代业务中的地位"><a class="markdownIt-Anchor" href="#消息传递在现代业务中的地位"></a> 消息传递在现代业务中的地位</h2>
 <p><strong>面向对象的程序 = 对象 + 消息传递</strong></p>
-<p>消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
+<p>虽然上面的这歌公式针对的是面向对象和语言设计方面的描述，但是消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
 <p>我们通常会把许多实时性要求不那么高的任务处理通过消息系统进行解耦,以平衡数据处理的性能和功能</p>
 <p>例如: 用户下了一个订单,我们需要马上告诉用户下单成功, 但是之后的物流发货, 订单入账和商品信息更新等消息都可以通过一个消息系统进行拆分,这样不仅不会影响用户体验,也可以对之后触发的多个属于不同系统的业务进行并行处理,提升系统处理的性能</p>
 <h1 id="kafka基础介绍"><a class="markdownIt-Anchor" href="#kafka基础介绍"></a> Kafka基础介绍</h1>
@@ -4601,7 +4598,8 @@ part9: 惊呆雁片段</p>
 <p>特点: 根据时间以固定速率允许请求通过</p>
 <p>缺点: 针对部分由突发场景的效率有点低</p>
 <p>流程图:</p>
-<p><img data-src="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png" alt="flow1.png">令牌桶算法</p>
+<p><img data-src="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png" alt="flow1.png"></p>
+<h2 id="令牌桶算法"><a class="markdownIt-Anchor" href="#令牌桶算法"></a> 令牌桶算法</h2>
 <p>另一种常用的限流算法叫令牌桶算法,令牌桶的思想跟漏桶有点不大一样,令牌桶是先假设了一个桶, 桶内装有令牌(token),系统以一定的时间往桶里添加令牌.请求过来以后需要使用桶里面的令牌才能执行,也就是说我们可以通过控制桶内令牌的数量来控制最大请求数,也能通过改变添加令牌的速率来调整请求的处理速率</p>
 <p>令牌桶也有关键参数,一个是桶的大小,一个是令牌的发放速率</p>
 <p>特点: 使用请求+令牌来进行请求处理,没有令牌的请求不予处理</p>
@@ -4792,14 +4790,14 @@ part9: 惊呆雁片段</p>
 
       
           <h1 id="redis的aof和rdb持久化"><a class="markdownIt-Anchor" href="#redis的aof和rdb持久化"></a> redis的AOF和RDB持久化</h1>
-<p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式</p>
+<h1 id="缓存数据的持久化"><a class="markdownIt-Anchor" href="#缓存数据的持久化"></a> 缓存数据的持久化</h1>
+<p>由于redis是一个纯内存型的k-v数据库， 所以存在机器宕机以后数据丢失的风险，为了应对这种情况，redis设计了数据的持久化机制，主要目的就是为了尽量减少数据丢失的情况。</p>
+<p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式。在实际的生产中我们往往会两种机制配合使用，所以我认为有必要了解一下redis的持久化机制的细节</p>
 <h2 id="rdb持久化"><a class="markdownIt-Anchor" href="#rdb持久化"></a> RDB持久化</h2>
-<p>特点: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态</p>
+<p>描述: RDB持久化是对当前数据库的状态进行备份,备份的对象是当前数据库的数据状态</p>
 <p>例如:</p>
 <figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">	<span class="attr">"age"</span>:<span class="number">1</span>,</span><br><span class="line">	<span class="attr">"name"</span>:<span class="string">"zhangsan"</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<p>这样的数据会被被分为某种格式的信息,进行数据恢复的时候是直接读入RDB文件解析数据</p>
-<p>拥有持久化的能力使得redis在服务重启时能保留大部分的内存数据</p>
-<p>RDB文件在redis主从同步时候会被发送给从节点,从节点使用RDB进行全量的数据恢复</p>
+<p>这样的持久化机制会将当前的数据库数据转换为二进制信息,并保存到磁盘文件，进行数据恢复的时候是直接读入RDB文件解析数据。拥有持久化的能力使得redis在服务重启时能保留大部分的内存数据，同时RDB文件在redis主从同步时候会被发送给从节点,从节点使用RDB进行全量的数据恢复</p>
 <h3 id="主动触发保存"><a class="markdownIt-Anchor" href="#主动触发保存"></a> 主动触发保存</h3>
 <ol>
 <li>
@@ -4811,12 +4809,12 @@ part9: 惊呆雁片段</p>
 </ol>
 <p>比如:  机器内存有32G, 此时Redis里面数据20G, 使用 <code>bgsave</code> 就不可以,必须保证空闲内存大于20G才能使用</p>
 <h2 id="aof持久化"><a class="markdownIt-Anchor" href="#aof持久化"></a> AOF持久化</h2>
-<p>特点: 对写命令进行备份,一般是再有写命令的时候吧命令追加到AOF文件中,客户端每进行一次操作,服务器吧命令写入AOF文件,数据恢复就是从AOF文件中读取命令并执行</p>
+<p>上面的rdb持久化的方式虽然可以保存数据信息但是rdb过程需要一定的时间，如果机器在某两次rdb之间宕机，由于部分数据未来得及写入磁盘，依旧会丢失上次rdb之后的内存数据信息。所以redis设计了aof机制来应对这种情况</p>
+<p>Aof描述: 对写命令进行备份,一般是在有写命令的时候把命令追加到AOF文件中,客户端每进行一次操作,服务器吧命令写入AOF文件,数据恢复就是从AOF文件中读取命令并执行，整体流程有点类似于mysql的redo日志</p>
 <p>但是会出现这么一种情况(ABA):</p>
 <p>对某个命令的写命令太多的话,有可能会出现这种情况</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 18 </span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 20</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">set</span> a 10</span></span><br></pre></td></tr></tbody></table></figure>
-<p>这种情况下a的值实际最终还是10,不过因为aof对所有操作的命令都会记录,导致大量的命令对数据最终的状态来说其实都是"无效"的</p>
-<p>这种情况还会引起效率问题,为了减小AOF文件的大小,这个时候需要对AOF进行重写</p>
+<p>这种情况下，经过6次操作a的值实际最终还是10,不过因为aof对所有操作的命令都会记录,导致大量的命令对数据最终的状态来说其实都是"无效"的，还会引起存储和执行效率问题，为了减小AOF文件的大小,这个时候需要对AOF进行重写</p>
 <h3 id="aof重写"><a class="markdownIt-Anchor" href="#aof重写"></a> AOF重写</h3>
 <p>为了应对命令有冗余,提高数据备份效率,会对数据库进行AOF重写,重写是通过对当前的数据库数据进行读取并进行反向的命令解析来进行的</p>
 <p>某种意义上来讲AOF重写和RDB有部分类似,都是针对当前数据库状态进行的备份</p>
@@ -5025,6 +5023,7 @@ part9: 惊呆雁片段</p>
 <li>在性能达不到要求的情况下，比较难于扩展。</li>
 <li>如果遇见多个系统需要合并或者涉及到数据迁移会相当痛苦。</li>
 <li>分表分库的时候会有麻烦。</li>
+<li>生成的数字安全性比较差，可以通过id反推出一些信息</li>
 </ol>
 <p>优化方案：</p>
 <p>针对主库单点，如果有多个Master库，则每个Master库设置的起始数字不一样，步长一样，可以是Master的个数。</p>
@@ -5055,10 +5054,11 @@ Master3生成的是  3,6,9,12</p>
 <ol>
 <li>如果系统中没有redis，还需要引入新的组件，增加系统复杂度。</li>
 <li>需要编码和配置的工作量比较大。</li>
+<li>同样存在可用性风险</li>
 </ol>
 <h1 id="twitter"><a class="markdownIt-Anchor" href="#twitter"></a> twitter</h1>
 <p>twitter在把存储系统从MySQL迁移到Cassandra的过程中由于Cassandra没有顺序ID生成机制，于是自己开发了一套全局唯一ID生成服务:<code>Snowflake</code>。</p>
-<p>Snowflake使用二进制计数,讲一个完整的UUID分为不同部分,依据不同的规则生成</p>
+<p>Snowflake使用二进制计数,将一个完整的UUID分为不同部分,依据不同的规则生成</p>
 <ol>
 <li>41位的时间序列（精确到毫秒，41位的长度可以使用69年）</li>
 <li>10位的机器标识（10位的长度最多支持部署1024个节点）</li>
@@ -5073,7 +5073,7 @@ Master3生成的是  3,6,9,12</p>
 <p>缺点:</p>
 <ol>
 <li>需要独立的开发和部署。</li>
-<li>强依赖时钟,如果主机时间回拨,则会造成重复ID,会产生</li>
+<li>强依赖时钟,如果主机时间回拨,则会造成重复ID</li>
 <li>ID虽然有序,但是不连续</li>
 </ol>
 <h1 id="mongodb"><a class="markdownIt-Anchor" href="#mongodb"></a> mongodb</h1>

@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/EerPIDbnmcM92XB.png">
 <meta property="article:published_time" content="2017-03-03T07:06:47.000Z">
-<meta property="article:modified_time" content="2020-11-02T16:03:54.862Z">
+<meta property="article:modified_time" content="2020-11-08T13:06:29.128Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="漏桶算法">
 <meta property="article:tag" content="令牌桶算法">
@@ -1273,7 +1273,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3054,7 +3054,8 @@ ul.breadcrumb li + li:last-child {
 <p>特点: 根据时间以固定速率允许请求通过</p>
 <p>缺点: 针对部分由突发场景的效率有点低</p>
 <p>流程图:</p>
-<p><img data-src="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png" alt="flow1.png">令牌桶算法</p>
+<p><img data-src="https://i.loli.net/2020/05/09/EKMs4BrGwvPmN5c.png" alt="flow1.png"></p>
+<h2 id="令牌桶算法"><a class="markdownIt-Anchor" href="#令牌桶算法"></a> 令牌桶算法</h2>
 <p>另一种常用的限流算法叫令牌桶算法,令牌桶的思想跟漏桶有点不大一样,令牌桶是先假设了一个桶, 桶内装有令牌(token),系统以一定的时间往桶里添加令牌.请求过来以后需要使用桶里面的令牌才能执行,也就是说我们可以通过控制桶内令牌的数量来控制最大请求数,也能通过改变添加令牌的速率来调整请求的处理速率</p>
 <p>令牌桶也有关键参数,一个是桶的大小,一个是令牌的发放速率</p>
 <p>特点: 使用请求+令牌来进行请求处理,没有令牌的请求不予处理</p>
@@ -3153,7 +3154,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网站限流"><span class="nav-number">1.</span> <span class="nav-text"> 网站限流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限流"><span class="nav-number">1.1.</span> <span class="nav-text"> 限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏桶算法"><span class="nav-number">1.2.</span> <span class="nav-text"> 漏桶算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ratelimiter"><span class="nav-number">1.3.</span> <span class="nav-text"> RateLimiter</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网站限流"><span class="nav-number">1.</span> <span class="nav-text"> 网站限流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#限流"><span class="nav-number">1.1.</span> <span class="nav-text"> 限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏桶算法"><span class="nav-number">1.2.</span> <span class="nav-text"> 漏桶算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#令牌桶算法"><span class="nav-number">1.3.</span> <span class="nav-text"> 令牌桶算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ratelimiter"><span class="nav-number">1.4.</span> <span class="nav-text"> RateLimiter</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

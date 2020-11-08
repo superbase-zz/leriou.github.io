@@ -28,7 +28,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/HhJdn5CA14lwLjc.png">
 <meta property="article:published_time" content="2017-02-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-11-02T16:03:54.852Z">
+<meta property="article:modified_time" content="2020-11-08T13:06:29.121Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="系统设计">
 <meta property="article:tag" content="消息通知系统">
@@ -1272,7 +1272,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3046,11 +3046,11 @@ ul.breadcrumb li + li:last-child {
 
       
         <h1 id="站内信通知系统的设计"><a class="markdownIt-Anchor" href="#站内信通知系统的设计"></a> 站内信通知系统的设计</h1>
-<p>站内信系统是一个成熟的系统所应该具有的基本系统组件</p>
+<p>站内信系统是一个成熟的后端系统所应该具有的基本系统组件</p>
 <h2 id="需求分析"><a class="markdownIt-Anchor" href="#需求分析"></a> 需求分析</h2>
 <p>站内信通知系统的核心目标是为系统提供一个 用户与用户,系统与用户交互的手段,属于网站信息传播的一个重要途径,如果详细考虑,该系统实在是一个非常庞大的系统设计,可以做的事情非常的多</p>
 <p>这里只是简单梳理一下普通消息系统需要做到的部分和功能设计,并提供一个可用的实际消息系统框架</p>
-<p>一个完成的消息通知系统大概可以分为两部分, 消息系统和通知系统</p>
+<p>一个完整的消息通知系统大概可以分为两部分, 消息系统和通知系统</p>
 <p>消息系统主要负责消息的产生,接收等,通知系统则要实现事件机制,通知机制,对接各种消息通知平台(短信,微信,邮件等)</p>
 <p>消息通知系统的核心处理大概可以分为以下3个部分:</p>
 <ol>

@@ -27,7 +27,7 @@
 <meta property="og:description" content="A*寻路  背景介绍 我们日常生活中的很多决策问题都可以转化为对应的路径规划问题,如何从复杂的路径中寻找两个或者多个点之间的最短距离就是一个很值得研究的东西 A*算法是一种寻路算法,解决的是路径规划问题的一种 目的是:  找出某地图中两点之间的最短路径   寻路过程 先来看个地图 s:起点   e:终点  #:障碍 | | | | | | | |           | | | |#| | |">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-09-29T10:51:59.000Z">
-<meta property="article:modified_time" content="2020-11-02T16:03:54.820Z">
+<meta property="article:modified_time" content="2020-11-08T13:06:29.099Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="A*算法">
 <meta name="twitter:card" content="summary">
@@ -1269,7 +1269,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3059,9 +3059,7 @@ ul.breadcrumb li + li:last-child {
 | | | |#| | | |
 | | | | | | | |
 </code></pre>
-<p>现在有这样的需求,我们需要找出s-&gt;e的最短路径<br>
-但是,s和e之间有一堵’墙’,就是"#"啦<br>
-这样怎么才能找出最短路径呢?</p>
+<p>现在有这样的需求,我们需要找出s-&gt;e的最短路径 ，但是,s和e之间有一堵’墙’,就是"#"啦。这样怎么才能找出最短路径呢?</p>
 <p>第一种做法(Dijkstra算法):</p>
 <pre><code>s:起点   e:终点  *:检索路径 #:障碍
 |*|*|*| | | | |
@@ -3123,19 +3121,21 @@ ul.breadcrumb li + li:last-child {
 | | | | | | | | | | | | | |
 </code></pre>
 <h2 id="a寻路的主要过程"><a class="markdownIt-Anchor" href="#a寻路的主要过程"></a> <code>A*</code>寻路的主要过程</h2>
-<ol>
-<li>将起点S加入到开放列表(开放列表中的点都是可用的)</li>
-<li>寻找起点S周围所有可到达的点,并计算F值(最终衡量陆静距离的值),设置这些点的父节点为起点,将这些点加入到一个开放列表</li>
-<li>将起点从开放列表中删除,并添加到关闭列表,从开放列表中选取F值最小的点M(如果有多个最小F值,随机取其一)</li>
-<li>将M从开放列表中删除,并添加到关闭列表,计算M周围可到达的点,重新计算F值,将周围这些点都存入开放列表,设置他们的父节点为M</li>
-<li>如果M周围某个点已经在开放列表中,重新计算F值和G值(已消耗路径),选取新旧G值中最小的点</li>
-<li>最后如果发现终点在开放列表中,终止程序</li>
-</ol>
 <p><strong><code>A*</code>寻路的精髓</strong></p>
 <p>核心公式：$$F = G + H$$</p>
 <p>F:用来评价点距起点距离的值</p>
 <p>G:实际已耗费的路径</p>
 <p>H:未来还需要耗费的路径</p>
+<h3 id="具体过程"><a class="markdownIt-Anchor" href="#具体过程"></a> 具体过程</h3>
+<ol>
+<li>将起点S加入到开放列表(开放列表中的点都是可用的)</li>
+<li>寻找起点S周围所有可到达的点,并计算F值(最终衡量路径距离的值),设置这些点的父节点为起点,将这些点加入到一个开放列表</li>
+<li>将起点从开放列表中删除,并添加到关闭列表,从开放列表中选取F值最小的点M(如果有多个最小F值,随机取其一)</li>
+<li>将M从开放列表中删除,并添加到关闭列表,计算M周围可到达的点,重新计算F值,将周围这些点都存入开放列表,设置他们的父节点为M</li>
+<li>如果M周围某个点已经在开放列表中,重新计算F值和G值(已消耗路径),选取新旧G值中最小的点</li>
+<li>最后如果发现终点在开放列表中,终止程序</li>
+</ol>
+<h3 id="实质"><a class="markdownIt-Anchor" href="#实质"></a> 实质</h3>
 <p><code>A*</code>算法的实质是通过维护一个<code>待检测点的列表(open list)</code>和一个<code>已检测点的列表(closed list)</code>来记录寻路过程,从图形上来看，OPEN集是已访问区域的边界，CLOSED集是已访问区域的内部。每个节点还包含一个指向父节点的指针，以确定追踪关系。</p>
 <p>算法有一个主循环,重复地从OPEN集中取最优节点n(即f值最小的节点)来检测.如果n是目标节点,那么算法结束;<br>
 否则,将节点n从OPEN集删除,并添加到CLOSED集中,然后查看n的所有邻节点n’,如果邻节点在CLOSED集,它已被检测过,则无需再检测;<br>
@@ -3242,7 +3242,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#a寻路"><span class="nav-number">1.</span> <span class="nav-text"> A*寻路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.1.</span> <span class="nav-text"> 背景介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻路过程"><span class="nav-number">1.2.</span> <span class="nav-text"> 寻路过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a寻路的主要过程"><span class="nav-number">1.3.</span> <span class="nav-text"> A*寻路的主要过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a的变种"><span class="nav-number">1.4.</span> <span class="nav-text"> A*的变种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻路算法的应用"><span class="nav-number">1.5.</span> <span class="nav-text"> 寻路算法的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐阅读"><span class="nav-number">1.6.</span> <span class="nav-text"> 推荐阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码演示"><span class="nav-number">1.7.</span> <span class="nav-text"> 代码演示</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#a寻路"><span class="nav-number">1.</span> <span class="nav-text"> A*寻路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.1.</span> <span class="nav-text"> 背景介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻路过程"><span class="nav-number">1.2.</span> <span class="nav-text"> 寻路过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a寻路的主要过程"><span class="nav-number">1.3.</span> <span class="nav-text"> A*寻路的主要过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#具体过程"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 具体过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实质"><span class="nav-number">1.3.2.</span> <span class="nav-text"> 实质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a的变种"><span class="nav-number">1.4.</span> <span class="nav-text"> A*的变种</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻路算法的应用"><span class="nav-number">1.5.</span> <span class="nav-text"> 寻路算法的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐阅读"><span class="nav-number">1.6.</span> <span class="nav-text"> 推荐阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码演示"><span class="nav-number">1.7.</span> <span class="nav-text"> 代码演示</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

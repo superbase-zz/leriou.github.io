@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3042,7 +3042,7 @@ ul.breadcrumb li + li:last-child {
       
           <h1 id="redis基础数据结构"><a class="markdownIt-Anchor" href="#redis基础数据结构"></a> redis基础数据结构</h1>
 <p>redis中的数据对象有5种,但是这并不是redis中真正的数据存放方式, 只是对底层的数据存放结构进行了封装的对象</p>
-<p>redis的几种基础数据结构是redis中的最重要的部分, redis后续的几乎所有功能的设计和实现都依赖于此</p>
+<p>redis的几种基础数据结构是redis中的最重要的部分, redis后续的大部分功能的设计和实现都依赖于此</p>
 <h1 id="sds简单动态字符串"><a class="markdownIt-Anchor" href="#sds简单动态字符串"></a> sds简单动态字符串</h1>
 <p><em>对应的上层对象是</em> <code>字符串</code></p>
 <h2 id="数据结构"><a class="markdownIt-Anchor" href="#数据结构"></a> 数据结构</h2>
@@ -3054,11 +3054,7 @@ ul.breadcrumb li + li:last-child {
 <p>例如 "hello"这个字符串的存储结构如下</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">	len:<span class="number">5</span>,</span><br><span class="line">	<span class="built_in">free</span>:<span class="number">0</span>,</span><br><span class="line">	buff:[<span class="string">'h'</span>,<span class="string">'e'</span>,<span class="string">'l'</span>,<span class="string">'l'</span>,<span class="string">'o'</span>,<span class="string">'\0'</span>]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>修改的时候会比较麻烦,分为两种情况</p>
-<p>一是由段字符串变长:例如:由"hello"变为"hello,redis".</p>
-<p>这个时候系统会检查原本的sds字符串是否有空余空间,剩余空间为0</p>
-<p>会分配等同于修改后字符串长度的剩余空间给sds,这个时候字符串的free属性会变为11,然后执行sdscat()</p>
-<p>这个时候buff会变为[‘h’,‘e’,‘l’,‘l’,‘o’,’,’,‘r’,‘e’,‘d’,‘i’,‘s’,’\0’]</p>
-<p>然后将字符串长度len修改为11</p>
+<p>一是由段字符串变长:例如:由"hello"变为"hello，redis"，这个时候系统会检查原本的sds字符串是否有空余空间,剩余空间为0。会分配等同于修改后字符串长度的剩余空间给sds,这个时候字符串的free属性会变为11,然后执行sdscat()，这个时候buff会变为[‘h’,‘e’,‘l’,‘l’,‘o’,’,’,‘r’,‘e’,‘d’,‘i’,‘s’,’\0’]，然后将字符串长度len修改为11。</p>
 <p>最终结构如下</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">	len:<span class="number">11</span>,     </span><br><span class="line">	<span class="built_in">free</span>:<span class="number">11</span>,</span><br><span class="line">	buff:[<span class="string">'h'</span>,<span class="string">'e'</span>,<span class="string">'l'</span>,<span class="string">'l'</span>,<span class="string">'o'</span>,<span class="string">','</span>,<span class="string">'r'</span>,<span class="string">'e'</span>,<span class="string">'d'</span>,<span class="string">'i'</span>,<span class="string">'s'</span>,<span class="string">'\0'</span>]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 <p>ps:当长度小于1M是翻倍扩容,超过1M时是以1M为标准定量扩容</p>
@@ -3602,58 +3598,57 @@ ul.breadcrumb li + li:last-child {
       
           <p>我希望通过描述我自己对各种编程语言的看法，能帮助到对编程有兴趣的或者是刚工作不久的同学选择适合自己的编程语言。</p>
 <h2 id="我对各种编程语言的看法"><a class="markdownIt-Anchor" href="#我对各种编程语言的看法"></a> 我对各种编程语言的看法</h2>
-<p>很多语言都是在特定时期，在特定领域，为了解决特定问题而出现的。所以如果我们能了解各种编程语言的特性和出现的原因，选择语言就没有那么困难。</p>
-<p>先看一个Tiobe编程语言的流行趋势</p>
+<p>很多语言都是在特定时期，在特定领域，为了解决特定问题而出现的。所以如果我们能了解各种编程语言的特性和出现的原因，选择语言就没有那么困难。先看一个Tiobe编程语言的流行趋势（2018年11月）</p>
 <p><img data-src="https://i.loli.net/2020/05/09/NfK3Vc9jqiHy7OE.png" alt="20181108-11394.png"></p>
 <p>我简单列举一下我熟悉的上面出现的几个语言的优缺点</p>
 <ul>
 <li>c/c++</li>
 </ul>
-<p>优点 -&gt; 性能强，资源占用低，足够底层，满足你对代码的精确控制能力</p>
-<p>缺点 -&gt; 开发效率太低了，像c语言本身标准库带有的函数太少，c++的stl倒是工具比较多，但是包管理工具什么的还是没有比较标准的。其实项目中工程构建方面的成本往往要超过语言本身带来的成本。</p>
-<p>建议 -&gt; 嵌入式，操作系统，数据库等领域的开发者，普通开发者拿来做算法研究还是比较合适的，不建议个人用此类语言来做私人项目。不过还是建议个人能拥有该语言的代码阅读能力， 便于精研技术。</p>
+<p>优点 --&gt; 性能强，资源占用低，足够底层，满足你对代码的精确控制能力</p>
+<p>缺点 --&gt; 开发效率太低了，像c语言本身标准库带有的函数太少，c++的stl倒是工具比较多，但是包管理工具什么的还是没有比较标准的。其实很多时候项目中工程构建方面的成本往往要超过语言本身带来的成本。</p>
+<p>建议 --&gt; 嵌入式，操作系统，数据库等领域的开发者，普通开发者拿来做算法研究还是比较合适的，不建议个人用此类语言来做私人项目。不过还是建议个人能拥有该语言的代码阅读能力， 便于精研技术。</p>
 <ul>
 <li>Rust</li>
 </ul>
-<p>优点 -&gt; rust某种程度上正好补足了c/c++的部分不足，比如标准库比较丰富，内存安全，性能没有太多损失，包管理和工具链还比较现代化。</p>
-<p>缺点 -&gt; 上手门槛高，语言限制太多，不统一，unsafe下面的rust失去了诸多优点</p>
-<p>建议 -&gt; 部分原来的c++的领域很适合用rust重构，包括数据库和存储系统，消息中间件，操作系统等。而且对底层原理有兴趣的其他开发者也可以借助完善的工具链来构建个人项目，如果你想做一个偏低层的项目的话。</p>
+<p>优点 --&gt; rust某种程度上正好补足了c/c++的部分不足，比如标准库比较丰富，内存安全，性能没有太多损失，包管理和工具链还比较现代化。</p>
+<p>缺点 --&gt; 上手门槛高，语言限制太多，不统一，unsafe下面的rust失去了诸多优点</p>
+<p>建议 --&gt; 部分原来的c++的领域很适合用rust重构，包括数据库和存储系统，消息中间件，操作系统等。而且对底层原理有兴趣的其他开发者也可以借助完善的工具链来构建个人项目，如果你想做一个偏低层的项目的话。</p>
 <ul>
 <li>Java</li>
 </ul>
-<p>优点 -&gt; 工程化好，生态强大。适合企业</p>
-<p>缺点 -&gt; 太中庸了，啥都能干，干啥都不够有优势</p>
-<p>建议 -&gt; 企业项目，个人做算法研究。</p>
+<p>优点 --&gt; 工程化好，生态强大。适合企业</p>
+<p>缺点 --&gt; 太中庸了，啥都能干，干啥都不够有优势</p>
+<p>建议 --&gt; 企业项目，个人做算法研究。</p>
 <ul>
 <li>Go</li>
 </ul>
-<p>优点 -&gt; 并发处理简单，工程化方便</p>
-<p>缺点 -&gt; 简约到有点简陋， 语言本身缺少太多东西</p>
-<p>建议 -&gt; 原PHP/Java开发者， 企业项目。同样适合个人做项目使用。</p>
+<p>优点 --&gt; 并发处理简单，工程化方便</p>
+<p>缺点 --&gt; 简约到有点简陋， 语言本身缺少太多东西</p>
+<p>建议 --&gt; 原PHP/Java开发者， 企业项目。同样适合个人做项目使用。</p>
 <ul>
 <li>Python</li>
 </ul>
-<p>优点 -&gt; 简单，开发效率高。</p>
-<p>缺点 -&gt; 不适合企业拿来做生产项目</p>
-<p>建议 -&gt; 适合编程初学者。快速搭建项目demo。</p>
+<p>优点 --&gt; 简单，开发效率高。</p>
+<p>缺点 --&gt; 不适合企业拿来做生产项目</p>
+<p>建议 --&gt; 适合编程初学者。快速搭建项目demo。</p>
 <ul>
 <li>Scala</li>
 </ul>
-<p>优点 -&gt; 表达能力强，函数式 + 面向对象</p>
-<p>缺点 -&gt; 受JVM限制做了很多妥协，想深入太过复杂，成也JVM，败也JVM</p>
-<p>建议 -&gt; 数据分析和处理工作者。也适合作为伪代码想别人描述算法思路</p>
+<p>优点 --&gt; 表达能力强，函数式 + 面向对象</p>
+<p>缺点 --&gt; 受JVM限制做了很多妥协，想深入太过复杂，成也JVM，败也JVM</p>
+<p>建议 --&gt; 数据分析和处理工作者。也适合作为伪代码想别人描述算法思路</p>
 <ul>
 <li>scheme</li>
 </ul>
-<p>建议 -&gt; 对函数式编程和编程语言设计有兴趣的人，适合用来学习</p>
+<p>建议 --&gt; 对函数式编程和编程语言设计有兴趣的人，适合用来学习</p>
 <ul>
 <li>PHP</li>
 </ul>
-<p>建议 -&gt; 适合用来做与用户交互的web页面工作</p>
+<p>建议 --&gt; 适合用来做与用户交互的web页面工作</p>
 <ul>
 <li>javascript</li>
 </ul>
-<p>建议 -&gt; 非前端工作者也建议学习一下， 语法简单，用途广泛</p>
+<p>建议 --&gt; 非前端工作者也建议学习一下， 语法简单，用途广泛</p>
 <h3 id="编程语言的江湖和流派"><a class="markdownIt-Anchor" href="#编程语言的江湖和流派"></a> 编程语言的江湖和流派</h3>
 <p>c/c++/Java这种就是传统的武林豪门少林/武当这种，或许这些门派不是最强的，但一定是不会太差，处于平均水准以上。</p>
 <p>虽然《九阴真经》,《北冥神功》这种级别的绝世武功也大多不是出于少林武当，但是,这种绝世武功不是适合所有人的，高收益往往伴随着高风险。所以还是建议大家多看,多学,增广见闻，见的多了,看得多了,了解的多了,最后根据自己的需要去选择,不要一开始就去选择拒绝</p>
@@ -3666,8 +3661,8 @@ ul.breadcrumb li + li:last-child {
 <p>初学者建议  go / java（编译型） + python / js（脚本型） 这样的搭配</p>
 <p>我个人大概是这样的学习路线:</p>
 <p>学校时期: C++, Java , PHP, JS, 都是学校时期学的, 当时就懂了个基本概念, 啥都没学会 。</p>
-<p>刚工作时: C, js, PHP 早期工作需要 。</p>
-<p>工作2年以后: 因为工作关系接触到了Python， Go，Java，Scala。再后来希望对编程语言有更深入的认识，于是学习了Scheme和Rust。未来的花我可能会花更多时间在Rust和Scala上面</p>
+<p>刚工作时: 深入学习了C, js, PHP 早期工作需要 。</p>
+<p>工作2年以后: 因为工作关系接触到了Python， Go，Java，Scala。再后来自己希望对编程语言有更深入的认识，于是学习了Scheme和Rust。未来的我可能会花更多时间在Rust和Scala上面</p>
 
       
     </div>
@@ -3962,8 +3957,7 @@ ul.breadcrumb li + li:last-child {
           <script crossorigin="anonymous" integrity="sha384-P75AfVrDnfsoUfx7dDfQM9ivlDhxgE+g4kqO/U7lyXtJwJdpZozbt8L5ywD2PDA0" src="https://lib.baomitu.com/vue/2.5.21/vue.min.js"></script>
 <h1 id="如何计算π和e的值"><a class="markdownIt-Anchor" href="#如何计算π和e的值"></a> 如何计算π和e的值</h1>
 <p>从小学就知道 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>π</mi><mo>=</mo><mn>3.14159265358979</mn><mo>⋯</mo></mrow><annotation encoding="application/x-tex">\pi=3.14159265358979\cdots</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">π</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">.</span><span class="mord">1</span><span class="mord">4</span><span class="mord">1</span><span class="mord">5</span><span class="mord">9</span><span class="mord">2</span><span class="mord">6</span><span class="mord">5</span><span class="mord">3</span><span class="mord">5</span><span class="mord">8</span><span class="mord">9</span><span class="mord">7</span><span class="mord">9</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">⋯</span></span></span></span></p>
-<p>但是一直不知道如何计算这个值</p>
-<p>之前听说过祖冲之使用的是割圆法，但是我不会(T_T，流下了没有技术的泪水)</p>
+<p>但是一直不知道如何计算这个值。之前听说过祖冲之使用的是割圆法，但是我不会(T_T，流下了没有技术的泪水)，也就没办法自己亲自体验一下这个计算过程，好在后来我发现了别的方法可以计算出圆周率的数值</p>
 <ul>
 <li>数学法</li>
 </ul>
@@ -3975,7 +3969,7 @@ ul.breadcrumb li + li:last-child {
 <li>蒙特卡洛模拟</li>
 </ul>
 <p>后来又想到可以采用蒙特卡洛采样的方法也可以计算出来 π</p>
-<p>计算方法如下, 我们随机生成 m 个 二维坐标&lt;x, y&gt;, 并且满足  <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mo>≤</mo><mi>x</mi><mo>&lt;</mo><mn>1</mn><mo separator="true">,</mo><mn>0</mn><mo>≤</mo><mi>y</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\leq x &lt; 1, 0 \leq y &lt; 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.7335400000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>。然后使用欧拉距离统计在圆内的坐标的数目 n ， 再除以生成的所有坐标的数目 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mi>n</mi><mi>m</mi></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\cfrac{n}{m}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span></span></span></span>。由于我们的采样范围只覆盖了<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mn>1</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\cfrac{1}{4}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span></span></span></span>的圆， 所以结果需要乘上4 就是圆周率的结果了</p>
+<p>计算方法如下, 我们随机生成 m 个 二维坐标&lt;x, y&gt;, 并且满足  <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mo>≤</mo><mi>x</mi><mo>&lt;</mo><mn>1</mn><mo separator="true">,</mo><mn>0</mn><mo>≤</mo><mi>y</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\leq x &lt; 1, 0 \leq y &lt; 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.7335400000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>。然后使用欧拉距离统计在圆内的坐标的数目 n ， 再除以生成的所有坐标的数目 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mi>n</mi><mi>m</mi></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\cfrac{n}{m}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span></span></span></span>。由于我们的采样范围只覆盖了<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mn>1</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\cfrac{1}{4}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span></span></span></span>的圆， 所以结果需要乘上4 就是圆周率的结果了，我们还可以去除随机出来的重复数字或者通过人为限定随机精度来加快计算</p>
 <h1 id="如何计算自然常数"><a class="markdownIt-Anchor" href="#如何计算自然常数"></a> 如何计算自然常数</h1>
 <p>自然常数也一直是我不理解的一个数字</p>
 <p>之前听说过一个类比,讲的挺好的,但当时并没有去仔细考虑过计算的方法<a href="http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html" target="_blank" rel="noopener">数学常数e的含义</a></p>
@@ -4197,15 +4191,13 @@ for (e in arr) {
 <p>然后就放弃了,去找了个现成的图形库:CamanJS</p>
 <p>发现用起来也不错,也就没有再做下去</p>
 <h2 id="简介"><a class="markdownIt-Anchor" href="#简介"></a> 简介</h2>
-<p><a href="http://camanjs.com/" target="_blank" rel="noopener">CamanJS</a>是一个图片处理类库,能十分方便的处理图片</p>
-<p>本身已经提供了许多效果和操作</p>
-<p>使用起来也十分方便</p>
+<p><a href="http://camanjs.com/" target="_blank" rel="noopener">CamanJS</a>是一个图片处理类库,能十分方便的处理图片，本身已经提供了许多效果和操作，使用起来也十分方便</p>
 <p>项目地址：<a href="https://github.com/meltingice/CamanJS/" target="_blank" rel="noopener">https://github.com/meltingice/CamanJS/</a></p>
 <h2 id="简单使用"><a class="markdownIt-Anchor" href="#简单使用"></a> 简单使用</h2>
 <p>在头文件中引入文件<a href="//cdn.bootcss.com/camanjs/4.1.2/caman.full.min.js" target="_blank" rel="noopener">//cdn.bootcss.com/camanjs/4.1.2/caman.full.min.js</a></p>
 <p>然后就可以直接使用内置的函数和效果了</p>
 <p>例如：</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Caman(<span class="string">"#image"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">    <span class="keyword">this</span>.stackBlur(<span class="number">5</span>).render()  <span class="comment">//模糊处理，模糊半径5像素</span></span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Caman(<span class="string">"#image"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">    <span class="keyword">this</span>.stackBlur(<span class="number">5</span>).render()  <span class="comment">//模糊处理，模糊半径5像素</span></span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
 <h2 id="测试工具"><a class="markdownIt-Anchor" href="#测试工具"></a> 测试工具</h2>
 <p><button class="btn btn-info" id="reset">RESET</button>(尽量使用chrome浏览器,请等待网页加载完毕)</p>
 <div>
@@ -4218,7 +4210,7 @@ for (e in arr) {
 <code>this.revert()</code>用来重置图片效果,保证各个效果不互相影响<br>
 <code>this.lomo()</code>将lomo效果用到图片上<br>
 <code>this.render()</code>渲染图片</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caman(<span class="string">"#image"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">    <span class="keyword">this</span>.revert();</span><br><span class="line">    <span class="keyword">this</span>.lomo();</span><br><span class="line">    <span class="keyword">this</span>.render();</span><br><span class="line">    })</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caman(<span class="string">"#image"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">    <span class="keyword">this</span>.revert();</span><br><span class="line">    <span class="keyword">this</span>.lomo();</span><br><span class="line">    <span class="keyword">this</span>.render();</span><br><span class="line">})</span><br></pre></td></tr></tbody></table></figure>
 <p>执行<code>love</code>效果: <button class="btn btn-info" onclick="javascript:love_render()">RUN LOVE</button></p>
 <p>其他预置效果还有</p>
 <p><code>lomo</code>,<code>vintage</code>,<code>clarity</code>,<code>sinCity</code>,<code>sunrise</code>,<code>crossProcess</code>,<code>orangePeel</code>,<code>grungy</code>,<code>jarques</code>,<br>
@@ -4923,9 +4915,7 @@ for (e in arr) {
 | | | |#| | | |
 | | | | | | | |
 </code></pre>
-<p>现在有这样的需求,我们需要找出s-&gt;e的最短路径<br>
-但是,s和e之间有一堵’墙’,就是"#"啦<br>
-这样怎么才能找出最短路径呢?</p>
+<p>现在有这样的需求,我们需要找出s-&gt;e的最短路径 ，但是,s和e之间有一堵’墙’,就是"#"啦。这样怎么才能找出最短路径呢?</p>
 <p>第一种做法(Dijkstra算法):</p>
 <pre><code>s:起点   e:终点  *:检索路径 #:障碍
 |*|*|*| | | | |
@@ -4987,19 +4977,21 @@ for (e in arr) {
 | | | | | | | | | | | | | |
 </code></pre>
 <h2 id="a寻路的主要过程"><a class="markdownIt-Anchor" href="#a寻路的主要过程"></a> <code>A*</code>寻路的主要过程</h2>
-<ol>
-<li>将起点S加入到开放列表(开放列表中的点都是可用的)</li>
-<li>寻找起点S周围所有可到达的点,并计算F值(最终衡量陆静距离的值),设置这些点的父节点为起点,将这些点加入到一个开放列表</li>
-<li>将起点从开放列表中删除,并添加到关闭列表,从开放列表中选取F值最小的点M(如果有多个最小F值,随机取其一)</li>
-<li>将M从开放列表中删除,并添加到关闭列表,计算M周围可到达的点,重新计算F值,将周围这些点都存入开放列表,设置他们的父节点为M</li>
-<li>如果M周围某个点已经在开放列表中,重新计算F值和G值(已消耗路径),选取新旧G值中最小的点</li>
-<li>最后如果发现终点在开放列表中,终止程序</li>
-</ol>
 <p><strong><code>A*</code>寻路的精髓</strong></p>
 <p>核心公式：$$F = G + H$$</p>
 <p>F:用来评价点距起点距离的值</p>
 <p>G:实际已耗费的路径</p>
 <p>H:未来还需要耗费的路径</p>
+<h3 id="具体过程"><a class="markdownIt-Anchor" href="#具体过程"></a> 具体过程</h3>
+<ol>
+<li>将起点S加入到开放列表(开放列表中的点都是可用的)</li>
+<li>寻找起点S周围所有可到达的点,并计算F值(最终衡量路径距离的值),设置这些点的父节点为起点,将这些点加入到一个开放列表</li>
+<li>将起点从开放列表中删除,并添加到关闭列表,从开放列表中选取F值最小的点M(如果有多个最小F值,随机取其一)</li>
+<li>将M从开放列表中删除,并添加到关闭列表,计算M周围可到达的点,重新计算F值,将周围这些点都存入开放列表,设置他们的父节点为M</li>
+<li>如果M周围某个点已经在开放列表中,重新计算F值和G值(已消耗路径),选取新旧G值中最小的点</li>
+<li>最后如果发现终点在开放列表中,终止程序</li>
+</ol>
+<h3 id="实质"><a class="markdownIt-Anchor" href="#实质"></a> 实质</h3>
 <p><code>A*</code>算法的实质是通过维护一个<code>待检测点的列表(open list)</code>和一个<code>已检测点的列表(closed list)</code>来记录寻路过程,从图形上来看，OPEN集是已访问区域的边界，CLOSED集是已访问区域的内部。每个节点还包含一个指向父节点的指针，以确定追踪关系。</p>
 <p>算法有一个主循环,重复地从OPEN集中取最优节点n(即f值最小的节点)来检测.如果n是目标节点,那么算法结束;<br>
 否则,将节点n从OPEN集删除,并添加到CLOSED集中,然后查看n的所有邻节点n’,如果邻节点在CLOSED集,它已被检测过,则无需再检测;<br>
@@ -5109,9 +5101,7 @@ for (e in arr) {
 
       
           <h1 id="smallpt"><a class="markdownIt-Anchor" href="#smallpt"></a> smallpt</h1>
-<p>今天给大家介绍一个<strong>全局光照引擎</strong></p>
-<p>该程序作者是<a href="http://www.kevinbeason.com/smallpt/" target="_blank" rel="noopener">kevinbeason</a></p>
-<p>代码不长,只要<code>100</code>行左右,采用了<a href="http://baike.baidu.com/link?url=RQRnSUL-7NapJO695uvrH7FuHTXTB1tixzbM5tC65PS2gNjFhyTdpsrLCP-sBKSbhWWnwULdK3v3mEEjip7Caq" target="_blank" rel="noopener">Monte Carlo</a>算法</p>
+<p>今天给大家介绍一个<strong>全局光照引擎</strong>，该程序作者是<a href="http://www.kevinbeason.com/smallpt/" target="_blank" rel="noopener">kevinbeason</a>。代码不长,只要<code>100</code>行左右,采用了<a href="http://baike.baidu.com/link?url=RQRnSUL-7NapJO695uvrH7FuHTXTB1tixzbM5tC65PS2gNjFhyTdpsrLCP-sBKSbhWWnwULdK3v3mEEjip7Caq" target="_blank" rel="noopener">Monte Carlo</a>模拟算法</p>
 <h1 id="图片效果"><a class="markdownIt-Anchor" href="#图片效果"></a> 图片效果</h1>
 <p>渲染出来的图片最终效果</p>
 <p><img data-src="https://i.loli.net/2020/05/09/CSk356LrHV7uJIB.png" alt="result_25k.png"></p>
@@ -5255,7 +5245,7 @@ function radiance(r, depth) {
     } else {
         var newDepth = depth + 1;
         var isMaxDepth = newDepth > 100;
-    
+
         var isUseRR = newDepth > 5;
         var isRR = isUseRR && rand() < obj.maxC;
     
@@ -5469,11 +5459,334 @@ function eval_render()
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="什么是光线追踪"><a class="markdownIt-Anchor" href="#什么是光线追踪"></a> 什么是光线追踪</h1>
-<p>光线追踪是计算机图形领域实现全局光照效果的一种手段，光线追踪由于实现简单,效果优秀,但是效率比较低，所以一直以来大多作为学习之用。</p>
-          <!--noindex-->
-          <!--/noindex-->
-        
+          <h2 id="一个简单的光线追踪的例子"><a class="markdownIt-Anchor" href="#一个简单的光线追踪的例子"></a> 一个简单的光线追踪的例子</h2>
+<p>点击下方的按钮就可以渲染出一张图片哦,纯渲染出的哦(渲染很消耗性能可能会有少许的等待时间)</p>
+<h2 id="在线测试"><a class="markdownIt-Anchor" href="#在线测试"></a> 在线测试</h2>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x: x轴坐标</span><br><span class="line">y: y轴坐标</span><br><span class="line">z: z轴坐标</span><br><span class="line">反射次数： 反射效果</span><br></pre></td></tr></tbody></table></figure>
+<p>通过修改下面输入框中的数值，可以得到不同的画面效果</p>
+<div>
+<div>
+X:<input type="number" min="-100" max="100" step="5" value="0" id="pos_x">&nbsp;&nbsp;
+Y:<input type="number" min="-100" max="100" step="5" value="5" id="pos_y">&nbsp;&nbsp;
+Z:<input type="number" min="-100" max="100" step="5" value="15" id="pos_z">&nbsp;&nbsp;
+反射次数:&nbsp;&nbsp;<input type="number" min="0" max="30" step="1" value="5" id="reflect_times">&nbsp;&nbsp;
+<button onclick="javascript:render_pic();" class="btn btn-info">RENDER</button>
+</div>
+<div style="text-align: center;">
+    <canvas id="renderCanvas" width="512" height="512" style="display:none"></canvas>
+</div>
+</div>
+## 代码
+<p>查看本页的源代码可以查找到源代码，核心的代码就是如下几行</p>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">'renderCanvas'</span>); <span class="comment">// 获取画布对象</span></span><br><span class="line">canvas.style.display = <span class="string">"block"</span>;</span><br><span class="line"><span class="keyword">var</span> plane = <span class="keyword">new</span> Plane(<span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>), <span class="number">0</span>);   <span class="comment">// 基本平面 该平面的法向量为(0,1,0)</span></span><br><span class="line"><span class="keyword">var</span> sphere1 = <span class="keyword">new</span> Sphere(<span class="keyword">new</span> Vector3(<span class="number">-10</span>, <span class="number">10</span>, <span class="number">-10</span>), <span class="number">10</span>); <span class="comment">//球1 位置(-10,10,-10),半径 10</span></span><br><span class="line"><span class="keyword">var</span> sphere2 = <span class="keyword">new</span> Sphere(<span class="keyword">new</span> Vector3(<span class="number">10</span>, <span class="number">10</span>, <span class="number">-10</span>), <span class="number">10</span>);  <span class="comment">//球2 位置(10,10,-10),半径 10</span></span><br><span class="line">plane.material = <span class="keyword">new</span> CheckerMaterial(<span class="number">0.1</span>, <span class="number">0.5</span>);  <span class="comment">// 国际象棋棋盘材质</span></span><br><span class="line">sphere1.material = <span class="keyword">new</span> PhongMaterial(Color.red, Color.white, <span class="number">20</span>, <span class="number">0.25</span>); <span class="comment">//球1 Phong材质</span></span><br><span class="line">sphere2.material = <span class="keyword">new</span> PhongMaterial(Color.blue, Color.white, <span class="number">20</span>, <span class="number">0.25</span>);<span class="comment">//球2 Phong材质</span></span><br><span class="line">rayTraceReflection(</span><br><span class="line">    canvas,</span><br><span class="line">    <span class="keyword">new</span> Union([plane, sphere1, sphere2]),</span><br><span class="line">    <span class="keyword">new</span> PerspectiveCamera(<span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">5</span>, <span class="number">15</span>), <span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>), <span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>), <span class="number">90</span>),</span><br><span class="line">    <span class="number">5</span>);<span class="comment">// 渲染参数,视角位置(0,5,15),视角90度,反射5次</span></span><br></pre></td></tr></tbody></table></figure>
+<h2 id="光线追踪"><a class="markdownIt-Anchor" href="#光线追踪"></a> 光线追踪</h2>
+<p>本文的例子实际上是一种光线追踪(ray tracing)的实现.<br>
+光线追踪是全局光照(Global Illumination)的其中一中实现方式,该方法原理和实现方法都很简单但需要的计算量比较大,普通游戏无法使用,多用于学习研究性质或离线渲染(offline rendering),游戏中大多用其他技术手段实现类似效果</p>
+<p>优点:</p>
+<ol>
+<li>效果逼真，实现简单，可以适应各种复杂场景</li>
+<li>自带消隐(消除隐藏面)功能</li>
+<li>有阴影效果</li>
+<li>可以并行</li>
+<li>隐含透视性质</li>
+</ol>
+<p>缺点:</p>
+<ol>
+<li>光线追踪只能模拟光线的镜面反射(specular)行为,无法很好地模拟漫反射(diffuse)</li>
+<li>容易出现图形走样现象,因为透过两个相邻像素的光线到物体表面的距离会被放大,两像素之间的细节无法表现</li>
+</ol>
+<h2 id="基本原理"><a class="markdownIt-Anchor" href="#基本原理"></a> 基本原理</h2>
+<p>光线追踪的基本原理比较简单,如下图</p>
+<p><img data-src="https://i.loli.net/2020/05/09/s9Q1ET82SHAuDgW.png" alt="2010032819542028.png"></p>
+<blockquote>
+<p>假设相机就是人眼，从人眼的位置往屏幕上的每个像素发射光线,如果遇到具有反射性质的表面,继续追踪反射光线,最终根据光线返回的颜色去给像素进行着色</p>
+</blockquote>
+<p>因而可以比较简单的表现,反射,阴影折射等效果,但缺点是计算量较大<br>
+现在也有很多其他方式可以实现全局光照的效果(例如:辐射度算法,光子映射,甚至采用光照贴图模拟)</p>
+<p>这里的光线返回的颜色是该像素点计算得到的颜色,具体计算方法是根据光线在多个物体表面的反射得到</p>
+<h2 id="渲染深度"><a class="markdownIt-Anchor" href="#渲染深度"></a> 渲染深度</h2>
+<p>渲染深度通俗的讲就是根据某一点距离摄像机的距离渲染出不同的颜色,越远的点颜色越暗,近的点略亮,通过计算模拟眼睛与第一个看到的画面上的点的距离,映射到0-255的区间,进行色彩数值的处理。</p>
+<h2 id="材质"><a class="markdownIt-Anchor" href="#材质"></a> 材质</h2>
+<p>材质是渲染物体所必不可少的一项要素,材质根据自身的光学特性和物理特性决定了光线照射到物体表面某一点所呈现的颜色</p>
+<p>Phong光照模型是一种基本的光照模型,可以较为真实的模拟物体表面的某些特性</p>
+<p>**环境光 + 漫反射 + 镜面反射  = Phong **</p>
+<p>实现材质效果需要一定的特征函数配合</p>
+<p>材质往往和纹理一起配合出现</p>
+<h2 id="色彩"><a class="markdownIt-Anchor" href="#色彩"></a> 色彩</h2>
+<p>色彩本身是个极其庞大的学科,本文用到的色彩只是比较简单</p>
+<p>仅仅使用增色系统的三原色(RGB)来做一些基本的颜色模拟</p>
+<p>使用简单的三元数(R,G,B)来表示颜色的基本信息</p>
+<script>
+Vector3 = function(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+};
+Vector3.prototype = {
+    copy: function() {
+        return new Vector3(this.x, this.y, this.z);
+    },
+    length: function() {
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    },
+    sqrLength: function() {
+        return this.x * this.x + this.y * this.y + this.z * this.z;
+    },
+    normalize: function() {
+        var inv = 1 / this.length();
+        return new Vector3(this.x * inv, this.y * inv, this.z * inv);
+    },
+    negate: function() {
+        return new Vector3(-this.x, -this.y, -this.z);
+    },
+    add: function(v) {
+        return new Vector3(this.x + v.x, this.y + v.y, this.z + v.z);
+    },
+    subtract: function(v) {
+        return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z);
+    },
+    multiply: function(f) {
+        return new Vector3(this.x * f, this.y * f, this.z * f);
+    },
+    divide: function(f) {
+        var invf = 1 / f;
+        return new Vector3(this.x * invf, this.y * invf, this.z * invf);
+    },
+    dot: function(v) {
+        return this.x * v.x + this.y * v.y + this.z * v.z;
+    },
+    cross: function(v) {
+        return new Vector3(-this.z * v.y + this.y * v.z, this.z * v.x - this.x * v.z, -this.y * v.x + this.x * v.y);
+    }
+};
+Vector3.zero = new Vector3(0, 0, 0);
+Color = function(r, g, b) {
+    this.r = r;
+    this.g = g;
+    this.b = b
+};
+Color.prototype = {
+    copy: function() {
+        return new Color(this.r, this.g, this.b);
+    },
+    add: function(c) {
+        return new Color(this.r + c.r, this.g + c.g, this.b + c.b);
+    },
+    multiply: function(s) {
+        return new Color(this.r * s, this.g * s, this.b * s);
+    },
+    modulate: function(c) {
+        return new Color(this.r * c.r, this.g * c.g, this.b * c.b);
+    },
+    saturate: function() {
+        this.r = Math.min(this.r, 1);
+        this.g = Math.min(this.g, 1);
+        this.b = Math.min(this.b, 1);
+    }
+};
+Color.black = new Color(0, 0, 0);
+Color.white = new Color(1, 1, 1);
+Color.red = new Color(1, 0, 0);
+Color.green = new Color(0, 1, 0);
+Color.blue = new Color(0, 0, 1);
+PhongMaterial = function(diffuse, specular, shininess, reflectiveness) {
+    this.diffuse = diffuse;
+    this.specular = specular;
+    this.shininess = shininess;
+    this.reflectiveness = reflectiveness;
+};
+PhongMaterial.prototype = {
+    sample: function(ray, position, normal) {
+        var NdotL = normal.dot(lightDir);
+        var H = (lightDir.subtract(ray.direction)).normalize();
+        var NdotH = normal.dot(H);
+        var diffuseTerm = this.diffuse.multiply(Math.max(NdotL, 0));
+        var specularTerm = this.specular.multiply(Math.pow(Math.max(NdotH, 0), this.shininess));
+        return lightColor.modulate(diffuseTerm.add(specularTerm));
+    }
+};
+PerspectiveCamera = function(eye, front, up, fov) {
+    this.eye = eye;
+    this.front = front;
+    this.refUp = up;
+    this.fov = fov;
+};
+PerspectiveCamera.prototype = {
+    initialize: function() {
+        this.right = this.front.cross(this.refUp);
+        this.up = this.right.cross(this.front);
+        this.fovScale = Math.tan(this.fov * 0.5 * Math.PI / 180) * 2;
+    },
+    generateRay: function(x, y) {
+        var r = this.right.multiply((x - 0.5) * this.fovScale);
+        var u = this.up.multiply((y - 0.5) * this.fovScale);
+        return new Ray3(this.eye, this.front.add(r).add(u).normalize());
+    }
+};
+Plane = function(normal, d) {
+    this.normal = normal;
+    this.d = d;
+};
+Plane.prototype = {
+    copy: function() {
+        return new plane(this.normal.copy(), this.d);
+    },
+    initialize: function() {
+        this.position = this.normal.multiply(this.d);
+    },
+    intersect: function(ray) {
+        var a = ray.direction.dot(this.normal);
+        if (a >= 0) {
+            return IntersectResult.noHit;
+        }
+        var b = this.normal.dot(ray.origin.subtract(this.position));
+        var result = new IntersectResult();
+        result.geometry = this;
+        result.distance = -b / a;
+        result.position = ray.getPoint(result.distance);
+        result.normal = this.normal;
+        return result;
+    }
+};
+Sphere = function(center, radius) {
+    this.center = center;
+    this.radius = radius;
+};
+Sphere.prototype = {
+    copy: function() {
+        return new Sphere(this.center.copy(), this.radius.copy());
+    },
+    initialize: function() { this.sqrRadius = this.radius * this.radius; },
+    intersect: function(ray) {
+        var v = ray.origin.subtract(this.center);
+        var a0 = v.sqrLength() - this.sqrRadius;
+        var DdotV = ray.direction.dot(v);
+        if (DdotV <= 0) {
+            var discr = DdotV * DdotV - a0;
+            if (discr >= 0) {
+                var result = new IntersectResult();
+                result.geometry = this;
+                result.distance = -DdotV - Math.sqrt(discr);
+                result.position = ray.getPoint(result.distance);
+                result.normal = result.position.subtract(this.center).normalize();
+                return result;
+            }
+        }
+        return IntersectResult.noHit;
+    }
+};
+IntersectResult = function() {
+    this.geometry = null;
+    this.distance = 0;
+    this.position = Vector3.zero;
+    this.normal = Vector3.zero;
+};
+IntersectResult.noHit = new IntersectResult();Union = function(geometries) { this.geometries = geometries; };
+Union.prototype = {
+    initialize: function() {
+        for (var i in this.geometries)
+            this.geometries[i].initialize();
+    },
+    intersect: function(ray) {
+        var minDistance = Infinity;
+        var minResult = IntersectResult.noHit;
+        for (var i in this.geometries) {
+            var result = this.geometries[i].intersect(ray);
+            if (result.geometry && result.distance < minDistance) {
+                minDistance = result.distance;
+                minResult = result;
+            }
+        }
+        return minResult;
+    }
+};
+Ray3 = function(origin, direction) {
+    this.origin = origin;
+    this.direction = direction;
+}
+Ray3.prototype = {
+    getPoint: function(t) {
+        return this.origin.add(this.direction.multiply(t));
+    }
+};
+var lightDir = new Vector3(1, 1, 1).normalize();
+var lightColor = Color.white;
+CheckerMaterial = function(scale, reflectiveness) {
+    this.scale = scale;
+    this.reflectiveness = reflectiveness;
+};
+CheckerMaterial.prototype = {
+    sample: function(ray, position, normal) {
+        return Math.abs((Math.floor(position.x * 0.1) + Math.floor(position.z * this.scale)) % 2) < 1 ? Color.black : Color.white;
+    }
+};
+function rayTraceRecursive(scene, ray, maxReflect) {
+    var result = scene.intersect(ray);
+    if (result.geometry) {
+        var reflectiveness = result.geometry.material.reflectiveness;
+        var color = result.geometry.material.sample(ray, result.position, result.normal);
+        color = color.multiply(1 - reflectiveness);
+        if (reflectiveness > 0 && maxReflect > 0) {
+            var r = result.normal.multiply(-2 * result.normal.dot(ray.direction)).add(ray.direction);
+            ray = new Ray3(result.position, r);
+            var reflectedColor = rayTraceRecursive(scene, ray, maxReflect - 1);
+            color = color.add(reflectedColor.multiply(reflectiveness));
+        }
+        return color;
+    } else
+        return Color.black;
+}
+function rayTraceReflection(canvas, scene, camera, maxReflect) {
+    if (!canvas || !canvas.getContext)
+        return;
+    var ctx = canvas.getContext("2d");
+    if (!ctx.getImageData)
+        return;
+    var w = canvas.attributes.width.value;
+    var h = canvas.attributes.height.value;
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0, 0, w, h);
+    var imgdata = ctx.getImageData(0, 0, w, h);
+    var pixels = imgdata.data;
+    scene.initialize();
+    camera.initialize();
+    var i = 0;
+    for (var y = 0; y < h; y++) {
+        var sy = 1 - y / h;
+        for (var x = 0; x < w; x++) {
+            var sx = x / w;
+            var ray = camera.generateRay(sx, sy);
+            var color = rayTraceRecursive(scene, ray, maxReflect);
+            pixels[i++] = color.r * 255;
+            pixels[i++] = color.g * 255;
+            pixels[i++] = color.b * 255;
+            pixels[i++] = 255;
+        }
+    }
+    ctx.putImageData(imgdata, 0, 0);
+}
+function render_pic(){
+    var canvas = document.getElementById('renderCanvas');
+    canvas.style.display = "block";
+    var plane = new Plane(new Vector3(0, 1, 0), 0);
+    var sphere1 = new Sphere(new Vector3(-10, 10, -10), 10);
+    var sphere2 = new Sphere(new Vector3(10, 10, -10), 10);
+    plane.material = new CheckerMaterial(0.1, 0.5);
+    sphere1.material = new PhongMaterial(Color.red, Color.white, 20, 0.25);
+    sphere2.material = new PhongMaterial(Color.blue, Color.white, 20, 0.25);
+    var zx,zy,zz,reflect_times,camera;
+    zx = parseInt(document.getElementById('pos_x').value,10);
+    zy = parseInt(document.getElementById('pos_y').value,10);
+    zz = parseInt(document.getElementById('pos_z').value,10);
+    reflect_times = parseInt(document.getElementById('reflect_times').value,10);
+    camera =  new PerspectiveCamera(new Vector3(zx, zy, zz), new Vector3(0, 0, -1), new Vector3(0, 1, 0), 90);
+    rayTraceReflection(
+    canvas,
+    new Union([plane, sphere1, sphere2]),
+    camera,
+    reflect_times);
+}
+</script>
       
     </div>
 

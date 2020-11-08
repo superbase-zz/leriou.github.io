@@ -19,12 +19,12 @@
     var CONFIG = {"hostname":"leriou.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="kafka分享 听闻kafka已经是很早之前的事情了 在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统 不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务 后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)  消息传递在现代业务中的地位 面向对象的程序 =">
+  <meta name="description" content="kafka分享 听闻kafka已经是很早之前的事情了，在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统。不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务，后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)。  消息传递在现代业务中的地位 面向对象的程序 =">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈Kafka消息系统">
 <meta property="og:url" content="https://leriou.github.io/2017-11-01-kafka-share-in-group/index.html">
 <meta property="og:site_name" content="Leriou's Tavern">
-<meta property="og:description" content="kafka分享 听闻kafka已经是很早之前的事情了 在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统 不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务 后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)  消息传递在现代业务中的地位 面向对象的程序 =">
+<meta property="og:description" content="kafka分享 听闻kafka已经是很早之前的事情了，在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统。不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务，后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)。  消息传递在现代业务中的地位 面向对象的程序 =">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/JaQFedmhsk175PS.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/8hymVr34eTK6ndq.jpg">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/05/09/2gVbKren4BGyxQ1.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/05/09/AO3746RkVfgZiL2.jpg">
 <meta property="article:published_time" content="2017-11-01T03:07:31.000Z">
-<meta property="article:modified_time" content="2020-11-02T16:03:54.865Z">
+<meta property="article:modified_time" content="2020-11-08T13:06:29.134Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="Kafka">
 <meta name="twitter:card" content="summary">
@@ -1275,7 +1275,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #50d9ab;
+  background: #7a745b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3049,13 +3049,10 @@ ul.breadcrumb li + li:last-child {
 
       
         <h1 id="kafka分享"><a class="markdownIt-Anchor" href="#kafka分享"></a> kafka分享</h1>
-<p>听闻kafka已经是很早之前的事情了</p>
-<p>在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统</p>
-<p>不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务</p>
-<p>后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)</p>
+<p>听闻kafka已经是很早之前的事情了，在2016年的时候, 就在一次我们公司的数据团队的内部分享中听过他们基于kafka做的一套数据处理系统。不过当时我对他的认知还仅仅知道是一个能处理海量数据的消息队列服务，后来随着深入使用才发现kafka其实不仅仅是纯粹的消息队列, 而是一种分布式消息系统甚至于流处理平台(基于scala开发)。</p>
 <h2 id="消息传递在现代业务中的地位"><a class="markdownIt-Anchor" href="#消息传递在现代业务中的地位"></a> 消息传递在现代业务中的地位</h2>
 <p><strong>面向对象的程序 = 对象 + 消息传递</strong></p>
-<p>消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
+<p>虽然上面的这歌公式针对的是面向对象和语言设计方面的描述，但是消息系统在我们业务中的重要性由此可见, 消息系统可以作为系统与系统进行交互,或者对业务进行解耦的一个利器</p>
 <p>我们通常会把许多实时性要求不那么高的任务处理通过消息系统进行解耦,以平衡数据处理的性能和功能</p>
 <p>例如: 用户下了一个订单,我们需要马上告诉用户下单成功, 但是之后的物流发货, 订单入账和商品信息更新等消息都可以通过一个消息系统进行拆分,这样不仅不会影响用户体验,也可以对之后触发的多个属于不同系统的业务进行并行处理,提升系统处理的性能</p>
 <h1 id="kafka基础介绍"><a class="markdownIt-Anchor" href="#kafka基础介绍"></a> Kafka基础介绍</h1>

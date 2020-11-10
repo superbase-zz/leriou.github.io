@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/05/09/JETjbsYLZaFNyDA.png">
 <meta property="og:image" content="https://i.loli.net/2020/05/10/kaMqH1gF7BNvE4b.png">
 <meta property="article:published_time" content="2017-03-27T10:51:00.000Z">
-<meta property="article:modified_time" content="2020-11-02T16:03:54.838Z">
+<meta property="article:modified_time" content="2020-11-10T15:06:42.815Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="Bigtable">
 <meta name="twitter:card" content="summary">
@@ -1273,7 +1273,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #7a745b;
+  background: #423db3;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3097,7 +3097,7 @@ ul.breadcrumb li + li:last-child {
 </tbody>
 </table>
 <p>像上面的一个常见的二维表格在Bigtable中我们可以使用如下方式表示</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table1:<span class="number">1</span>:info:name -&gt; 小明</span><br><span class="line">table1:<span class="number">1</span>:info:age -&gt; <span class="number">19</span></span><br><span class="line">table1:<span class="number">1</span>:meta:status -&gt; <span class="number">1</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table1:<span class="number">1</span>:info:name   -&gt; 小明</span><br><span class="line">table1:<span class="number">1</span>:info:age    -&gt; <span class="number">19</span></span><br><span class="line">table1:<span class="number">1</span>:meta:status -&gt; <span class="number">1</span></span><br></pre></td></tr></tbody></table></figure>
 <p>上面3个条记录共同构成原表中的rowkey为1的一行记录</p>
 <h3 id="行"><a class="markdownIt-Anchor" href="#行"></a> 行</h3>
 <p>表中的行关键字可以是任意小于64k的字符串，同一个行关键字的读或者写都是原子性的。上述的例子里面我们就可以把1/2/3作为行关键字。某种意义上，行关键字类似于传统数据库中的主键ID。</p>
@@ -3114,7 +3114,7 @@ ul.breadcrumb li + li:last-child {
 <h2 id="bigtable架构"><a class="markdownIt-Anchor" href="#bigtable架构"></a> Bigtable架构</h2>
 <p>Bigtable是建立在其它的几个Google基础构件上的。BigTable使用Google的分布式文件系统(GFS)存储日志文件和数据文件。</p>
 <p>刚才提到的列族就是Bigtable存储的文件单位， 同一个列族的信息会被整合成一个SSTable文件，会随着rowkey分布到不同的机器上。多个SSTable会由索引文件来定位数据，也可以被加载到内存，通过二分查找查找其中的有序数据。</p>
-<p>BigTable 还依赖一个高可用的、序列化的分布式锁服务组件，叫做 Chubby。一个 Chubby 服务包括了 5 个活动的副本，其中的一个副本被选为 Master，并且处理请求。</p>
+<p>BigTable 还依赖一个高可用的、序列化的分布式锁服务组件，叫做 Chubby。一个 Chubby 服务包括了 5 个活动的实例，其中的一个实例被选为 Master，并且处理请求。</p>
 <p>Bigtable 包括了三个主要的组件:链接到客户程序中的库、一个 Master 服务器和多个 Tablet 服务器。针 对系统工作负载的变化情况，BigTable 可以动态的向集群中添加(或者删除)Tablet 服务器。</p>
 <p>Google使用一个三层的、类似B+树的结构存储 Tablet 的位置信息</p>
 <p><img data-src="https://i.loli.net/2020/05/09/JETjbsYLZaFNyDA.png" alt="bigtable_figure4.png"></p>
@@ -3125,6 +3125,8 @@ ul.breadcrumb li + li:last-child {
 <p>写入日志的存在是为了防止机器挂掉以后内存数据的丢失</p>
 <h3 id="bigtable怎么解决一致性可用性和分区容忍性"><a class="markdownIt-Anchor" href="#bigtable怎么解决一致性可用性和分区容忍性"></a> Bigtable怎么解决一致性，可用性和分区容忍性</h3>
 <p>Bigtable构架于GFS之上， Bigtable本身并没有提供备份或者主从副本的方案。所以Bigtable依赖于GFS提供一致性和可用性保证。</p>
+<h2 id="开源的bigtable实现"><a class="markdownIt-Anchor" href="#开源的bigtable实现"></a> 开源的Bigtable实现</h2>
+<p>Hadoop系列中的<a href="https://hbase.apache.org/" target="_blank" rel="noopener">Hbase</a>一般被认为是bigtable的开源实现，两者采用了相似的设计思路，适用场景也大部分重合。还有一个<a href="https://cassandra.apache.org/" target="_blank" rel="noopener">Cassandra</a>也拥有类似的功能不过在部分设计思路上有很大不同，有兴趣的读者可以自行研究</p>
 
     </div>
 
@@ -3210,7 +3212,7 @@ ul.breadcrumb li + li:last-child {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#google-bigtable"><span class="nav-number">1.</span> <span class="nav-text"> Google Bigtable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gfs的限制"><span class="nav-number">2.</span> <span class="nav-text"> GFS的限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据模型"><span class="nav-number">3.</span> <span class="nav-text"> 数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行"><span class="nav-number">3.1.</span> <span class="nav-text"> 行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列族"><span class="nav-number">3.2.</span> <span class="nav-text"> 列族</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳"><span class="nav-number">3.3.</span> <span class="nav-text"> 时间戳</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口约定"><span class="nav-number">4.</span> <span class="nav-text"> 接口约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bigtable架构"><span class="nav-number">5.</span> <span class="nav-text"> Bigtable架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bigtable怎么解决一致性可用性和分区容忍性"><span class="nav-number">5.1.</span> <span class="nav-text"> Bigtable怎么解决一致性，可用性和分区容忍性</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#google-bigtable"><span class="nav-number">1.</span> <span class="nav-text"> Google Bigtable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gfs的限制"><span class="nav-number">2.</span> <span class="nav-text"> GFS的限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据模型"><span class="nav-number">3.</span> <span class="nav-text"> 数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行"><span class="nav-number">3.1.</span> <span class="nav-text"> 行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列族"><span class="nav-number">3.2.</span> <span class="nav-text"> 列族</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳"><span class="nav-number">3.3.</span> <span class="nav-text"> 时间戳</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口约定"><span class="nav-number">4.</span> <span class="nav-text"> 接口约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bigtable架构"><span class="nav-number">5.</span> <span class="nav-text"> Bigtable架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bigtable怎么解决一致性可用性和分区容忍性"><span class="nav-number">5.1.</span> <span class="nav-text"> Bigtable怎么解决一致性，可用性和分区容忍性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开源的bigtable实现"><span class="nav-number">6.</span> <span class="nav-text"> 开源的Bigtable实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

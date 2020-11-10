@@ -27,7 +27,7 @@
 <meta property="og:description" content="如何计算π和e的值 从小学就知道 π=3.14159265358979⋯\pi=3.14159265358979\cdotsπ=3.14159265358979⋯ 但是一直不知道如何计算这个值。之前听说过祖冲之使用的是割圆法，但是我不会(T_T，流下了没有技术的泪水)，也就没办法自己亲自体验一下这个计算过程，好在后来我发现了别的方法可以计算出圆周率的数值  数学法  后来偶尔看到数学上有一种方">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-03-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-11-08T13:06:29.118Z">
+<meta property="article:modified_time" content="2020-11-10T15:06:42.822Z">
 <meta property="article:author" content="哎呀是太阳嘛">
 <meta property="article:tag" content="math">
 <meta name="twitter:card" content="summary">
@@ -1269,7 +1269,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #7a745b;
+  background: #423db3;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3046,6 +3046,11 @@ ul.breadcrumb li + li:last-child {
 </ul>
 <p>后来又想到可以采用蒙特卡洛采样的方法也可以计算出来 π</p>
 <p>计算方法如下, 我们随机生成 m 个 二维坐标&lt;x, y&gt;, 并且满足  <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><mo>≤</mo><mi>x</mi><mo>&lt;</mo><mn>1</mn><mo separator="true">,</mo><mn>0</mn><mo>≤</mo><mi>y</mi><mo>&lt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\leq x &lt; 1, 0 \leq y &lt; 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.78041em;vertical-align:-0.13597em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.7335400000000001em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>。然后使用欧拉距离统计在圆内的坐标的数目 n ， 再除以生成的所有坐标的数目 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mi>n</mi><mi>m</mi></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\cfrac{n}{m}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">m</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span></span></span></span>。由于我们的采样范围只覆盖了<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mn>1</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\cfrac{1}{4}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.276em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.5899999999999999em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.74em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span></span></span></span></span></span>的圆， 所以结果需要乘上4 就是圆周率的结果了，我们还可以去除随机出来的重复数字或者通过人为限定随机精度来加快计算</p>
+<h2 id="在线计算π"><a class="markdownIt-Anchor" href="#在线计算π"></a> 在线计算π</h2>
+<div id="cal-pi">
+    <p>精度:<input v-model="input" type="number" value=""></p><button class="btn btn-info" v-on:click="calculate">Calculate</button>
+    <p>结果: <input v-model="result" readonly="true"> </p>
+</div>
 <h1 id="如何计算自然常数"><a class="markdownIt-Anchor" href="#如何计算自然常数"></a> 如何计算自然常数</h1>
 <p>自然常数也一直是我不理解的一个数字</p>
 <p>之前听说过一个类比,讲的挺好的,但当时并没有去仔细考虑过计算的方法<a href="http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html" target="_blank" rel="noopener">数学常数e的含义</a></p>
@@ -3066,24 +3071,13 @@ ul.breadcrumb li + li:last-child {
 <p>于是一时好奇就使用程序实现了一下,如下:</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Calculator</span>:</span></span><br><span class="line"></span><br><span class="line">    num = <span class="number">10000000</span></span><br><span class="line">    a = <span class="number">1</span></span><br><span class="line">    res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getPi</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">1</span>, self.num):</span><br><span class="line">            m = <span class="number">1</span> / (<span class="number">1</span> + <span class="number">2</span> * n)</span><br><span class="line">            <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">                self.a = self.a + m</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.a = self.a - m</span><br><span class="line">        print(self.a * <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getE</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">0</span>, self.num):</span><br><span class="line">            self.res = self.res + <span class="number">1</span> / math.factorial(n)</span><br><span class="line">        print(self.res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">c = Calculator()</span><br><span class="line">c.getPi()</span><br><span class="line">c.getE()</span><br></pre></td></tr></tbody></table></figure>
 <h2 id="在线演示"><a class="markdownIt-Anchor" href="#在线演示"></a> 在线演示</h2>
-<p>在线测试demo(js版)</p>
-<ol>
-<li>计算pi</li>
-</ol>
-<div id="cal-pi">
-    <p>精度:<input v-model="input" type="number" value=""></p><button class="btn btn-info" v-on:click="calculate">Calculate</button>
-    <p>结果: <input v-model="result" readonly="true"> </p>
-</div>
-<ol start="2">
-<li>计算E</li>
-</ol>
+<p>计算E</p>
 <div id="cal-e">
     <p>精度:<input type="number" v-model="input" value=""></p><button class="btn btn-info" v-on:click="calculate">Calculate</button>
     <p>结果: <input v-model="result" readonly="true"> </p>   
 </div>
-<ol start="3">
-<li>计算你当前的年龄, 精确值, 让你清晰感受时间的流逝</li>
-</ol>
+<h2 id="计算年龄"><a class="markdownIt-Anchor" href="#计算年龄"></a> 计算年龄</h2>
+<p>计算你当前的年龄, 精确值, 让你清晰感受时间的流逝</p>
 <div id="cal-age">
     <p>生日:<input type="text" v-model="input" value="" placeholder="2017-01-01"></p><button class="btn btn-info" v-on:click="calculate">Calculate</button>
     <p>结果: <input v-model="result" readonly="true"> </p>
@@ -3256,7 +3250,7 @@ for (e in arr) {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何计算π和e的值"><span class="nav-number">1.</span> <span class="nav-text"> 如何计算π和e的值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何计算自然常数"><span class="nav-number">2.</span> <span class="nav-text"> 如何计算自然常数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自然常数的意义"><span class="nav-number">2.1.</span> <span class="nav-text"> 自然常数的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何计算e"><span class="nav-number">2.2.</span> <span class="nav-text"> 如何计算e</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线演示"><span class="nav-number">2.3.</span> <span class="nav-text"> 在线演示</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何计算π和e的值"><span class="nav-number">1.</span> <span class="nav-text"> 如何计算π和e的值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在线计算π"><span class="nav-number">1.1.</span> <span class="nav-text"> 在线计算π</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何计算自然常数"><span class="nav-number">2.</span> <span class="nav-text"> 如何计算自然常数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自然常数的意义"><span class="nav-number">2.1.</span> <span class="nav-text"> 自然常数的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何计算e"><span class="nav-number">2.2.</span> <span class="nav-text"> 如何计算e</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线演示"><span class="nav-number">2.3.</span> <span class="nav-text"> 在线演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算年龄"><span class="nav-number">2.4.</span> <span class="nav-text"> 计算年龄</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

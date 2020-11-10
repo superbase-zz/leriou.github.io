@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #7a745b;
+  background: #423db3;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3068,7 +3068,7 @@ ul.breadcrumb li + li:last-child {
 <td>redis</td>
 <td>缓存</td>
 <td>instance-&gt;shard</td>
-<td>sentinal选举</td>
+<td>sentinal选举/主从</td>
 <td>对等节点</td>
 </tr>
 <tr>
@@ -3608,17 +3608,19 @@ kafka可以通过消费者分组来对某一topic中的数据进行重复消费<
 我们可以用redis在不同的应用和系统服务之间进行简单的数据传递,或者存放部分中间数据<br>
 相当于多个服务之间的共享内存,我们可以"使用共享内存来通信"</p>
 </li>
+<li>
+<p>为高读写要求的场景提供数据存储，解决性能问题  例如: 热点数据缓存/流量控制(漏桶和令牌桶)</p>
+<p>redis由于是一个内存数据库,读写速度执行非常的快<br>
+在一个最低配的的阿里云机器上可以达到8w/s的ops,非常适合用来处理一些对读写性能要求极高的场景<br>
+比如:部分热点商品数据,秒杀活动,流量控制等</p>
+</li>
+<li>
+<p>其他可以利用redis特性的场景，解决业务问题    例如: 搜索/bitmap/数据匹配/消息队列/发布订阅</p>
+<p>redis内部还有很多的特殊机制实现了比较丰富的功能, 如:发布订阅.<br>
+我们也可以利用redis的一写数据结构特性来构建倒排索引,以实现简单的搜索功能<br>
+也可以利用list的数据结构的特性实现简单的消息队列</p>
+</li>
 </ul>
-<p>*为高读写要求的场景提供数据存储，解决性能问题  例如: 热点数据缓存/流量控制(漏桶和令牌桶)</p>
-<pre><code>redis由于是一个内存数据库,读写速度执行非常的快
-在一个最低配的的阿里云机器上可以达到8w/s的ops,非常适合用来处理一些对读写性能要求极高的场景
-比如:部分热点商品数据,秒杀活动,流量控制等
-</code></pre>
-<p>*其他可以利用redis特性的场景，解决业务问题    例如: 搜索/bitmap/数据匹配/消息队列/发布订阅</p>
-<pre><code>redis内部还有很多的特殊机制实现了比较丰富的功能, 如:发布订阅.
-我们也可以利用redis的一写数据结构特性来构建倒排索引,以实现简单的搜索功能 
-也可以利用list的数据结构的特性实现简单的消息队列
-</code></pre>
 <h1 id="redis的读写流程"><a class="markdownIt-Anchor" href="#redis的读写流程"></a> Redis的读写流程</h1>
 <ul>
 <li>通信协议RESP</li>
@@ -3730,7 +3732,20 @@ RESP在Redis中用作请求 - 响应协议的方式如下：</p>
 <li>每次redis对象实例化之后检查集群状态,程序中动态修改配置</li>
 </ol>
 <p>以上思路都需要使用<code>cluster node</code>命令从集群中获取当前节点信息,解析出来当前的集群主节点,区别就是修改配置的方式和时间点不同</p>
-<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cluster info <span class="comment">// 检查集群状态</span></span><br><span class="line">cluster info返回信息如下(redis3<span class="number">.2</span>):</span><br><span class="line"></span><br><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:<span class="number">16384</span></span><br><span class="line">cluster_slots_ok:<span class="number">16384</span></span><br><span class="line">cluster_slots_pfail:<span class="number">0</span></span><br><span class="line">cluster_slots_fail:<span class="number">0</span></span><br><span class="line">cluster_known_nodes:<span class="number">6</span></span><br><span class="line">cluster_size:<span class="number">3</span></span><br><span class="line">cluster_current_epoch:<span class="number">9</span></span><br><span class="line">cluster_my_epoch:<span class="number">8</span></span><br><span class="line">cluster_stats_messages_sent:<span class="number">8625814</span></span><br><span class="line">cluster_stats_messages_received:<span class="number">8601220</span></span><br><span class="line"></span><br><span class="line">cluster nodes <span class="comment">// 检查集群节点的状态</span></span><br><span class="line">cluster nodes返回信息如下:</span><br><span class="line"></span><br><span class="line"><span class="number">634</span>f54bcec482a1a048f2604793c06acd47c93c6 <span class="number">10.113</span><span class="number">.1</span><span class="number">.231</span>:<span class="number">7001</span> slave c1eecd493eee0644a76bb9e691b6d13a31b25628 <span class="number">0</span> <span class="number">1510321448626</span> <span class="number">6</span> connected</span><br><span class="line"><span class="number">1</span>ed54647073d60118a35df253e9b04459cc30e49 <span class="number">10.113</span><span class="number">.2</span><span class="number">.82</span>:<span class="number">7001</span> slave c464639a33800da984875866391a549647af4a5a <span class="number">0</span> <span class="number">1510321447623</span> <span class="number">3</span> connected</span><br><span class="line"><span class="number">01334</span>b7a5802032461966cc382b2f97f004ab027 <span class="number">10.113</span><span class="number">.2</span><span class="number">.82</span>:<span class="number">7000</span> myself,master - <span class="number">0</span> <span class="number">0</span> <span class="number">1</span> connected <span class="number">0</span><span class="number">-5460</span></span><br><span class="line">c1eecd493eee0644a76bb9e691b6d13a31b25628 <span class="number">10.113</span><span class="number">.1</span><span class="number">.231</span>:<span class="number">7000</span> master - <span class="number">0</span> <span class="number">1510321446623</span> <span class="number">5</span> connected <span class="number">10923</span><span class="number">-16383</span></span><br><span class="line">c464639a33800da984875866391a549647af4a5a <span class="number">10.113</span><span class="number">.1</span><span class="number">.42</span>:<span class="number">7000</span> master - <span class="number">0</span> <span class="number">1510321445622</span> <span class="number">3</span> connected <span class="number">5461</span><span class="number">-10922</span></span><br><span class="line"><span class="number">98</span>b58ef327f872dec466761cabae23bad74622db <span class="number">10.113</span><span class="number">.1</span><span class="number">.42</span>:<span class="number">7001</span> slave <span class="number">01334</span>b7a5802032461966cc382b2f97f004ab027 <span class="number">0</span> <span class="number">1510321450631</span> <span class="number">4</span> connected</span><br></pre></td></tr></tbody></table></figure>
+<ol>
+<li>
+<p>使用<code>cluster info</code> 命令检查集群状态</p>
+<p>cluster info返回信息如下(redis3.2):</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cluster_state:ok</span><br><span class="line">cluster_slots_assigned:<span class="number">16384</span></span><br><span class="line">cluster_slots_ok:<span class="number">16384</span></span><br><span class="line">cluster_slots_pfail:<span class="number">0</span></span><br><span class="line">cluster_slots_fail:<span class="number">0</span></span><br><span class="line">cluster_known_nodes:<span class="number">6</span></span><br><span class="line">cluster_size:<span class="number">3</span></span><br><span class="line">cluster_current_epoch:<span class="number">9</span></span><br><span class="line">cluster_my_epoch:<span class="number">8</span></span><br><span class="line">cluster_stats_messages_sent:<span class="number">8625814</span></span><br><span class="line">cluster_stats_messages_received:<span class="number">8601220</span></span><br></pre></td></tr></tbody></table></figure>
+<ol start="2">
+<li>
+<p>使用<code>cluster nodes</code> 命令检查集群节点的状态</p>
+<p>cluster nodes返回信息如下:</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">634f54bcec482a1a048f2604793c06acd47c93c6 10.113.1.231:7001 slave c1eecd493eee0644a76bb9e691b6d13a31b25628 0 1510321448626 6 connected</span><br><span class="line">1ed54647073d60118a35df253e9b04459cc30e49 10.113.2.82:7001 slave c464639a33800da984875866391a549647af4a5a 0 1510321447623 3 connected</span><br><span class="line">01334b7a5802032461966cc382b2f97f004ab027 10.113.2.82:7000 myself,master - 0 0 1 connected 0-5460</span><br><span class="line">c1eecd493eee0644a76bb9e691b6d13a31b25628 10.113.1.231:7000 master - 0 1510321446623 5 connected 10923-16383</span><br><span class="line">c464639a33800da984875866391a549647af4a5a 10.113.1.42:7000 master - 0 1510321445622 3 connected 5461-10922</span><br><span class="line">98b58ef327f872dec466761cabae23bad74622db 10.113.1.42:7001 slave 01334b7a5802032461966cc382b2f97f004ab027 0 1510321450631 4 connected</span><br></pre></td></tr></tbody></table></figure>
 <p>其他问题:</p>
 <pre><code>1. 多主节点的槽分配导致的无法对复杂数据结构(例如hash)进行重命名操作
 2. pipeline的使用受节点限制
@@ -3741,11 +3756,11 @@ RESP在Redis中用作请求 - 响应协议的方式如下：</p>
 <p>以下是各种数据结构在我们业务中的使用示例</p>
 <figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">str:  适用于简单存储(临时标记,计数器等)          </span><br><span class="line">list: 适用于线性存储和类似场景(简单线性容器,vector,简单的消息队列)</span><br><span class="line">hash: 适用于对象存储(产品池,产品信息)</span><br><span class="line"><span class="keyword">set</span>:  适用于需要进行集合运算的场景(行政区服务,A和B都喜欢的产品,倒排索引等)</span><br><span class="line">zset: 适用于有排序需求的场景(360凤舞系统,消息系统中的优先级实现)</span><br><span class="line">stream:  流式对象, 类似于kafka中的topic  (5.0新增)</span><br></pre></td></tr></tbody></table></figure>
 <p>其他一些不建议的数据对象使用方法:</p>
-<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1.</span> 使用str存储json对象</span><br><span class="line"></span><br><span class="line">	如: a:{<span class="string">"name"</span>:<span class="string">"xiaohua"</span>,<span class="string">"age"</span>:<span class="number">8</span>},像这种可以使用hash来存储</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 过度使用有序集合</span><br><span class="line"></span><br><span class="line">	集合和有序集合和list在部分特性上面比较类似,很多人时候问题都可以使用list替代而不必要使用集合,因为有序集合底层使用的跳跃表,性能方面比简单的列表稍微差点,但是集合和有序集合都可以方便的使用集合操作,交/并/差集等</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 使用str存储json对象</span><br><span class="line">	如: a:{<span class="string">"name"</span>:<span class="string">"xiaohua"</span>,<span class="string">"age"</span>:<span class="number">8</span>},像这种可以使用hash来存储</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 过度使用有序集合</span><br><span class="line">	集合和有序集合和list在部分特性上面比较类似,很多人时候问题都可以使用list替代而不必要使用集合,因为有序集合底层使用的跳跃表,性能方面比简单的列表稍微差点,但是集合和有序集合都可以方便的使用集合操作,交/并/差集等</span><br></pre></td></tr></tbody></table></figure>
 <p><strong>redis中的数据库键空间</strong></p>
 <p><img data-src="https://i.loli.net/2020/05/09/deSBNkvgwpaE2tK.jpg" alt="IMG_0255.jpeg"></p>
 <p><strong>数据对象和底层实现的数据结构对应关系</strong></p>
-<p>数据对象的实现之所以有这种情况,其实是适应2个不同场景, 省内存和常规使用</p>
+<p>Redis数据对象的内部复杂实现，其实是针对2个不同场景， 省内存和常规使用</p>
 <table>
 <thead>
 <tr>
@@ -4290,34 +4305,28 @@ part9: 惊呆雁片段</p>
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h1>
-<p>我们有时候可能会遇到这样的情况</p>
-<p>公司部署了一个gitlab服务器</p>
-<p>我们自己也有在github上面使用仓库</p>
-<p>但是这两个服务器上面的账号是不一样的</p>
-<p>我们需要在公司的项目中使用公司的git账号,私人项目使用私人的git账号</p>
-<p>这时候就需要在同一台电脑上面使用多个git账号</p>
+          <h2 id="多git账号场景"><a class="markdownIt-Anchor" href="#多git账号场景"></a> 多Git账号场景</h2>
+<p>我们有时候可能会遇到这样的情况，公司部署了一个gitlab服务器，我们自己也有在github上面使用仓库。</p>
+<p>但是这两个服务器上面的账号是不一样的，我们需要在公司的项目中使用公司的git账号,私人项目使用私人的git账号，这时候就需要在同一台电脑上面同时使用多个git账号</p>
 <h2 id="生成两个ssh-key"><a class="markdownIt-Anchor" href="#生成两个ssh-key"></a> 生成两个ssh-key</h2>
 <p>现在大家普遍使用ssh-key来作为授权验证的工具.</p>
 <p>大多数的git服务器也使用这样的方式</p>
 <p>那我们就需要生成两个对应的ssh-key, 一个用于私人项目,一个用于公司项目</p>
 <h2 id="获取服务器项目权限"><a class="markdownIt-Anchor" href="#获取服务器项目权限"></a> 获取服务器项目权限</h2>
 <p>首先我们要拥有对应服务器(github/gitlab/coding等)的权限</p>
-<p>一般去的权限的方法是</p>
+<p>一般取得权限的方法是</p>
 <ol>
 <li>
 <p>注册github/gitlab/coding账号</p>
 </li>
 <li>
-<p>生成ssh-key</p>
+<p>生成ssh-key，<code>ssh-keygen -t rsa -C "youremail@example.com"</code> 生成ssh-key</p>
+</li>
+<li>
+<p>将生成的ssh-key中的xxx.pub公钥添加到github或者gitlab的ssh-key授权中</p>
 </li>
 </ol>
-<p><code>ssh-keygen -t rsa -C "youremail@example.com"</code> 生成ssh-key</p>
-<ol start="3">
-<li>将生成的ssh-key中的xxx.pub公钥添加到github或者gitlab的ssh-key授权中</li>
-</ol>
-<p>此时我们的电脑实际上已经获得了往对应的平台中的账户下面的仓库中推送代码的权利, git推送代码是只认机器不认人</p>
-<p>此时机器已经可以推送代码了,但是服务器还无法针对不同的服务使用不同的ssh-key设置</p>
+<p>此时我们的电脑实际上已经获得了往对应的平台中的账户下面的仓库中推送代码的权利, git推送代码是只认机器不认人,但是服务器还无法针对不同的服务使用不同的ssh-key设置</p>
 <h2 id="在ssh中增加config文件"><a class="markdownIt-Anchor" href="#在ssh中增加config文件"></a> 在ssh中增加config文件</h2>
 <p>可以通过配置.ssh文件夹下的config文件,通知ssh对不同的服务器使用不同的ssh-key</p>
 <p>例如,config内容:</p>
@@ -4475,7 +4484,7 @@ part9: 惊呆雁片段</p>
 </tbody>
 </table>
 <p>像上面的一个常见的二维表格在Bigtable中我们可以使用如下方式表示</p>
-<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table1:<span class="number">1</span>:info:name -&gt; 小明</span><br><span class="line">table1:<span class="number">1</span>:info:age -&gt; <span class="number">19</span></span><br><span class="line">table1:<span class="number">1</span>:meta:status -&gt; <span class="number">1</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">table1:<span class="number">1</span>:info:name   -&gt; 小明</span><br><span class="line">table1:<span class="number">1</span>:info:age    -&gt; <span class="number">19</span></span><br><span class="line">table1:<span class="number">1</span>:meta:status -&gt; <span class="number">1</span></span><br></pre></td></tr></tbody></table></figure>
 <p>上面3个条记录共同构成原表中的rowkey为1的一行记录</p>
 <h3 id="行"><a class="markdownIt-Anchor" href="#行"></a> 行</h3>
 <p>表中的行关键字可以是任意小于64k的字符串，同一个行关键字的读或者写都是原子性的。上述的例子里面我们就可以把1/2/3作为行关键字。某种意义上，行关键字类似于传统数据库中的主键ID。</p>
@@ -4492,7 +4501,7 @@ part9: 惊呆雁片段</p>
 <h2 id="bigtable架构"><a class="markdownIt-Anchor" href="#bigtable架构"></a> Bigtable架构</h2>
 <p>Bigtable是建立在其它的几个Google基础构件上的。BigTable使用Google的分布式文件系统(GFS)存储日志文件和数据文件。</p>
 <p>刚才提到的列族就是Bigtable存储的文件单位， 同一个列族的信息会被整合成一个SSTable文件，会随着rowkey分布到不同的机器上。多个SSTable会由索引文件来定位数据，也可以被加载到内存，通过二分查找查找其中的有序数据。</p>
-<p>BigTable 还依赖一个高可用的、序列化的分布式锁服务组件，叫做 Chubby。一个 Chubby 服务包括了 5 个活动的副本，其中的一个副本被选为 Master，并且处理请求。</p>
+<p>BigTable 还依赖一个高可用的、序列化的分布式锁服务组件，叫做 Chubby。一个 Chubby 服务包括了 5 个活动的实例，其中的一个实例被选为 Master，并且处理请求。</p>
 <p>Bigtable 包括了三个主要的组件:链接到客户程序中的库、一个 Master 服务器和多个 Tablet 服务器。针 对系统工作负载的变化情况，BigTable 可以动态的向集群中添加(或者删除)Tablet 服务器。</p>
 <p>Google使用一个三层的、类似B+树的结构存储 Tablet 的位置信息</p>
 <p><img data-src="https://i.loli.net/2020/05/09/JETjbsYLZaFNyDA.png" alt="bigtable_figure4.png"></p>
@@ -4503,6 +4512,8 @@ part9: 惊呆雁片段</p>
 <p>写入日志的存在是为了防止机器挂掉以后内存数据的丢失</p>
 <h3 id="bigtable怎么解决一致性可用性和分区容忍性"><a class="markdownIt-Anchor" href="#bigtable怎么解决一致性可用性和分区容忍性"></a> Bigtable怎么解决一致性，可用性和分区容忍性</h3>
 <p>Bigtable构架于GFS之上， Bigtable本身并没有提供备份或者主从副本的方案。所以Bigtable依赖于GFS提供一致性和可用性保证。</p>
+<h2 id="开源的bigtable实现"><a class="markdownIt-Anchor" href="#开源的bigtable实现"></a> 开源的Bigtable实现</h2>
+<p>Hadoop系列中的<a href="https://hbase.apache.org/" target="_blank" rel="noopener">Hbase</a>一般被认为是bigtable的开源实现，两者采用了相似的设计思路，适用场景也大部分重合。还有一个<a href="https://cassandra.apache.org/" target="_blank" rel="noopener">Cassandra</a>也拥有类似的功能不过在部分设计思路上有很大不同，有兴趣的读者可以自行研究</p>
 
       
     </div>
@@ -4790,7 +4801,7 @@ part9: 惊呆雁片段</p>
 
       
           <h1 id="redis的aof和rdb持久化"><a class="markdownIt-Anchor" href="#redis的aof和rdb持久化"></a> redis的AOF和RDB持久化</h1>
-<h1 id="缓存数据的持久化"><a class="markdownIt-Anchor" href="#缓存数据的持久化"></a> 缓存数据的持久化</h1>
+<h2 id="缓存数据的持久化"><a class="markdownIt-Anchor" href="#缓存数据的持久化"></a> 缓存数据的持久化</h2>
 <p>由于redis是一个纯内存型的k-v数据库， 所以存在机器宕机以后数据丢失的风险，为了应对这种情况，redis设计了数据的持久化机制，主要目的就是为了尽量减少数据丢失的情况。</p>
 <p>Redis支持两种持久化方式, 一种是快照形式, 一种是重放命令日志的形式。在实际的生产中我们往往会两种机制配合使用，所以我认为有必要了解一下redis的持久化机制的细节</p>
 <h2 id="rdb持久化"><a class="markdownIt-Anchor" href="#rdb持久化"></a> RDB持久化</h2>

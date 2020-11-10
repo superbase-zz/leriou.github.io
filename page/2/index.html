@@ -1267,7 +1267,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #7a745b;
+  background: #423db3;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -3050,7 +3050,7 @@ ul.breadcrumb li + li:last-child {
 </ol>
 <p>其中的热门内容就需要排行榜系统的支持</p>
 <h1 id="排行榜系统"><a class="markdownIt-Anchor" href="#排行榜系统"></a> 排行榜系统</h1>
-<p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计纬度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
+<p>排行榜系统一般有两种， 一种是类似于“本月最火歌曲排行”或者“第N期XXX排行”之类的以自然月为统计维度的，另一种是“最近30天最火歌曲排行”之类的动态时间范围的排行榜</p>
 <h2 id="固定时间范围的排行榜"><a class="markdownIt-Anchor" href="#固定时间范围的排行榜"></a> 固定时间范围的排行榜</h2>
 <p><strong>需求：统计本月播放次数最多的歌曲</strong></p>
 <p>针对“本月最火歌曲”这种需求的排行榜，处理起来相对简单</p>
@@ -3253,7 +3253,7 @@ ul.breadcrumb li + li:last-child {
 <p>这种做法的原理其实是先将我们要查找的数据进行hash散列，映射到一个固定长度的地址空间<br>
 然后使用数组存储，如果有多个id经过hash映射到相同的地址空间那就做一个链表，存储相同hashcode对应的值</p>
 <p>具体结构如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|          // hash数组槽</span><br><span class="line">    ↓           ↓     </span><br><span class="line">   107          87            // 槽内的指针对应的数据</span><br><span class="line">    ↓            </span><br><span class="line">    16</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|0|1009|0|1008|1998|          // hash数组槽</span><br><span class="line">    ↓           ↓     </span><br><span class="line">   107          87            // 槽内的指针对应的数据</span><br><span class="line">    ↓            </span><br><span class="line">   16</span><br></pre></td></tr></tbody></table></figure>
 <p>当我们查找id时， 也是先将要查找的id进行hash, 然后去对应的hashcode位置沿着链表/红黑树寻找是否有要查找的数字</p>
 <h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
 <ol>
@@ -3476,7 +3476,7 @@ ul.breadcrumb li + li:last-child {
 <td style="text-align:center">性能</td>
 <td style="text-align:center">非常好</td>
 <td style="text-align:center">好</td>
-<td>MongoDB在大部分场景性能比es强的多得多</td>
+<td>MongoDB在大部分场景性能比es强的多</td>
 </tr>
 <tr>
 <td style="text-align:center">索引结构</td>
@@ -5226,7 +5226,7 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="用户标签的存储方案"><a class="markdownIt-Anchor" href="#用户标签的存储方案"></a> 用户标签的存储方案</h1>
+          <h1 id="海量用户标签的存储方案"><a class="markdownIt-Anchor" href="#海量用户标签的存储方案"></a> 海量用户标签的存储方案</h1>
 <h1 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h1>
 <p>我们在日常的工作中经常遇到这种场景</p>
 <p>对一个用户添加许多的标签信息方便对用户身份进行搜索和精细化运营</p>
@@ -5425,7 +5425,7 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 </ol>
 <h1 id="bitmap"><a class="markdownIt-Anchor" href="#bitmap"></a> Bitmap</h1>
 <h2 id="bitmap的概念"><a class="markdownIt-Anchor" href="#bitmap的概念"></a> Bitmap的概念</h2>
-<p>Bitmap 翻译做中文称为"位图", 其核心里面是充分利用一部分数据本身就存在的元属性(空间/位置/容量)信息,我们这李主要是使用其中的每一位的位置信息,达到使用一个信息表达两种含义的作用</p>
+<p>Bitmap 翻译做中文称为"位图", 其核心里面是充分利用一部分数据本身就存在的元属性(空间/位置/容量)信息,我们这里主要是使用其中的每一位的位置信息,达到使用一个信息表达两种含义的作用</p>
 <p>其实就也是一种特殊的编码(coding)过程(或者叫多工(multiplex))</p>
 <h2 id="解决的问题"><a class="markdownIt-Anchor" href="#解决的问题"></a> 解决的问题</h2>
 <p>bitmap可以用来有效解决两类问题</p>
@@ -5473,7 +5473,7 @@ Elasticsearch 是<strong>搜索服务</strong>, 提供 <strong>数据检索服�
 <p>但是我们如果需要查找不属于某个标签的用户怎么办啊,如果直接对上一个例子取反肯定是不行的</p>
 <p>为了解决这个问题我们需要一个存储所有用户的键</p>
 <p>我们知道了所有用户,知道了拥有某标签的用户</p>
-<pre><code>    不含某标签的用户 = 总用户 - 含有某标签的用户
+<pre><code>不含某标签的用户 = 总用户 - 含有某标签的用户
 </code></pre>
 <p>用二进制的操作方法就是使用<code>异或</code>, 举例:</p>
 <p>我们有7个用户(编号1-7),5号用户是超级vip,我们要查找所有不是vip的用户可以使用下面的运算</p>
